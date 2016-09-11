@@ -8,11 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
 
 public class SearchFragment extends Fragment implements TextWatcher, View.OnFocusChangeListener,
-        View.OnClickListener {
+        View.OnClickListener, TextView.OnEditorActionListener {
     private EditText mEditText;
     private View mEditIcon;
     private View mClearIcon;
@@ -34,8 +35,10 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
         mClearIcon.setOnClickListener(this);
         mEditText.addTextChangedListener(this);
         mEditText.setOnFocusChangeListener(this);
+        mEditText.setOnEditorActionListener(this);
         return view;
     }
+
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -43,6 +46,10 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
+        updateClearIcon();
+    }
+
+    private void updateClearIcon() {
         if (mEditText.getText().length() > 0 && mEditText.hasFocus()) {
             mClearIcon.setVisibility(View.VISIBLE);
         } else {
@@ -61,6 +68,7 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
         } else {
             mEditIcon.setVisibility(View.VISIBLE);
         }
+        updateClearIcon();
     }
 
     @Override
