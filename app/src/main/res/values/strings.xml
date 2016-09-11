@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Know Your Meds</string>
+
+    <string name="default_content_description">Content Description</string>
+
+    <string name="ids_lbl_search_hint">Medicine name</string>
+
 </resources>
