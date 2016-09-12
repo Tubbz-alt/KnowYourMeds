@@ -3,18 +3,18 @@ package com.tompee.utilities.knowyourmeds.controller.task;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.tompee.utilities.knowyourmeds.controller.networkinterface.RxNormWrapper;
+import com.tompee.utilities.knowyourmeds.controller.networkinterface.RxNavWrapper;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchTask extends AsyncTask<String, Void, List<Medicine>> {
-    private final RxNormWrapper mWrapper;
+    private final RxNavWrapper mWrapper;
     private final SearchListener mListener;
 
     public SearchTask(Context context, SearchListener listener) {
-        mWrapper = new RxNormWrapper(context);
+        mWrapper = new RxNavWrapper(context);
         mListener = listener;
     }
 

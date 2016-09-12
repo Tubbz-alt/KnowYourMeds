@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
@@ -30,6 +31,11 @@ public class SearchResultAdapter extends ArrayAdapter<Medicine> {
 
         TextView name = (TextView) view.findViewById(R.id.med_name);
         name.setText(getItem(position).getName());
+
+        ImageView image = (ImageView) view.findViewById(R.id.presc_icon);
+        if (getItem(position).isPrescribable()) {
+            image.setBackgroundResource(R.drawable.ic_rx_on);
+        }
         return view;
     }
 }

@@ -74,7 +74,8 @@
             android:layout_marginStart="@dimen/search_horizontal_padding"
             android:layout_marginTop="@dimen/search_vertical_padding"
             android:text="@string/search_results"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/dark_text" />
 
         <View
             android:layout_width="match_parent"
@@ -90,7 +91,12 @@
         <ListView
             android:id="@+id/list_view_search"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/list_view_height" />
+            android:layout_height="@dimen/list_view_height"
+            android:layout_marginEnd="@dimen/search_horizontal_padding"
+            android:layout_marginLeft="@dimen/search_horizontal_padding"
+            android:layout_marginRight="@dimen/search_horizontal_padding"
+            android:layout_marginStart="@dimen/search_horizontal_padding"
+            android:divider="@android:color/transparent" />
     </LinearLayout>
 
 </LinearLayout>

@@ -27,5 +27,8 @@
 
     <!-- List view dimensions -->
     <dimen name="list_view_height">100dp</dimen>
+    <dimen name="list_item_height">52dp</dimen>
+    <dimen name="list_item_icon_dimension">24dp</dimen>
+    <dimen name="list_item_margin">8dp</dimen>
 
 </resources>
