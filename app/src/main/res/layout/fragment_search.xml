@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/search_height"
         android:layout_margin="@dimen/search_margin"
-        android:background="@drawable/shape_search_bg"
-        android:orientation="horizontal">
+        android:background="@drawable/shape_search_bg">
 
         <ImageView
             android:id="@+id/icon_write"
@@ -57,7 +56,41 @@
             android:paddingBottom="@dimen/search_vertical_padding"
             android:paddingTop="@dimen/search_vertical_padding"
             android:textAppearance="?android:attr/textAppearanceSmall" />
-
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/search_margin"
+        android:layout_marginLeft="@dimen/search_margin"
+        android:layout_marginRight="@dimen/search_margin"
+        android:background="@drawable/shape_search_bg"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/search_horizontal_padding"
+            android:layout_marginStart="@dimen/search_horizontal_padding"
+            android:layout_marginTop="@dimen/search_vertical_padding"
+            android:text="@string/search_results"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="@dimen/search_horizontal_padding"
+            android:layout_marginLeft="@dimen/search_horizontal_padding"
+            android:layout_marginRight="@dimen/search_horizontal_padding"
+            android:layout_marginStart="@dimen/search_horizontal_padding"
+            android:layout_marginTop="4dp"
+            android:background="@color/dark_secondary_text" />
+
+        <ListView
+            android:id="@+id/list_view_search"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_view_height" />
+    </LinearLayout>
 
 </LinearLayout>

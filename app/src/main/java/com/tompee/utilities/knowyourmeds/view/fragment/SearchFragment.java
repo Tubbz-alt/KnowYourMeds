@@ -10,18 +10,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.task.SearchTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
+import com.tompee.utilities.knowyourmeds.view.adapter.SearchResultAdapter;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
+
+import java.util.List;
 
 public class SearchFragment extends Fragment implements TextWatcher, View.OnFocusChangeListener,
         View.OnClickListener, TextView.OnEditorActionListener, SearchTask.SearchListener {
     private EditText mEditText;
     private View mEditIcon;
     private View mClearIcon;
+    private ListView mListView;
 
     private SearchTask mTask;
     private ProcessingDialog mDialog;
@@ -44,6 +49,7 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
         mEditText.addTextChangedListener(this);
         mEditText.setOnFocusChangeListener(this);
         mEditText.setOnEditorActionListener(this);
+        mListView = (ListView) view.findViewById(R.id.list_view_search);
         return view;
     }
 
@@ -103,9 +109,12 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     }
 
     @Override
-    public void onSearchSuccess(Medicine medicine) {
+    public void onSearchSuccess(List<Medicine> medList) {
         mTask = null;
         mDialog.dismiss();
         mDialog = null;
+        SearchResultAdapter adapter = new SearchResultAdapter(getContext(),
+                R.layout.list_search_result, medList);
+        mListView.setAdapter(adapter);
     }
 }

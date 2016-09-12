@@ -6,7 +6,10 @@ import android.os.AsyncTask;
 import com.tompee.utilities.knowyourmeds.controller.networkinterface.RxNormWrapper;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 
-public class SearchTask extends AsyncTask<String, Void, Medicine> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SearchTask extends AsyncTask<String, Void, List<Medicine>> {
     private final RxNormWrapper mWrapper;
     private final SearchListener mListener;
 
@@ -16,21 +19,23 @@ public class SearchTask extends AsyncTask<String, Void, Medicine> {
     }
 
     @Override
-    protected Medicine doInBackground(String... args) {
+    protected List<Medicine> doInBackground(String... args) {
+        List<Medicine> medList = new ArrayList<>();
         Medicine med = mWrapper.searchForId(args[0]);
         if (med == null) {
-
+        } else {
+            medList.add(med);
         }
-        return med;
+        return medList;
     }
 
     @Override
-    protected void onPostExecute(Medicine med) {
-        mListener.onSearchSuccess(med);
+    protected void onPostExecute(List<Medicine> medList) {
+        mListener.onSearchSuccess(medList);
     }
 
     public interface SearchListener {
-        void onSearchSuccess(Medicine medicine);
+        void onSearchSuccess(List<Medicine> medList);
     }
 }
 
