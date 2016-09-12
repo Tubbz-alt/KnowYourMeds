@@ -19,4 +19,11 @@
     <dimen name="search_vertical_padding">14dp</dimen>
     <dimen name="search_horizontal_padding">8dp</dimen>
 
+    <!-- Progress dialog dimensions -->
+    <dimen name="dialog_progress_margin_top">100dp</dimen>
+    <dimen name="dialog_progress_height">49dp</dimen>
+    <dimen name="dialog_progress_width">49dp</dimen>
+    <dimen name="dialog_progress_margin_bottom">40dp</dimen>
+
+
 </resources>

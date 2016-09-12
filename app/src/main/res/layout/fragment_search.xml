@@ -51,7 +51,7 @@
             android:layout_toStartOf="@id/icon_delete"
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
-            android:hint="@string/ids_lbl_search_hint"
+            android:hint="@string/search_hint"
             android:imeOptions="actionDone"
             android:inputType="text"
             android:paddingBottom="@dimen/search_vertical_padding"
