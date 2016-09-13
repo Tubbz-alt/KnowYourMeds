@@ -15,10 +15,13 @@ import java.util.List;
 
 public class SearchResultAdapter extends ArrayAdapter<Medicine> {
     private final Context mContext;
+    private final boolean mWithIcon;
 
-    public SearchResultAdapter(Context context, int resource, List<Medicine> medList) {
+    public SearchResultAdapter(Context context, int resource, List<Medicine> medList,
+                               boolean withIcon) {
         super(context, resource, medList);
         mContext = context;
+        mWithIcon = withIcon;
     }
 
     @Override
@@ -33,8 +36,12 @@ public class SearchResultAdapter extends ArrayAdapter<Medicine> {
         name.setText(getItem(position).getName());
 
         ImageView image = (ImageView) view.findViewById(R.id.presc_icon);
-        if (getItem(position).isPrescribable()) {
-            image.setBackgroundResource(R.drawable.ic_rx_on);
+        if (mWithIcon) {
+            if (getItem(position).isPrescribable()) {
+                image.setBackgroundResource(R.drawable.ic_rx_on);
+            }
+        } else {
+            image.setVisibility(View.GONE);
         }
         return view;
     }

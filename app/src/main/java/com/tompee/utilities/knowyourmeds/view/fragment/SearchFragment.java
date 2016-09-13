@@ -1,6 +1,7 @@
 package com.tompee.utilities.knowyourmeds.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,14 +21,19 @@ import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.adapter.SearchResultAdapter;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFragment extends Fragment implements TextWatcher, View.OnFocusChangeListener,
-        View.OnClickListener, TextView.OnEditorActionListener, SearchTask.SearchListener {
+        View.OnClickListener, TextView.OnEditorActionListener, SearchTask.SearchListener,
+        AdapterView.OnItemClickListener {
     private EditText mEditText;
+    private TextView mResultText;
     private View mEditIcon;
     private View mClearIcon;
+    private View mResultBar;
     private ListView mListView;
+    private List<Medicine> mMedList;
 
     private SearchTask mTask;
     private ProcessingDialog mDialog;
@@ -50,9 +57,11 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
         mEditText.setOnFocusChangeListener(this);
         mEditText.setOnEditorActionListener(this);
         mListView = (ListView) view.findViewById(R.id.list_view_search);
+        mListView.setOnItemClickListener(this);
+        mResultBar = view.findViewById(R.id.result_bar);
+        mResultText = (TextView) view.findViewById(R.id.text_result);
         return view;
     }
-
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -94,27 +103,60 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             mEditText.clearFocus();
-            if (mTask == null) {
-                if (mDialog == null) {
-                    mDialog = new ProcessingDialog(getContext(),
-                            getString(R.string.process_search));
-                    mDialog.show();
-                }
-                mTask = new SearchTask(getContext(), this);
-                mTask.execute(mEditText.getText().toString());
-            }
+            startSearch();
             return true;
         }
         return false;
     }
 
+    private void startSearch() {
+        if (mTask == null) {
+            if (mDialog == null) {
+                mDialog = new ProcessingDialog(getContext(),
+                        getString(R.string.process_search));
+                mDialog.show();
+            }
+            mTask = new SearchTask(getContext(), this);
+            mTask.execute(mEditText.getText().toString());
+        }
+    }
+
     @Override
     public void onSearchSuccess(List<Medicine> medList) {
         mTask = null;
+        if (medList.size() > 0) {
+            mMedList = medList;
+            mResultText.setText(R.string.search_results);
+            mResultBar.setVisibility(View.VISIBLE);
+            SearchResultAdapter adapter = new SearchResultAdapter(getContext(),
+                    R.layout.list_search_result, medList, true);
+            mListView.setAdapter(adapter);
+        }
         mDialog.dismiss();
         mDialog = null;
-        SearchResultAdapter adapter = new SearchResultAdapter(getContext(),
-                R.layout.list_search_result, medList);
-        mListView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onSearchFailed(List<Medicine> suggestedMed) {
+        mTask = null;
+        if (suggestedMed.size() > 0) {
+            mMedList = suggestedMed;
+            mResultText.setText(String.format(getString(R.string.suggestions_results),
+                    mEditText.getText().toString()));
+            mResultBar.setVisibility(View.VISIBLE);
+            SearchResultAdapter adapter = new SearchResultAdapter(getContext(),
+                    R.layout.list_search_result, suggestedMed, false);
+            mListView.setAdapter(adapter);
+        }
+        mDialog.dismiss();
+        mDialog = null;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        if (mMedList.get(position).getRxnormId() == null) {
+            mEditText.setText(mMedList.get(position).getName());
+            startSearch();
+        }
     }
 }

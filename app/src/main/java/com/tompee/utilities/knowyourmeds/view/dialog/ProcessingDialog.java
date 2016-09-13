@@ -12,7 +12,7 @@ import com.tompee.utilities.knowyourmeds.R;
 public class ProcessingDialog extends Dialog {
 
     public ProcessingDialog(Context context, String message) {
-        super(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        super(context, android.R.style.Theme_Wallpaper_NoTitleBar);
 
         @SuppressLint("InflateParams")
         View progressDialog = LayoutInflater.from(context).inflate(R.layout.dialog_progess, null);

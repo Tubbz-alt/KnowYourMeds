@@ -9,33 +9,40 @@ import com.tompee.utilities.knowyourmeds.model.Medicine;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchTask extends AsyncTask<String, Void, List<Medicine>> {
+public class SearchTask extends AsyncTask<String, Void, Boolean> {
     private final RxNavWrapper mWrapper;
     private final SearchListener mListener;
+    private List<Medicine> mMedList;
 
     public SearchTask(Context context, SearchListener listener) {
         mWrapper = new RxNavWrapper(context);
         mListener = listener;
+        mMedList = new ArrayList<>();
     }
 
     @Override
-    protected List<Medicine> doInBackground(String... args) {
-        List<Medicine> medList = new ArrayList<>();
-        Medicine med = mWrapper.searchForId(args[0]);
+    protected Boolean doInBackground(String... args) {
+        Medicine med = mWrapper.searchMed(args[0]);
         if (med == null) {
-        } else {
-            medList.add(med);
+            mMedList = mWrapper.suggestedNames(args[0]);
+            return false;
         }
-        return medList;
+        mMedList.add(med);
+        return true;
     }
 
     @Override
-    protected void onPostExecute(List<Medicine> medList) {
-        mListener.onSearchSuccess(medList);
+    protected void onPostExecute(Boolean isMed) {
+        if (isMed) {
+            mListener.onSearchSuccess(mMedList);
+        } else {
+            mListener.onSearchFailed(mMedList);
+        }
     }
 
     public interface SearchListener {
         void onSearchSuccess(List<Medicine> medList);
+        void onSearchFailed(List<Medicine> suggestedMed);
     }
 }
 

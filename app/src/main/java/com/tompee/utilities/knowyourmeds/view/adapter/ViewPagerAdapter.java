@@ -7,10 +7,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.tompee.utilities.knowyourmeds.view.fragment.SearchFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
-    private static final int PAGE_COUNT = 2;
+    private static final int PAGE_COUNT = 1;
+    private final SearchFragment mSearchFragment;
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
+        mSearchFragment = SearchFragment.newInstance();
     }
 
     @Override
@@ -20,7 +22,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return SearchFragment.newInstance();
+        return mSearchFragment;
     }
 
     @Override

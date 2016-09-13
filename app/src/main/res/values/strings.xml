@@ -4,7 +4,8 @@
     <string name="default_content_description">Content Description</string>
 
     <string name="search_hint">Medicine name</string>
-    <string name="search_results">Search results</string>
     <string name="process_search">Searching&#8230;</string>
+    <string name="search_results">Result</string>
+    <string name="suggestions_results">Suggestions for %1$s</string>
 
 </resources>

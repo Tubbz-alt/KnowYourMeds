@@ -13,7 +13,7 @@
     <dimen name="spinner_dropdown_padding">16dp</dimen>
 
     <!-- Search dimensions -->
-    <dimen name="search_height">56dp</dimen>
+    <dimen name="search_height">60dp</dimen>
     <dimen name="search_edit_dimension">32dp</dimen>
     <dimen name="search_margin">30dp</dimen>
     <dimen name="search_vertical_padding">12dp</dimen>
@@ -26,7 +26,7 @@
     <dimen name="dialog_progress_margin_bottom">40dp</dimen>
 
     <!-- List view dimensions -->
-    <dimen name="list_view_height">100dp</dimen>
+    <dimen name="list_view_height">60dp</dimen>
     <dimen name="list_item_height">52dp</dimen>
     <dimen name="list_item_icon_dimension">24dp</dimen>
     <dimen name="list_item_margin">8dp</dimen>
