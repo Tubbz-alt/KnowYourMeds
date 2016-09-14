@@ -7,12 +7,13 @@
     <string name="recent">Recent Searches</string>
     <string name="no_suggestions">No items found</string>
     <string name="no_items">No entries yet</string>
-
     <string name="search_hint">Medicine name</string>
     <string name="process_search">Searching&#8230;</string>
     <string name="search_results">Result</string>
     <string name="suggestions_results">Suggestions for %1$s</string>
-
     <string name="fetch_details">Acquiring information&#8230;</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_recent_message">Are you sure you want to delete the recent list?</string>
 
 </resources>

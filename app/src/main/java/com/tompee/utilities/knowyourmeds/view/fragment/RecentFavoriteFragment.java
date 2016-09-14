@@ -1,7 +1,9 @@
 package com.tompee.utilities.knowyourmeds.view.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +17,14 @@ import com.tompee.utilities.knowyourmeds.view.adapter.MedListAdapter;
 
 import java.util.List;
 
-public class RecentFavoriteFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class RecentFavoriteFragment extends Fragment implements AdapterView.OnItemClickListener,
+        View.OnClickListener {
     private DatabaseHelper mDbHelper;
     private ListView mFavoriteListView;
     private ListView mRecentListView;
     private View mFaveNoItemsView;
     private View mRecentNoItemsView;
+    private View mRecentTrash;
 
     public static RecentFavoriteFragment newInstance() {
         return new RecentFavoriteFragment();
@@ -30,6 +34,21 @@ public class RecentFavoriteFragment extends Fragment implements AdapterView.OnIt
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDbHelper = new DatabaseHelper(getContext());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_recent_favorite, container, false);
+        mFavoriteListView = (ListView) view.findViewById(R.id.list_favorite);
+        mFavoriteListView.setOnItemClickListener(this);
+        mRecentListView = (ListView) view.findViewById(R.id.recent_list);
+        mRecentListView.setOnItemClickListener(this);
+        mFaveNoItemsView = view.findViewById(R.id.fave_no_items);
+        mRecentNoItemsView = view.findViewById(R.id.recent_no_items);
+        mRecentTrash = view.findViewById(R.id.image_trash);
+        mRecentTrash.setOnClickListener(this);
+        return view;
     }
 
     @Override
@@ -65,33 +84,33 @@ public class RecentFavoriteFragment extends Fragment implements AdapterView.OnIt
                 mRecentListView.setAdapter(adapter);
                 mRecentListView.setVisibility(View.VISIBLE);
                 mRecentNoItemsView.setVisibility(View.GONE);
+                mRecentTrash.setVisibility(View.VISIBLE);
             } else {
                 mRecentListView.setVisibility(View.GONE);
                 mRecentNoItemsView.setVisibility(View.VISIBLE);
+                mRecentTrash.setVisibility(View.GONE);
             }
         }
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recent_favorite, container, false);
-        mFavoriteListView = (ListView) view.findViewById(R.id.list_favorite);
-        mFavoriteListView.setOnItemClickListener(this);
-        mRecentListView = (ListView) view.findViewById(R.id.recent_list);
-        mRecentListView.setOnItemClickListener(this);
-        mFaveNoItemsView = view.findViewById(R.id.fave_no_items);
-        mRecentNoItemsView = view.findViewById(R.id.recent_no_items);
-        return view;
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.delete);
+        builder.setMessage(R.string.delete_recent_message);
+        builder.setNegativeButton(R.string.cancel, null);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mDbHelper.deleteAll(DatabaseHelper.RECENT_TABLE);
+                updateLists();
+            }
+        });
+        builder.create().show();
     }
 }

@@ -48,24 +48,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public void createEntry(String dbName, Medicine med) {
-        deleteEntry(dbName, med);
+    public void createEntry(String tableName, Medicine med) {
+        deleteEntry(tableName, med);
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, med.getRxnormId());
         values.put(COLUMN_NAME, med.getName());
         values.put(COLUMN_PRESC, med.isPrescribable() ? 1 : 0);
 
         SQLiteDatabase db = getWritableDatabase();
-        db.insert(dbName, null, values);
+        db.insert(tableName, null, values);
         db.close();
     }
 
-    public List<Medicine> getAllEntries(String dbName) {
+    public List<Medicine> getAllEntries(String tableName) {
         List<Medicine> medList = new ArrayList<>();
 
         SQLiteDatabase db = getWritableDatabase();
         String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC};
-        Cursor cursor = db.query(dbName, columns, null, null, null, null, null);
+        Cursor cursor = db.query(tableName, columns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -86,9 +86,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return comment;
     }
 
-    public void deleteEntry(String dbName, Medicine med) {
+    public void deleteEntry(String tableName, Medicine med) {
         String id = med.getRxnormId();
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(dbName, COLUMN_ID + " = " + id, null);
+        db.delete(tableName, COLUMN_ID + " = " + id, null);
+        db.close();
+    }
+
+    public void deleteAll(String tableName) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(tableName, null, null);
+        db.close();
     }
 }
