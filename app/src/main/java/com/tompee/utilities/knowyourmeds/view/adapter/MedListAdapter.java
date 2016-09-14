@@ -13,13 +13,12 @@ import com.tompee.utilities.knowyourmeds.model.Medicine;
 
 import java.util.List;
 
-public class SearchResultAdapter extends ArrayAdapter<Medicine> {
+public class MedListAdapter extends ArrayAdapter<Medicine> {
     private final Context mContext;
     private final boolean mWithIcon;
 
-    public SearchResultAdapter(Context context, int resource, List<Medicine> medList,
-                               boolean withIcon) {
-        super(context, resource, medList);
+    public MedListAdapter(Context context, List<Medicine> medList, boolean withIcon) {
+        super(context, R.layout.list_med, medList);
         mContext = context;
         mWithIcon = withIcon;
     }
@@ -29,7 +28,7 @@ public class SearchResultAdapter extends ArrayAdapter<Medicine> {
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.list_search_result, parent, false);
+            view = inflater.inflate(R.layout.list_med, parent, false);
         }
 
         TextView name = (TextView) view.findViewById(R.id.med_name);

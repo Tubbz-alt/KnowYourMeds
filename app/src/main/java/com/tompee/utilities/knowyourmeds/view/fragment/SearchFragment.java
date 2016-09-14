@@ -16,10 +16,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.task.SearchTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
-import com.tompee.utilities.knowyourmeds.view.adapter.SearchResultAdapter;
+import com.tompee.utilities.knowyourmeds.view.adapter.MedListAdapter;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 
 import java.util.List;
@@ -32,14 +33,22 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     private View mEditIcon;
     private View mClearIcon;
     private View mResultBar;
+    private View mNoResultsView;
     private ListView mListView;
     private List<Medicine> mMedList;
+    private DatabaseHelper mDbHelper;
 
     private SearchTask mTask;
     private ProcessingDialog mDialog;
 
     public static SearchFragment newInstance() {
         return new SearchFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mDbHelper = new DatabaseHelper(getContext());
     }
 
     @Override
@@ -57,6 +66,7 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
         mListView.setOnItemClickListener(this);
         mResultBar = view.findViewById(R.id.result_bar);
         mResultText = (TextView) view.findViewById(R.id.text_result);
+        mNoResultsView = view.findViewById(R.id.text_no_items);
         return view;
     }
 
@@ -122,11 +132,11 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     public void onSearchSuccess(List<Medicine> medList) {
         mTask = null;
         if (medList.size() > 0) {
+            mDbHelper.createEntry(DatabaseHelper.RECENT_TABLE, medList.get(0));
             mMedList = medList;
             mResultText.setText(R.string.search_results);
             mResultBar.setVisibility(View.VISIBLE);
-            SearchResultAdapter adapter = new SearchResultAdapter(getContext(),
-                    R.layout.list_search_result, medList, true);
+            MedListAdapter adapter = new MedListAdapter(getContext(), medList, true);
             mListView.setAdapter(adapter);
         }
         mDialog.dismiss();
@@ -136,14 +146,19 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     @Override
     public void onSearchFailed(List<Medicine> suggestedMed) {
         mTask = null;
+        mResultBar.setVisibility(View.VISIBLE);
         if (suggestedMed.size() > 0) {
             mMedList = suggestedMed;
             mResultText.setText(String.format(getString(R.string.suggestions_results),
                     mEditText.getText().toString()));
             mResultBar.setVisibility(View.VISIBLE);
-            SearchResultAdapter adapter = new SearchResultAdapter(getContext(),
-                    R.layout.list_search_result, suggestedMed, false);
+            MedListAdapter adapter = new MedListAdapter(getContext(), suggestedMed, false);
             mListView.setAdapter(adapter);
+            mListView.setVisibility(View.VISIBLE);
+            mNoResultsView.setVisibility(View.GONE);
+        } else {
+            mListView.setVisibility(View.GONE);
+            mNoResultsView.setVisibility(View.VISIBLE);
         }
         mDialog.dismiss();
         mDialog = null;

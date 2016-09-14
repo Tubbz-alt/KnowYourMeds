@@ -11,51 +11,61 @@ import com.tompee.utilities.knowyourmeds.model.Medicine;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavoriteDbHelper extends SQLiteOpenHelper {
-    private static final String TABLE_NAME = "favorites";
+public class DatabaseHelper extends SQLiteOpenHelper {
+    public static final String FAVORITE_TABLE = "favorite";
+    public static final String RECENT_TABLE = "recent";
     private static final String COLUMN_ID = "rxcui";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_PRESC = "presc";
 
-    private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "Favorite.db";
-    private static final String SQL_CREATE_ENTRIES = "create table" +
-            TABLE_NAME + " (" + COLUMN_ID + "text not null," + COLUMN_NAME + "text not null," +
-            COLUMN_PRESC + "integer" + " )";
-    private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + TABLE_NAME;
+    private static final String CREATE_FAVORITE_TABLE = "create table " + FAVORITE_TABLE +
+            " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null," +
+            COLUMN_PRESC + " integer" + " )";
+    private static final String CREATE_RECENT_TABLE = "create table " + RECENT_TABLE +
+            " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null," +
+            COLUMN_PRESC + " integer" + " )";
+    private static final String DROP_FAVORITE_TABLE = "DROP TABLE IF EXISTS " + FAVORITE_TABLE;
+    private static final String DROP_RECENT_TABLE = "DROP TABLE IF EXISTS " + RECENT_TABLE;
 
-    public FavoriteDbHelper(Context context) {
+
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "KnowYourMeds.db";
+
+    public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(SQL_CREATE_ENTRIES);
+        sqLiteDatabase.execSQL(CREATE_FAVORITE_TABLE);
+        sqLiteDatabase.execSQL(CREATE_RECENT_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL(SQL_DELETE_ENTRIES);
+        sqLiteDatabase.execSQL(DROP_FAVORITE_TABLE);
+        sqLiteDatabase.execSQL(DROP_RECENT_TABLE);
         onCreate(sqLiteDatabase);
     }
 
-    public void createEntry(Medicine med) {
+    public void createEntry(String dbName, Medicine med) {
+        deleteEntry(dbName, med);
         ContentValues values = new ContentValues();
-        values.put(FavoriteDbHelper.COLUMN_ID, med.getRxnormId());
-        values.put(FavoriteDbHelper.COLUMN_NAME, med.getName());
-        values.put(FavoriteDbHelper.COLUMN_PRESC, med.isPrescribable() ? 1 : 0);
+        values.put(COLUMN_ID, med.getRxnormId());
+        values.put(COLUMN_NAME, med.getName());
+        values.put(COLUMN_PRESC, med.isPrescribable() ? 1 : 0);
 
         SQLiteDatabase db = getWritableDatabase();
-        db.insert(FavoriteDbHelper.TABLE_NAME, null, values);
+        db.insert(dbName, null, values);
         db.close();
     }
 
-    public List<Medicine> getAllEntries() {
+    public List<Medicine> getAllEntries(String dbName) {
         List<Medicine> medList = new ArrayList<>();
 
         SQLiteDatabase db = getWritableDatabase();
         String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC};
-        Cursor cursor = db.query(TABLE_NAME, columns, null, null, null, null, null);
+        Cursor cursor = db.query(dbName, columns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -76,9 +86,9 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
         return comment;
     }
 
-    public void deleteEntry(Medicine med) {
+    public void deleteEntry(String dbName, Medicine med) {
         String id = med.getRxnormId();
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_NAME, COLUMN_ID + " = " + id, null);
+        db.delete(dbName, COLUMN_ID + " = " + id, null);
     }
 }

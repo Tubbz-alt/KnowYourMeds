@@ -5,6 +5,8 @@
 
     <string name="favorites">Favorites</string>
     <string name="recent">Recent Searches</string>
+    <string name="no_suggestions">No items found</string>
+    <string name="no_items">No entries yet</string>
 
     <string name="search_hint">Medicine name</string>
     <string name="process_search">Searching&#8230;</string>
