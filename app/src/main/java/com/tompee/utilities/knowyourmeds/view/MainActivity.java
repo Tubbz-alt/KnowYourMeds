@@ -13,6 +13,7 @@ import com.tompee.utilities.knowyourmeds.view.fragment.SearchFragment;
 
 public class MainActivity extends BaseActivity {
     private ViewPager mViewPager;
+    private static final int[] mTabIconList = {R.drawable.ic_star_white, R.drawable.ic_search_white};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class MainActivity extends BaseActivity {
         tabLayout.setupWithViewPager(mViewPager);
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             //noinspection ConstantConditions
-            tabLayout.getTabAt(i).setIcon(R.drawable.ic_search_white);
+            tabLayout.getTabAt(i).setIcon(mTabIconList[i]);
         }
     }
 }

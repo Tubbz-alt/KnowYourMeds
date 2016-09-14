@@ -15,7 +15,7 @@ public class ProcessingDialog extends Dialog {
         super(context, android.R.style.Theme_Wallpaper_NoTitleBar);
 
         @SuppressLint("InflateParams")
-        View progressDialog = LayoutInflater.from(context).inflate(R.layout.dialog_progess, null);
+        View progressDialog = LayoutInflater.from(context).inflate(R.layout.dialog_progress, null);
         TextView dialogText = (TextView) progressDialog.findViewById(R.id.progress_dialog_text);
         dialogText.setText(message);
 

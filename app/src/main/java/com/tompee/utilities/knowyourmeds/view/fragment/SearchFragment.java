@@ -1,7 +1,7 @@
 package com.tompee.utilities.knowyourmeds.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,10 +18,10 @@ import android.widget.TextView;
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.task.SearchTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
+import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.SearchResultAdapter;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFragment extends Fragment implements TextWatcher, View.OnFocusChangeListener,
@@ -39,10 +39,7 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     private ProcessingDialog mDialog;
 
     public static SearchFragment newInstance() {
-        Bundle args = new Bundle();
-        SearchFragment fragment = new SearchFragment();
-        fragment.setArguments(args);
-        return fragment;
+        return new SearchFragment();
     }
 
     @Override
@@ -154,9 +151,16 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        if (mMedList.get(position).getRxnormId() == null) {
-            mEditText.setText(mMedList.get(position).getName());
+        Medicine med = mMedList.get(position);
+        if (med.getRxnormId() == null) {
+            mEditText.setText(med.getName());
             startSearch();
+        } else {
+            Intent intent = new Intent(getContext(), MedDetailActivity.class);
+            intent.putExtra(MedDetailActivity.TAG_NAME, med.getName());
+            intent.putExtra(MedDetailActivity.TAG_ID, med.getRxnormId());
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
     }
 }

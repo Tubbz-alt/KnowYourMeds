@@ -4,15 +4,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.tompee.utilities.knowyourmeds.view.fragment.RecentFavoriteFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SearchFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
-    private static final int PAGE_COUNT = 1;
+    private static final int PAGE_COUNT = 2;
     private final SearchFragment mSearchFragment;
+    private final RecentFavoriteFragment mRecentFavoriteFragment;
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
         mSearchFragment = SearchFragment.newInstance();
+        mRecentFavoriteFragment = RecentFavoriteFragment.newInstance();
     }
 
     @Override
@@ -22,6 +25,12 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        switch (position) {
+            case 0:
+                return mRecentFavoriteFragment;
+            case 1:
+                return mSearchFragment;
+        }
         return mSearchFragment;
     }
 
