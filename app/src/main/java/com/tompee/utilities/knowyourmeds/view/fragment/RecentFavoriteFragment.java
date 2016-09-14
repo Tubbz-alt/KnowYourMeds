@@ -1,6 +1,7 @@
 package com.tompee.utilities.knowyourmeds.view.fragment;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -13,15 +14,19 @@ import android.widget.ListView;
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
+import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.MedListAdapter;
 
 import java.util.List;
 
-public class RecentFavoriteFragment extends Fragment implements AdapterView.OnItemClickListener,
-        View.OnClickListener {
+public class RecentFavoriteFragment extends Fragment implements View.OnClickListener {
     private DatabaseHelper mDbHelper;
+
     private ListView mFavoriteListView;
     private ListView mRecentListView;
+    private List<Medicine> mFavoriteMedList;
+    private List<Medicine> mRecentMedList;
+
     private View mFaveNoItemsView;
     private View mRecentNoItemsView;
     private View mRecentTrash;
@@ -41,14 +46,32 @@ public class RecentFavoriteFragment extends Fragment implements AdapterView.OnIt
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recent_favorite, container, false);
         mFavoriteListView = (ListView) view.findViewById(R.id.list_favorite);
-        mFavoriteListView.setOnItemClickListener(this);
+        mFavoriteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                startMedListActivity(mFavoriteMedList.get(i));
+            }
+        });
         mRecentListView = (ListView) view.findViewById(R.id.recent_list);
-        mRecentListView.setOnItemClickListener(this);
+        mRecentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                startMedListActivity(mRecentMedList.get(i));
+            }
+        });
         mFaveNoItemsView = view.findViewById(R.id.fave_no_items);
         mRecentNoItemsView = view.findViewById(R.id.recent_no_items);
         mRecentTrash = view.findViewById(R.id.image_trash);
         mRecentTrash.setOnClickListener(this);
         return view;
+    }
+
+    private void startMedListActivity(Medicine med) {
+        Intent intent = new Intent(getContext(), MedDetailActivity.class);
+        intent.putExtra(MedDetailActivity.TAG_NAME, med.getName());
+        intent.putExtra(MedDetailActivity.TAG_ID, med.getRxnormId());
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @Override
@@ -67,9 +90,9 @@ public class RecentFavoriteFragment extends Fragment implements AdapterView.OnIt
 
     private void updateLists() {
         if (mDbHelper != null) {
-            List<Medicine> favoriteMedList = mDbHelper.getAllEntries(DatabaseHelper.FAVORITE_TABLE);
-            if (favoriteMedList.size() > 0) {
-                MedListAdapter adapter = new MedListAdapter(getContext(), favoriteMedList, true);
+            mFavoriteMedList = mDbHelper.getAllEntries(DatabaseHelper.FAVORITE_TABLE);
+            if (mFavoriteMedList.size() > 0) {
+                MedListAdapter adapter = new MedListAdapter(getContext(), mFavoriteMedList, true);
                 mFavoriteListView.setAdapter(adapter);
                 mFavoriteListView.setVisibility(View.VISIBLE);
                 mFaveNoItemsView.setVisibility(View.GONE);
@@ -78,9 +101,9 @@ public class RecentFavoriteFragment extends Fragment implements AdapterView.OnIt
                 mFaveNoItemsView.setVisibility(View.VISIBLE);
             }
 
-            List<Medicine> recentMedList = mDbHelper.getAllEntries(DatabaseHelper.RECENT_TABLE);
-            if (recentMedList.size() > 0) {
-                MedListAdapter adapter = new MedListAdapter(getContext(), recentMedList, true);
+            mRecentMedList = mDbHelper.getAllEntries(DatabaseHelper.RECENT_TABLE);
+            if (mRecentMedList.size() > 0) {
+                MedListAdapter adapter = new MedListAdapter(getContext(), mRecentMedList, true);
                 mRecentListView.setAdapter(adapter);
                 mRecentListView.setVisibility(View.VISIBLE);
                 mRecentNoItemsView.setVisibility(View.GONE);
@@ -91,11 +114,6 @@ public class RecentFavoriteFragment extends Fragment implements AdapterView.OnIt
                 mRecentTrash.setVisibility(View.GONE);
             }
         }
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
     }
 
     @Override

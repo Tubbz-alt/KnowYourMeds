@@ -31,4 +31,7 @@
     <dimen name="list_item_icon_dimension">24dp</dimen>
     <dimen name="list_item_margin">8dp</dimen>
 
+    <!-- Med detail dimensions -->
+    <dimen name="med_detail_margin">16dp</dimen>
+
 </resources>

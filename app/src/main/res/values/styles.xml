@@ -39,10 +39,12 @@
     <style name="TabLayout" parent="Widget.Design.TabLayout">
         <item name="tabTextAppearance">@style/TabTextAppearance</item>
         <item name="tabIndicatorColor">@color/background</item>
+        <item name="tabSelectedTextColor">@color/light_text</item>
     </style>
 
     <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/light_text</item>
     </style>
 
 </resources>

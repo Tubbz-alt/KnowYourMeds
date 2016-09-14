@@ -82,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Medicine comment = new Medicine();
         comment.setRxnormId(cursor.getString(0));
         comment.setName(cursor.getString(1));
-        comment.setIsPrescribable(cursor.getInt(1) == 1);
+        comment.setIsPrescribable(cursor.getInt(2) == 1);
         return comment;
     }
 

@@ -7,12 +7,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.tompee.utilities.knowyourmeds.view.fragment.RecentFavoriteFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SearchFragment;
 
-public class ViewPagerAdapter extends FragmentPagerAdapter {
+public class MainViewPagerAdapter extends FragmentPagerAdapter {
     private static final int PAGE_COUNT = 2;
     private final SearchFragment mSearchFragment;
     private final RecentFavoriteFragment mRecentFavoriteFragment;
 
-    public ViewPagerAdapter(FragmentManager fm) {
+    public MainViewPagerAdapter(FragmentManager fm) {
         super(fm);
         mSearchFragment = SearchFragment.newInstance();
         mRecentFavoriteFragment = RecentFavoriteFragment.newInstance();

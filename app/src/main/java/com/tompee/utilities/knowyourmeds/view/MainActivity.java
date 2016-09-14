@@ -8,7 +8,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
-import com.tompee.utilities.knowyourmeds.view.adapter.ViewPagerAdapter;
+import com.tompee.utilities.knowyourmeds.view.adapter.MainViewPagerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 
 public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
@@ -25,7 +25,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         title.setText(R.string.app_name);
 
         mViewPager = (ViewPager) findViewById(R.id.pager_main);
-        mViewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
+        mViewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
         mViewPager.addOnPageChangeListener(this);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_main);

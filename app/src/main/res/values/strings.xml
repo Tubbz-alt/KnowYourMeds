@@ -15,5 +15,8 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="delete_recent_message">Are you sure you want to delete the recent list?</string>
+    <string name="properties">Properties</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="brand">Brand Names</string>
 
 </resources>
