@@ -12,11 +12,21 @@
     <string name="search_results">Result</string>
     <string name="suggestions_results">Suggestions for %1$s</string>
     <string name="fetch_details">Acquiring information&#8230;</string>
+    <string name="delete_recent_message">Are you sure you want to delete the recent list?</string>
+
+    <!-- Control -->
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
-    <string name="delete_recent_message">Are you sure you want to delete the recent list?</string>
-    <string name="properties">Properties</string>
-    <string name="ingredients">Ingredients</string>
-    <string name="brand">Brand Names</string>
+
+    <!-- Tab texts -->
+    <string name="tab_properties">Properties</string>
+    <string name="tab_ingredients">Ingredients</string>
+    <string name="tab_brands">Brand Names</string>
+
+    <!-- Properties -->
+    <string name="property_prescribable_yes">Prescribable</string>
+    <string name="property_prescribable_no">Not prescribable</string>
+    <string name="property_brands">Brand Name</string>
+    <string name="property_ingredient">Ingredient</string>
 
 </resources>

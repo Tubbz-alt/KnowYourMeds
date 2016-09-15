@@ -4,6 +4,7 @@ public class Medicine {
     private String mRxnormId;
     private String mName;
     private boolean mIsPrescribable;
+    private boolean mIsIngredient;
 
     public Medicine() {
     }
@@ -30,5 +31,13 @@ public class Medicine {
 
     public void setIsPrescribable(boolean isPrescribable) {
         mIsPrescribable = isPrescribable;
+    }
+
+    public boolean isIsIngredient() {
+        return mIsIngredient;
+    }
+
+    public void setIsIngredient(boolean isIngredient) {
+        mIsIngredient = isIngredient;
     }
 }

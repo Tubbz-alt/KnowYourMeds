@@ -23,11 +23,13 @@ public class RxNavWrapper {
 
     /* Constants */
     private static final String YES = "Y";
+    private static final String INGREDIENT = "IN";
 
     /* RX Norm REST functions */
     private static final String SEARCH_BY_STRING = "%s/rxcui.json?name=%s";
     private static final String PROPERTY_NAME = "%s/rxcui/%s/property.json?propName=%s";
     private static final String SPELLING_SUGGESTIONS = "%s/spellingsuggestions.json?name=%s";
+    private static final String TERM_TYPE = "%s/rxcui/%s/property.json?propName=TTY";
 
     /* RXNorm Properties */
     private static final String PROPERTIES_RX_NORM = "RxNorm%20Name";
@@ -117,5 +119,24 @@ public class RxNavWrapper {
             Log.d(TAG, "Error in get suggestedNames request: " + e.getMessage());
         }
         return suggestedNames;
+    }
+
+    public boolean isIngredient(String rxcui) {
+        String url = String.format(TERM_TYPE, RX_NORM_BASE_URL, rxcui);
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
+        try {
+            JSONObject response = future.get();
+            if (response.getJSONObject(TAG_PROP_CONCEPT_GROUP).
+                    getJSONArray(TAG_PROP_CONCEPT).getJSONObject(0).
+                    getString(TAG_PROP_VALUE).equals(INGREDIENT)) ;
+            {
+                return true;
+            }
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            Log.d(TAG, "Error in get prescribable request: " + e.getMessage());
+        }
+        return false;
     }
 }

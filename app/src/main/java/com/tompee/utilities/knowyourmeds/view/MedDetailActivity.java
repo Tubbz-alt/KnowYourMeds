@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.controller.task.GetMedDetailTask;
 import com.tompee.utilities.knowyourmeds.view.adapter.MedViewPagerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
@@ -17,6 +18,7 @@ public class MedDetailActivity extends BaseActivity {
 
     private ViewPager mViewPager;
 
+    private GetMedDetailTask mGetMedDetailTask;
     private ProcessingDialog mDialog;
 
     @Override
@@ -30,14 +32,23 @@ public class MedDetailActivity extends BaseActivity {
         TextView title = (TextView) findViewById(R.id.toolbar_text);
         title.setText(intent.getStringExtra(TAG_NAME));
 
+        String rxcui = intent.getStringExtra(TAG_ID);
         mViewPager = (ViewPager) findViewById(R.id.pager_med_detail);
-        mViewPager.setAdapter(new MedViewPagerAdapter(this, getSupportFragmentManager(),
-                intent.getStringExtra(TAG_ID)));
+        mViewPager.setAdapter(new MedViewPagerAdapter(this, getSupportFragmentManager(), rxcui));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_med_detail);
         tabLayout.setupWithViewPager(mViewPager);
 
-        mDialog = new ProcessingDialog(this, getString(R.string.fetch_details));
-//        mDialog.show();
+        startTask(rxcui);
     }
 
+    private void startTask(String rxcui) {
+        if (mGetMedDetailTask == null) {
+            if (mDialog == null) {
+                mDialog = new ProcessingDialog(this, getString(R.string.fetch_details));
+                mDialog.show();
+            }
+            mGetMedDetailTask = new GetMedDetailTask(this);
+            mGetMedDetailTask.execute(rxcui);
+        }
+    }
 }
