@@ -24,9 +24,16 @@
     <string name="tab_brands">Brand Names</string>
 
     <!-- Properties -->
+    <string name="property_properties">Properties</string>
+    <string name="property_sources">Sources</string>
     <string name="property_prescribable_yes">Prescribable</string>
     <string name="property_prescribable_no">Not prescribable</string>
     <string name="property_brands">Brand Name</string>
     <string name="property_ingredient">Ingredient</string>
+    <string name="property_no_sources">No sources available</string>
+
+    <!-- Menu titles -->
+    <string name="menu_favorite">Add to favorites</string>
+    <string name="menu_sources">Toggle sources visibility</string>
 
 </resources>

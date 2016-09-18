@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.view.fragment.PropertiesFragment;
+import com.tompee.utilities.knowyourmeds.view.fragment.SearchFragment;
 
 public class MedViewPagerAdapter extends FragmentPagerAdapter {
     private static final int PAGE_COUNT = 1;
@@ -16,10 +17,10 @@ public class MedViewPagerAdapter extends FragmentPagerAdapter {
     private final Context mContext;
     private final PropertiesFragment mPropertiesFragment;
 
-    public MedViewPagerAdapter(Context context, FragmentManager fm, String rxcui) {
+    public MedViewPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         mContext = context;
-        mPropertiesFragment = PropertiesFragment.newInstance(rxcui);
+        mPropertiesFragment = PropertiesFragment.newInstance();
     }
 
     @Override

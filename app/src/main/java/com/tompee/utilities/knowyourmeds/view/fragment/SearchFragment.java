@@ -173,7 +173,6 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
         } else {
             Intent intent = new Intent(getContext(), MedDetailActivity.class);
             intent.putExtra(MedDetailActivity.TAG_NAME, med.getName());
-            intent.putExtra(MedDetailActivity.TAG_ID, med.getRxnormId());
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }

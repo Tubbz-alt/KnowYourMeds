@@ -69,7 +69,6 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     private void startMedListActivity(Medicine med) {
         Intent intent = new Intent(getContext(), MedDetailActivity.class);
         intent.putExtra(MedDetailActivity.TAG_NAME, med.getName());
-        intent.putExtra(MedDetailActivity.TAG_ID, med.getRxnormId());
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

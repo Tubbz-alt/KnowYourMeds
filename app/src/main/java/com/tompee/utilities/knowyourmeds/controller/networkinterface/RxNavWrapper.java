@@ -30,6 +30,7 @@ public class RxNavWrapper {
     private static final String PROPERTY_NAME = "%s/rxcui/%s/property.json?propName=%s";
     private static final String SPELLING_SUGGESTIONS = "%s/spellingsuggestions.json?name=%s";
     private static final String TERM_TYPE = "%s/rxcui/%s/property.json?propName=TTY";
+    private static final String SOURCES = "%s/rxcui/%s/property.json?propName=Source";
 
     /* RXNorm Properties */
     private static final String PROPERTIES_RX_NORM = "RxNorm%20Name";
@@ -130,13 +131,32 @@ public class RxNavWrapper {
             JSONObject response = future.get();
             if (response.getJSONObject(TAG_PROP_CONCEPT_GROUP).
                     getJSONArray(TAG_PROP_CONCEPT).getJSONObject(0).
-                    getString(TAG_PROP_VALUE).equals(INGREDIENT)) ;
-            {
+                    getString(TAG_PROP_VALUE).equals(INGREDIENT)) {
                 return true;
             }
         } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get prescribable request: " + e.getMessage());
+            Log.d(TAG, "Error in get is ingredient request: " + e.getMessage());
         }
         return false;
+    }
+
+    public List<String> getSources(String rxcui) {
+        String url = String.format(SOURCES, RX_NORM_BASE_URL, rxcui);
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
+        try {
+            JSONObject response = future.get();
+            List<String> sourceList = new ArrayList<>();
+            JSONArray array = response.getJSONObject(TAG_PROP_CONCEPT_GROUP).
+                    getJSONArray(TAG_PROP_CONCEPT);
+            for (int index = 0; index < array.length(); index++) {
+                sourceList.add(array.getJSONObject(index).getString(TAG_PROP_VALUE));
+            }
+            return sourceList;
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            Log.d(TAG, "Error in get sources request: " + e.getMessage());
+        }
+        return null;
     }
 }

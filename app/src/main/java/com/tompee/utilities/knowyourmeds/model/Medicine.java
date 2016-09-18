@@ -1,10 +1,13 @@
 package com.tompee.utilities.knowyourmeds.model;
 
+import java.util.List;
+
 public class Medicine {
     private String mRxnormId;
     private String mName;
     private boolean mIsPrescribable;
     private boolean mIsIngredient;
+    private List<String> mSources;
 
     public Medicine() {
     }
@@ -33,11 +36,19 @@ public class Medicine {
         mIsPrescribable = isPrescribable;
     }
 
-    public boolean isIsIngredient() {
+    public boolean isIngredient() {
         return mIsIngredient;
     }
 
     public void setIsIngredient(boolean isIngredient) {
         mIsIngredient = isIngredient;
+    }
+
+    public List<String> getSources() {
+        return mSources;
+    }
+
+    public void setSources(List<String> mSources) {
+        this.mSources = mSources;
     }
 }

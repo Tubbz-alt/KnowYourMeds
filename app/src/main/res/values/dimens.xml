@@ -27,11 +27,12 @@
 
     <!-- List view dimensions -->
     <dimen name="list_view_height">60dp</dimen>
-    <dimen name="list_item_height">52dp</dimen>
+    <dimen name="list_item_height">48dp</dimen>
     <dimen name="list_item_icon_dimension">24dp</dimen>
     <dimen name="list_item_margin">8dp</dimen>
 
     <!-- Med detail dimensions -->
     <dimen name="med_detail_margin">16dp</dimen>
+    <dimen name="med_detail_height">46dp</dimen>
 
 </resources>
