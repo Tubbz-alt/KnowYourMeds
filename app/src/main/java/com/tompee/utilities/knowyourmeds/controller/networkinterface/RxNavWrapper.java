@@ -31,6 +31,7 @@ public class RxNavWrapper {
     private static final String SPELLING_SUGGESTIONS = "%s/spellingsuggestions.json?name=%s";
     private static final String TERM_TYPE = "%s/rxcui/%s/property.json?propName=TTY";
     private static final String SOURCES = "%s/rxcui/%s/property.json?propName=Source";
+    private static final String BRANDS = "%s/rxcui/%s/related.json?tty=BN";
 
     /* RXNorm Properties */
     private static final String PROPERTIES_RX_NORM = "RxNorm%20Name";
@@ -44,6 +45,10 @@ public class RxNavWrapper {
     private static final String TAG_PROP_VALUE = "propValue";
     private static final String TAG_SUGGESTION_GROUP = "suggestionGroup";
     private static final String TAG_SUGGESTION_LIST = "suggestionList";
+    private static final String TAG_RELATED_GROUP = "relatedGroup";
+    private static final String TAG_CONCEPT_GROUP = "conceptGroup";
+    private static final String TAG_CONCEPT_PROPERTIES = "conceptProperties";
+    private static final String TAG_NAME = "name";
 
     private final Context mContext;
 
@@ -156,6 +161,27 @@ public class RxNavWrapper {
             return sourceList;
         } catch (InterruptedException | ExecutionException | JSONException e) {
             Log.d(TAG, "Error in get sources request: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<String> getBrandNames(String rxcui) {
+        String url = String.format(BRANDS, RX_NORM_BASE_URL, rxcui);
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
+        try {
+            JSONObject response = future.get();
+            List<String> brandList = new ArrayList<>();
+            JSONArray array = response.getJSONObject(TAG_RELATED_GROUP).
+                    getJSONArray(TAG_CONCEPT_GROUP).getJSONObject(0).
+                    getJSONArray(TAG_CONCEPT_PROPERTIES);
+            for (int index = 0; index < array.length(); index++) {
+                brandList.add(array.getJSONObject(index).getString(TAG_NAME));
+            }
+            return brandList;
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            Log.d(TAG, "Error in get brands request: " + e.getMessage());
         }
         return null;
     }

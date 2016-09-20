@@ -6,21 +6,21 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.view.fragment.BrandFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.PropertiesFragment;
-import com.tompee.utilities.knowyourmeds.view.fragment.SearchFragment;
 
 public class MedViewPagerAdapter extends FragmentPagerAdapter {
-    private static final int PAGE_COUNT = 1;
-    private static final int[] mStringNameIds = {R.string.tab_properties, R.string.tab_ingredients,
-            R.string.tab_properties};
-
+    private static final int PAGE_COUNT = 2;
+    private static final int[] mStringNameIds = {R.string.tab_properties, R.string.tab_brands};
     private final Context mContext;
     private final PropertiesFragment mPropertiesFragment;
+    private final BrandFragment mBrandFragment;
 
     public MedViewPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         mContext = context;
         mPropertiesFragment = PropertiesFragment.newInstance();
+        mBrandFragment = BrandFragment.newInstance();
     }
 
     @Override
@@ -30,7 +30,14 @@ public class MedViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return mPropertiesFragment;
+        switch (position) {
+            case 0:
+                return mPropertiesFragment;
+            case 1:
+                return mBrandFragment;
+            default:
+        }
+        return null;
     }
 
     @Override

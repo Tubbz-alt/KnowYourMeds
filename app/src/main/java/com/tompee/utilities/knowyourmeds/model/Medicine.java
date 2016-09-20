@@ -8,6 +8,7 @@ public class Medicine {
     private boolean mIsPrescribable;
     private boolean mIsIngredient;
     private List<String> mSources;
+    private List<String> mBrands;
 
     public Medicine() {
     }
@@ -50,5 +51,13 @@ public class Medicine {
 
     public void setSources(List<String> mSources) {
         this.mSources = mSources;
+    }
+
+    public List<String> getBrands() {
+        return mBrands;
+    }
+
+    public void setBrands(List<String> brands) {
+        mBrands = brands;
     }
 }

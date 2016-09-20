@@ -41,4 +41,7 @@
     <string name="menu_sources_on">Show Sources</string>
     <string name="menu_sources_off">Hide Sources</string>
 
+    <!-- Brands -->
+    <string name="brands_related">Related Brand Names</string>
+
 </resources>

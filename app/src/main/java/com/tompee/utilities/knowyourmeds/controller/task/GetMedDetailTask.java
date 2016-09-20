@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import com.tompee.utilities.knowyourmeds.controller.networkinterface.RxNavWrapper;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 
-public class GetMedDetailTask extends AsyncTask<String, Void, Medicine>{
+public class GetMedDetailTask extends AsyncTask<String, Void, Medicine> {
     private final RxNavWrapper mWrapper;
     private final GetMedTaskListener mListener;
 
@@ -14,11 +14,13 @@ public class GetMedDetailTask extends AsyncTask<String, Void, Medicine>{
         mWrapper = new RxNavWrapper(context);
         mListener = listener;
     }
+
     @Override
     protected Medicine doInBackground(String... args) {
         Medicine med = mWrapper.searchMed(args[0]);
         med.setIsIngredient(mWrapper.isIngredient(med.getRxnormId()));
         med.setSources(mWrapper.getSources(med.getRxnormId()));
+        med.setBrands(mWrapper.getBrandNames(med.getRxnormId()));
         return med;
     }
 
