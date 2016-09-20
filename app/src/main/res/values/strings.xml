@@ -12,11 +12,15 @@
     <string name="search_results">Result</string>
     <string name="suggestions_results">Suggestions for %1$s</string>
     <string name="fetch_details">Acquiring information&#8230;</string>
+
+    <!-- Dialog messages -->
     <string name="delete_recent_message">Are you sure you want to delete the recent list?</string>
+    <string name="add_to_favorites">%1$s was added to favorites.</string>
 
     <!-- Control -->
-    <string name="delete">Delete</string>
-    <string name="cancel">Cancel</string>
+    <string name="control_delete">Delete</string>
+    <string name="control_cancel">Cancel</string>
+    <string name="control_ok">OK</string>
 
     <!-- Tab texts -->
     <string name="tab_properties">Properties</string>
@@ -34,6 +38,7 @@
 
     <!-- Menu titles -->
     <string name="menu_favorite">Add to favorites</string>
-    <string name="menu_sources">Toggle sources visibility</string>
+    <string name="menu_sources_on">Show Sources</string>
+    <string name="menu_sources_off">Hide Sources</string>
 
 </resources>

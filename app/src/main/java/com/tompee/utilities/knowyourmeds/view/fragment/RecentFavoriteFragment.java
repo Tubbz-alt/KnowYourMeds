@@ -118,10 +118,10 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     @Override
     public void onClick(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(R.string.delete);
+        builder.setTitle(R.string.control_delete);
         builder.setMessage(R.string.delete_recent_message);
-        builder.setNegativeButton(R.string.cancel, null);
-        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.control_cancel, null);
+        builder.setPositiveButton(R.string.control_delete, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 mDbHelper.deleteAll(DatabaseHelper.RECENT_TABLE);

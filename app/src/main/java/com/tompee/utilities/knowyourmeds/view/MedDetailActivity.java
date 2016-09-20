@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.task.GetMedDetailTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.adapter.MedViewPagerAdapter;
@@ -43,6 +45,28 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         tabLayout.setupWithViewPager(mViewPager);
 
         startTask(medName);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_med_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_favorite) {
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
+            dbHelper.createEntry(DatabaseHelper.FAVORITE_TABLE, mMedicine);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(String.format(getString(R.string.add_to_favorites),
+                    mMedicine.getName()));
+            builder.setPositiveButton(R.string.control_ok, null);
+            builder.create().show();
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void startTask(String medName) {

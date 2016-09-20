@@ -2,9 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="@string/menu_favorite"
+        android:id="@+id/menu_sources_on"
+        android:title="@string/menu_sources_on"
         app:showAsAction="never" />
     <item
-        android:title="@string/menu_sources"
+        android:id="@+id/menu_sources_off"
+        android:title="@string/menu_sources_off"
+        android:visible="false"
         app:showAsAction="never" />
 </menu>
