@@ -14,10 +14,18 @@ import java.util.List;
 
 public class StringListAdapter extends ArrayAdapter<String> {
     private final Context mContext;
+    private final int mIconResource;
 
     public StringListAdapter(Context context, List<String> stringList) {
         super(context, R.layout.list_med, stringList);
         mContext = context;
+        mIconResource = 0;
+    }
+
+    public StringListAdapter(Context context, List<String> stringList, int icon) {
+        super(context, R.layout.list_med, stringList);
+        mContext = context;
+        mIconResource = icon;
     }
 
     @Override
@@ -32,7 +40,11 @@ public class StringListAdapter extends ArrayAdapter<String> {
         name.setText(getItem(position));
 
         ImageView image = (ImageView) view.findViewById(R.id.presc_icon);
-        image.setVisibility(View.GONE);
+        if (mIconResource == 0) {
+            image.setVisibility(View.GONE);
+        } else {
+            image.setBackgroundResource(mIconResource);
+        }
         return view;
     }
 }

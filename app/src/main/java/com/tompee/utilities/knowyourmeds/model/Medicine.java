@@ -9,6 +9,7 @@ public class Medicine {
     private boolean mIsIngredient;
     private List<String> mSources;
     private List<String> mBrands;
+    private List<String> mIngredients;
 
     public Medicine() {
     }
@@ -59,5 +60,13 @@ public class Medicine {
 
     public void setBrands(List<String> brands) {
         mBrands = brands;
+    }
+
+    public List<String> getIngredients() {
+        return mIngredients;
+    }
+
+    public void setIngredients(List<String> ingredients) {
+        mIngredients = ingredients;
     }
 }

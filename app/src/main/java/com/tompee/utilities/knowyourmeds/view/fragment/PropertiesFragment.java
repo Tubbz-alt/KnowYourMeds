@@ -57,9 +57,14 @@ public class PropertiesFragment extends Fragment {
         if (med.isIngredient()) {
             inIcon.setBackgroundResource(R.drawable.ic_ingredient);
             inText.setText(R.string.property_ingredient);
+            View inView = view.findViewById(R.id.ingredients);
+            inView.setVisibility(View.GONE);
         } else {
             inIcon.setBackgroundResource(R.drawable.ic_brand);
             inText.setText(R.string.property_brands);
+            ListView listView = (ListView) view.findViewById(R.id.list_ingredients);
+            listView.setAdapter(new StringListAdapter(getContext(), med.getIngredients(),
+                    R.drawable.ic_ingredient));
         }
         List<String> sources = med.getSources();
         View emptySource = view.findViewById(R.id.source_no_items);
@@ -83,7 +88,7 @@ public class PropertiesFragment extends Fragment {
 
         MenuItem show = menu.findItem(R.id.menu_sources_on);
         MenuItem hide = menu.findItem(R.id.menu_sources_off);
-        if (sharedPreferences.getBoolean(TAG_SOURCES_VISIBILITY, false)) {
+        if (sharedPreferences.getBoolean(TAG_SOURCES_VISIBILITY, true)) {
             show.setVisible(false);
             hide.setVisible(true);
         } else {

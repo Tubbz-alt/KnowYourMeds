@@ -26,12 +26,13 @@ public class RxNavWrapper {
     private static final String INGREDIENT = "IN";
 
     /* RX Norm REST functions */
-    private static final String SEARCH_BY_STRING = "%s/rxcui.json?name=%s";
-    private static final String PROPERTY_NAME = "%s/rxcui/%s/property.json?propName=%s";
-    private static final String SPELLING_SUGGESTIONS = "%s/spellingsuggestions.json?name=%s";
-    private static final String TERM_TYPE = "%s/rxcui/%s/property.json?propName=TTY";
-    private static final String SOURCES = "%s/rxcui/%s/property.json?propName=Source";
-    private static final String BRANDS = "%s/rxcui/%s/related.json?tty=BN";
+    private static final String URL_SEARCH_BY_STRING = "%s/rxcui.json?name=%s";
+    private static final String URL_PROPERTY_NAME = "%s/rxcui/%s/property.json?propName=%s";
+    private static final String URL_SPELLING_SUGGESTIONS = "%s/spellingsuggestions.json?name=%s";
+    private static final String URL_TERM_TYPE = "%s/rxcui/%s/property.json?propName=TTY";
+    private static final String URL_SOURCES = "%s/rxcui/%s/property.json?propName=Source";
+    private static final String URL_BRANDS = "%s/rxcui/%s/related.json?tty=BN";
+    private static final String URL_INGREDIENTS = "%s/rxcui/%s/related.json?tty=IN";
 
     /* RXNorm Properties */
     private static final String PROPERTIES_RX_NORM = "RxNorm%20Name";
@@ -57,7 +58,7 @@ public class RxNavWrapper {
     }
 
     public Medicine searchMed(String name) {
-        String url = String.format(SEARCH_BY_STRING, RX_NORM_BASE_URL, name);
+        String url = String.format(URL_SEARCH_BY_STRING, RX_NORM_BASE_URL, name);
         Medicine med = new Medicine();
 
         /** Get ID */
@@ -77,7 +78,7 @@ public class RxNavWrapper {
 
         /** Get NAME */
         future = RequestFuture.newFuture();
-        url = String.format(PROPERTY_NAME, RX_NORM_BASE_URL, med.getRxnormId(), PROPERTIES_RX_NORM);
+        url = String.format(URL_PROPERTY_NAME, RX_NORM_BASE_URL, med.getRxnormId(), PROPERTIES_RX_NORM);
         jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
         VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
         try {
@@ -91,7 +92,7 @@ public class RxNavWrapper {
 
         /** Get Prescribable */
         future = RequestFuture.newFuture();
-        url = String.format(PROPERTY_NAME, RX_NORM_BASE_URL, med.getRxnormId(), PROPERTIES_PRESCRIBABLE);
+        url = String.format(URL_PROPERTY_NAME, RX_NORM_BASE_URL, med.getRxnormId(), PROPERTIES_PRESCRIBABLE);
         jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
         VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
         try {
@@ -107,7 +108,7 @@ public class RxNavWrapper {
     }
 
     public List<Medicine> suggestedNames(String name) {
-        String url = String.format(SPELLING_SUGGESTIONS, RX_NORM_BASE_URL, name);
+        String url = String.format(URL_SPELLING_SUGGESTIONS, RX_NORM_BASE_URL, name);
         List<Medicine> suggestedNames = new ArrayList<>();
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
@@ -128,7 +129,7 @@ public class RxNavWrapper {
     }
 
     public boolean isIngredient(String rxcui) {
-        String url = String.format(TERM_TYPE, RX_NORM_BASE_URL, rxcui);
+        String url = String.format(URL_TERM_TYPE, RX_NORM_BASE_URL, rxcui);
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
         VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
@@ -146,7 +147,7 @@ public class RxNavWrapper {
     }
 
     public List<String> getSources(String rxcui) {
-        String url = String.format(SOURCES, RX_NORM_BASE_URL, rxcui);
+        String url = String.format(URL_SOURCES, RX_NORM_BASE_URL, rxcui);
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
         VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
@@ -166,7 +167,7 @@ public class RxNavWrapper {
     }
 
     public List<String> getBrandNames(String rxcui) {
-        String url = String.format(BRANDS, RX_NORM_BASE_URL, rxcui);
+        String url = String.format(URL_BRANDS, RX_NORM_BASE_URL, rxcui);
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
         VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
@@ -185,4 +186,26 @@ public class RxNavWrapper {
         }
         return null;
     }
+
+    public List<String> getIngredients(String rxcui) {
+        String url = String.format(URL_INGREDIENTS, RX_NORM_BASE_URL, rxcui);
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
+        try {
+            JSONObject response = future.get();
+            List<String> inList = new ArrayList<>();
+            JSONArray array = response.getJSONObject(TAG_RELATED_GROUP).
+                    getJSONArray(TAG_CONCEPT_GROUP).getJSONObject(0).
+                    getJSONArray(TAG_CONCEPT_PROPERTIES);
+            for (int index = 0; index < array.length(); index++) {
+                inList.add(array.getJSONObject(index).getString(TAG_NAME));
+            }
+            return inList;
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            Log.d(TAG, "Error in get brands request: " + e.getMessage());
+        }
+        return null;
+    }
+
 }
