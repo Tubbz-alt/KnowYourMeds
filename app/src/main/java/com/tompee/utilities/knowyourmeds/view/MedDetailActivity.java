@@ -41,6 +41,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
         mViewPager = (ViewPager) findViewById(R.id.pager_med_detail);
         mViewPager.addOnPageChangeListener(this);
+        mViewPager.setOffscreenPageLimit(3);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_med_detail);
         tabLayout.setupWithViewPager(mViewPager);
 

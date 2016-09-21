@@ -28,11 +28,11 @@ public class BrandFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_brands, container, false);
         Medicine med = ((MedDetailActivity) getActivity()).getMedicine();
         mBrandList = med.getBrands();
-        Collections.sort(mBrandList);
         View emptySource = view.findViewById(R.id.brands_no_items);
         if (mBrandList == null || mBrandList.isEmpty()) {
             emptySource.setVisibility(View.VISIBLE);
         } else {
+            Collections.sort(mBrandList);
             ListView listView = (ListView) view.findViewById(R.id.list_brands);
             listView.setAdapter(new StringListAdapter(getContext(), mBrandList));
             emptySource.setVisibility(View.GONE);

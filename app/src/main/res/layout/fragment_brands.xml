@@ -50,7 +50,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:minHeight="@dimen/list_view_height"
-                android:text="@string/property_no_sources"
+                android:text="@string/property_no_brands"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:textColor="@color/dark_text"
                 android:visibility="gone" />

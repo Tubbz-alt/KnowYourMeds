@@ -24,8 +24,8 @@
 
     <!-- Tab texts -->
     <string name="tab_properties">Properties</string>
-    <string name="tab_ingredients">Ingredients</string>
-    <string name="tab_brands">Brand Names</string>
+    <string name="tab_brands">Brands</string>
+    <string name="tab_info">Info</string>
 
     <!-- Properties -->
     <string name="property_properties">Properties</string>
@@ -35,6 +35,7 @@
     <string name="property_brands">Brand Name</string>
     <string name="property_ingredient">Ingredient</string>
     <string name="property_no_sources">No sources available</string>
+    <string name="property_no_brands">No related brands available</string>
 
     <!-- Menu titles -->
     <string name="menu_favorite">Add to favorites</string>

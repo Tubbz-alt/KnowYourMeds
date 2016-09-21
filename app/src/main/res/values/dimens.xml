@@ -35,4 +35,8 @@
     <dimen name="med_detail_margin">16dp</dimen>
     <dimen name="med_detail_height">46dp</dimen>
 
+    <!-- Progress bar dimensions -->
+    <dimen name="progressbar_height">3dp</dimen>
+    <dimen name="progressbar_radius">0dp</dimen>
+
 </resources>
