@@ -2,30 +2,54 @@ package com.tompee.utilities.knowyourmeds.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.task.GetMedDetailTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
-import com.tompee.utilities.knowyourmeds.view.adapter.MedViewPagerAdapter;
+import com.tompee.utilities.knowyourmeds.view.adapter.DrawerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
+import com.tompee.utilities.knowyourmeds.view.fragment.BrandFragment;
+import com.tompee.utilities.knowyourmeds.view.fragment.PropertiesFragment;
+import com.tompee.utilities.knowyourmeds.view.fragment.SourceFragment;
+import com.tompee.utilities.knowyourmeds.view.fragment.WebViewFragment;
 
 public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.GetMedTaskListener,
-        ViewPager.OnPageChangeListener {
+        RecyclerView.OnItemTouchListener {
     public static final String TAG_NAME = "name";
+    private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands,
+            R.string.tab_info, R.string.tab_sources};
 
-    private ViewPager mViewPager;
+    private RecyclerView mRecyclerView;
+    private GestureDetector mGestureDetector;
+    private DrawerLayout mDrawer;
+    private int mFragmentIndex = 0;
+
     private GetMedDetailTask mGetMedDetailTask;
     private ProcessingDialog mDialog;
     private Medicine mMedicine;
+
+    private PropertiesFragment mPropertiesFragment;
+    private BrandFragment mBrandFragment;
+    private WebViewFragment mWebViewFragment;
+    private SourceFragment mSourcesFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,18 +58,25 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         setContentView(R.layout.activity_med_detail);
         setToolbar(R.id.toolbar, true);
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+
+        mGestureDetector = new GestureDetector(this, new GestureListener());
+        mRecyclerView.addOnItemTouchListener(this);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
+
+        //Set drawer
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawer,
+                (Toolbar) findViewById(R.id.toolbar), R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        mDrawer.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
         Intent intent = getIntent();
-        String medName = intent.getStringExtra(TAG_NAME);
-        TextView title = (TextView) findViewById(R.id.toolbar_text);
-        title.setText(medName);
-
-        mViewPager = (ViewPager) findViewById(R.id.pager_med_detail);
-        mViewPager.addOnPageChangeListener(this);
-        mViewPager.setOffscreenPageLimit(3);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_med_detail);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        startTask(medName);
+        startTask(intent.getStringExtra(TAG_NAME));
     }
 
     @Override
@@ -91,20 +122,96 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         mDialog.dismiss();
         mDialog = null;
         mMedicine = med;
-        mViewPager.setAdapter(new MedViewPagerAdapter(this, getSupportFragmentManager()));
+        RecyclerView.Adapter adapter = new DrawerAdapter(OPTION_IDS);
+        mRecyclerView.setAdapter(adapter);
+        initializeFragments();
+        reflectCurrentFragment();
+    }
+
+    private void initializeFragments() {
+        mPropertiesFragment = PropertiesFragment.getInstance();
+        mBrandFragment = BrandFragment.getInstance();
+        mWebViewFragment = WebViewFragment.getInstance();
+        mSourcesFragment = SourceFragment.getInstance();
+    }
+
+    private void hideAllFragments() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (mPropertiesFragment.isAdded()) {
+            transaction.hide(mPropertiesFragment);
+        }
+        if (mBrandFragment.isAdded()) {
+            transaction.hide(mBrandFragment);
+        }
+        if (mWebViewFragment.isAdded()) {
+            transaction.hide(mWebViewFragment);
+        }
+        if (mSourcesFragment.isAdded()) {
+            transaction.hide(mSourcesFragment);
+        }
+        transaction.commit();
+        fragmentManager.executePendingTransactions();
+    }
+
+    private void showFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (fragment.isAdded()) {
+            transaction.show(fragment);
+        } else {
+            transaction.add(R.id.container, fragment);
+        }
+        transaction.commit();
+        fragmentManager.executePendingTransactions();
+    }
+
+    private void reflectCurrentFragment() {
+        hideAllFragments();
+        switch (mFragmentIndex) {
+            case 0:
+                showFragment(mPropertiesFragment);
+                break;
+            case 1:
+                showFragment(mBrandFragment);
+                break;
+            case 2:
+                showFragment(mWebViewFragment);
+                break;
+            case 3:
+                showFragment(mSourcesFragment);
+                break;
+            default:
+                break;
+        }
+        TextView title = (TextView) findViewById(R.id.toolbar_text);
+        title.setText(OPTION_IDS[mFragmentIndex]);
     }
 
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+    public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
+        View child = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
+        if (child != null && mGestureDetector.onTouchEvent(motionEvent)) {
+            mDrawer.closeDrawers();
+            mFragmentIndex = recyclerView.getChildLayoutPosition(child) - 1;
+            reflectCurrentFragment();
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void onPageSelected(int position) {
+    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
     }
 
     @Override
-    public void onPageScrollStateChanged(int state) {
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+    }
 
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            return true;
+        }
     }
 }

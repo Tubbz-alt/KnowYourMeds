@@ -18,16 +18,21 @@ import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 
 public class WebViewFragment extends Fragment {
     private static final String BASE_URL = "https://druginfo.nlm.nih.gov/drugportal/name/";
+    private static WebViewFragment mSingleton;
     private ProgressBar mProgressBar;
 
-    public static WebViewFragment newInstance() {
-        return new WebViewFragment();
+    public static WebViewFragment getInstance() {
+        if (mSingleton == null) {
+            mSingleton = new WebViewFragment();
+        }
+        return mSingleton;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_webview, container, false);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         WebView webview = (WebView) view.findViewById(R.id.webview);
         webview.setWebViewClient(new GenericWebClient());
         webview.setWebChromeClient(new GenericWebChromeClient());
@@ -39,9 +44,6 @@ public class WebViewFragment extends Fragment {
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
-
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progressbar);
-
         Medicine med = ((MedDetailActivity) getActivity()).getMedicine();
         webview.loadUrl(BASE_URL + med.getName());
         return view;

@@ -2,6 +2,8 @@
     <string name="app_name">Know Your Meds</string>
 
     <string name="default_content_description">Content Description</string>
+    <string name="navigation_drawer_open">Open Drawer</string>
+    <string name="navigation_drawer_close">Close Drawer</string>
 
     <string name="favorites">Favorites</string>
     <string name="recent">Recent Searches</string>
@@ -22,20 +24,21 @@
     <string name="control_cancel">Cancel</string>
     <string name="control_ok">OK</string>
 
-    <!-- Tab texts -->
+    <!-- Tab titles -->
     <string name="tab_properties">Properties</string>
+    <string name="tab_sources">Sources</string>
     <string name="tab_brands">Brands</string>
-    <string name="tab_info">Info</string>
+    <string name="tab_info">Information</string>
 
     <!-- Properties -->
-    <string name="property_properties">Properties</string>
-    <string name="property_sources">Sources</string>
     <string name="property_prescribable_yes">Prescribable</string>
     <string name="property_prescribable_no">Not prescribable</string>
     <string name="property_brands">Brand Name</string>
     <string name="property_ingredient">Ingredient</string>
-    <string name="property_no_sources">No sources available</string>
     <string name="property_no_brands">No related brands available</string>
+
+    <!-- Sources -->
+    <string name="sources_no_items">No sources available</string>
 
     <!-- Menu titles -->
     <string name="menu_favorite">Add to favorites</string>

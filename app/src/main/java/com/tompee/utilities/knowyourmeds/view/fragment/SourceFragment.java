@@ -12,15 +12,14 @@ import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.StringListAdapter;
 
-import java.util.Collections;
 import java.util.List;
 
-public class BrandFragment extends Fragment {
-    private static BrandFragment mSingleton;
+public class SourceFragment extends Fragment {
+    private static SourceFragment mSingleton;
 
-    public static BrandFragment getInstance() {
+    public static SourceFragment getInstance() {
         if (mSingleton == null) {
-            mSingleton = new BrandFragment();
+            mSingleton = new SourceFragment();
         }
         return mSingleton;
     }
@@ -28,16 +27,15 @@ public class BrandFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_brands, container, false);
+        View view = inflater.inflate(R.layout.fragment_sources, container, false);
         Medicine med = ((MedDetailActivity) getActivity()).getMedicine();
-        List<String> brandList = med.getBrands();
-        View emptySource = view.findViewById(R.id.brands_no_items);
-        if (brandList == null || brandList.isEmpty()) {
+        List<String> sources = med.getSources();
+        View emptySource = view.findViewById(R.id.source_no_items);
+        if (sources == null || sources.isEmpty()) {
             emptySource.setVisibility(View.VISIBLE);
         } else {
-            Collections.sort(brandList);
-            ListView listView = (ListView) view.findViewById(R.id.list_brands);
-            listView.setAdapter(new StringListAdapter(getContext(), brandList));
+            ListView listView = (ListView) view.findViewById(R.id.list_sources);
+            listView.setAdapter(new StringListAdapter(getContext(), sources));
             emptySource.setVisibility(View.GONE);
         }
         return view;
