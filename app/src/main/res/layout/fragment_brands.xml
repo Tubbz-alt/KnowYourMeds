@@ -48,9 +48,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/search_vertical_padding"
                 android:gravity="center"
                 android:minHeight="@dimen/list_view_height"
-                android:text="@string/property_no_brands"
+                android:text="@string/brands_no_items"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:textColor="@color/dark_text"
                 android:visibility="gone" />

@@ -5,11 +5,13 @@ import java.util.List;
 public class Medicine {
     private String mRxnormId;
     private String mName;
+    private String mUrl;
     private boolean mIsPrescribable;
     private boolean mIsIngredient;
     private List<String> mSources;
     private List<String> mBrands;
     private List<String> mIngredients;
+    private List<String> mScdc;
 
     public Medicine() {
     }
@@ -28,6 +30,14 @@ public class Medicine {
 
     public void setName(String name) {
         mName = name;
+    }
+
+    public String getUrl() {
+        return mUrl;
+    }
+
+    public void setUrl(String url) {
+        mUrl = url;
     }
 
     public boolean isPrescribable() {
@@ -68,5 +78,13 @@ public class Medicine {
 
     public void setIngredients(List<String> ingredients) {
         mIngredients = ingredients;
+    }
+
+    public List<String> getScdc() {
+        return mScdc;
+    }
+
+    public void setScdc(List<String> scdc) {
+        mScdc = scdc;
     }
 }

@@ -3,6 +3,7 @@ package com.tompee.utilities.knowyourmeds.controller.networkinterface;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
@@ -20,10 +21,14 @@ import java.util.concurrent.ExecutionException;
 public class RxNavWrapper {
     private static final String TAG = "RxNavWrapper";
     private static final String RX_NORM_BASE_URL = "https://rxnav.nlm.nih.gov/REST";
+    private static final String MEDLINE_BASE_URL = "https://apps.nlm.nih.gov/medlineplus/services/" +
+            "mpconnect_service.cfm?knowledgeResponseType=application/json&mainSearchCriteria.v.cs=" +
+            "2.16.840.1.113883.6.88&mainSearchCriteria.v.c=%s";
 
     /* Constants */
     private static final String YES = "Y";
     private static final String INGREDIENT = "IN";
+    private static final int URL_REQUEST_TIMEOUT = 10000;
 
     /* RX Norm REST functions */
     private static final String URL_SEARCH_BY_STRING = "%s/rxcui.json?name=%s";
@@ -33,6 +38,7 @@ public class RxNavWrapper {
     private static final String URL_SOURCES = "%s/rxcui/%s/property.json?propName=Source";
     private static final String URL_BRANDS = "%s/rxcui/%s/related.json?tty=BN";
     private static final String URL_INGREDIENTS = "%s/rxcui/%s/related.json?tty=IN";
+    private static final String URL_SCDC = "%s/rxcui/%s/related.json?tty=SCDC";
 
     /* RXNorm Properties */
     private static final String PROPERTIES_RX_NORM = "RxNorm%20Name";
@@ -50,6 +56,10 @@ public class RxNavWrapper {
     private static final String TAG_CONCEPT_GROUP = "conceptGroup";
     private static final String TAG_CONCEPT_PROPERTIES = "conceptProperties";
     private static final String TAG_NAME = "name";
+    private static final String TAG_FEED = "feed";
+    private static final String TAG_ENTRY = "entry";
+    private static final String TAG_LINK = "link";
+    private static final String TAG_HREF = "href";
 
     private final Context mContext;
 
@@ -208,4 +218,41 @@ public class RxNavWrapper {
         return null;
     }
 
+    public List<String> getScdc(String rxcui) {
+        String url = String.format(URL_SCDC, RX_NORM_BASE_URL, rxcui);
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
+        try {
+            JSONObject response = future.get();
+            List<String> scdcList = new ArrayList<>();
+            JSONArray array = response.getJSONObject(TAG_RELATED_GROUP).
+                    getJSONArray(TAG_CONCEPT_GROUP).getJSONObject(0).
+                    getJSONArray(TAG_CONCEPT_PROPERTIES);
+            for (int index = 0; index < array.length(); index++) {
+                scdcList.add(array.getJSONObject(index).getString(TAG_NAME));
+            }
+            return scdcList;
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            Log.d(TAG, "Error in get SCDC request: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public String getMedlineUrl(String rxcui) {
+        String url = String.format(MEDLINE_BASE_URL, rxcui);
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(URL_REQUEST_TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
+        try {
+            JSONObject response = future.get();
+            return response.getJSONObject(TAG_FEED).getJSONArray(TAG_ENTRY).getJSONObject(0).
+                    getJSONArray(TAG_LINK).getJSONObject(0).getString(TAG_HREF);
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            Log.d(TAG, "Error in get Medline URL request: " + e.getMessage());
+        }
+        return null;
+    }
 }

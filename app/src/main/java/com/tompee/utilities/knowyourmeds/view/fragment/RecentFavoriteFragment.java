@@ -30,6 +30,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     private View mFaveNoItemsView;
     private View mRecentNoItemsView;
     private View mRecentTrash;
+    private View mFavoriteTrash;
 
     public static RecentFavoriteFragment newInstance() {
         return new RecentFavoriteFragment();
@@ -61,8 +62,10 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
         });
         mFaveNoItemsView = view.findViewById(R.id.fave_no_items);
         mRecentNoItemsView = view.findViewById(R.id.recent_no_items);
-        mRecentTrash = view.findViewById(R.id.image_trash);
+        mRecentTrash = view.findViewById(R.id.image_recent_trash);
         mRecentTrash.setOnClickListener(this);
+        mFavoriteTrash = view.findViewById(R.id.image_favorite_trash);
+        mFavoriteTrash.setOnClickListener(this);
         return view;
     }
 
@@ -95,9 +98,11 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
                 mFavoriteListView.setAdapter(adapter);
                 mFavoriteListView.setVisibility(View.VISIBLE);
                 mFaveNoItemsView.setVisibility(View.GONE);
+                mFavoriteTrash.setVisibility(View.VISIBLE);
             } else {
                 mFavoriteListView.setVisibility(View.GONE);
                 mFaveNoItemsView.setVisibility(View.VISIBLE);
+                mFavoriteTrash.setVisibility(View.GONE);
             }
 
             mRecentMedList = mDbHelper.getAllEntries(DatabaseHelper.RECENT_TABLE);
@@ -119,15 +124,26 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     public void onClick(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.control_delete);
-        builder.setMessage(R.string.delete_recent_message);
+        if (view.equals(mRecentTrash)) {
+            builder.setMessage(R.string.delete_recent_message);
+            builder.setPositiveButton(R.string.control_delete, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mDbHelper.deleteAll(DatabaseHelper.RECENT_TABLE);
+                    updateLists();
+                }
+            });
+        } else {
+            builder.setMessage(R.string.delete_favorite_message);
+            builder.setPositiveButton(R.string.control_delete, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mDbHelper.deleteAll(DatabaseHelper.FAVORITE_TABLE);
+                    updateLists();
+                }
+            });
+        }
         builder.setNegativeButton(R.string.control_cancel, null);
-        builder.setPositiveButton(R.string.control_delete, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                mDbHelper.deleteAll(DatabaseHelper.RECENT_TABLE);
-                updateLists();
-            }
-        });
         builder.create().show();
     }
 }

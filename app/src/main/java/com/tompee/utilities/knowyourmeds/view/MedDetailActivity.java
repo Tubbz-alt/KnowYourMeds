@@ -28,13 +28,14 @@ import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 import com.tompee.utilities.knowyourmeds.view.fragment.BrandFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.PropertiesFragment;
+import com.tompee.utilities.knowyourmeds.view.fragment.SCDCFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SourceFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.WebViewFragment;
 
 public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.GetMedTaskListener,
         RecyclerView.OnItemTouchListener {
     public static final String TAG_NAME = "name";
-    private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands,
+    private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands, R.string.tab_scdc,
             R.string.tab_info, R.string.tab_sources};
 
     private RecyclerView mRecyclerView;
@@ -48,6 +49,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
     private PropertiesFragment mPropertiesFragment;
     private BrandFragment mBrandFragment;
+    private SCDCFragment mSCDCFragment;
     private WebViewFragment mWebViewFragment;
     private SourceFragment mSourcesFragment;
 
@@ -131,6 +133,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     private void initializeFragments() {
         mPropertiesFragment = PropertiesFragment.getInstance();
         mBrandFragment = BrandFragment.getInstance();
+        mSCDCFragment = SCDCFragment.getInstance();
         mWebViewFragment = WebViewFragment.getInstance();
         mSourcesFragment = SourceFragment.getInstance();
     }
@@ -143,6 +146,9 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         }
         if (mBrandFragment.isAdded()) {
             transaction.hide(mBrandFragment);
+        }
+        if (mSCDCFragment.isAdded()) {
+            transaction.hide(mSCDCFragment);
         }
         if (mWebViewFragment.isAdded()) {
             transaction.hide(mWebViewFragment);
@@ -176,9 +182,12 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
                 showFragment(mBrandFragment);
                 break;
             case 2:
-                showFragment(mWebViewFragment);
+                showFragment(mSCDCFragment);
                 break;
             case 3:
+                showFragment(mWebViewFragment);
+                break;
+            case 4:
                 showFragment(mSourcesFragment);
                 break;
             default:

@@ -17,6 +17,7 @@
 
     <!-- Dialog messages -->
     <string name="delete_recent_message">Are you sure you want to delete the recent list?</string>
+    <string name="delete_favorite_message">Are you sure you want to delete the favorite list?</string>
     <string name="add_to_favorites">%1$s was added to favorites.</string>
 
     <!-- Control -->
@@ -24,28 +25,30 @@
     <string name="control_cancel">Cancel</string>
     <string name="control_ok">OK</string>
 
+    <!-- Menu titles -->
+    <string name="menu_favorite">Add to favorites</string>
+
     <!-- Tab titles -->
     <string name="tab_properties">Properties</string>
     <string name="tab_sources">Sources</string>
     <string name="tab_brands">Brands</string>
     <string name="tab_info">Information</string>
+    <string name="tab_scdc">Clinical Drug Component</string>
 
     <!-- Properties -->
     <string name="property_prescribable_yes">Prescribable</string>
     <string name="property_prescribable_no">Not prescribable</string>
     <string name="property_brands">Brand Name</string>
     <string name="property_ingredient">Ingredient</string>
-    <string name="property_no_brands">No related brands available</string>
 
     <!-- Sources -->
     <string name="sources_no_items">No sources available</string>
 
-    <!-- Menu titles -->
-    <string name="menu_favorite">Add to favorites</string>
-    <string name="menu_sources_on">Show Sources</string>
-    <string name="menu_sources_off">Hide Sources</string>
-
     <!-- Brands -->
     <string name="brands_related">Related Brand Names</string>
+    <string name="brands_no_items">No related brands available</string>
+
+    <!-- SCDC -->
+    <string name="scdc_no_items">No clinical drug component available</string>
 
 </resources>
