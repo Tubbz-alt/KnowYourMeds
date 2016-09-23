@@ -24,6 +24,8 @@ public class RxNavWrapper {
     private static final String MEDLINE_BASE_URL = "https://apps.nlm.nih.gov/medlineplus/services/" +
             "mpconnect_service.cfm?knowledgeResponseType=application/json&mainSearchCriteria.v.cs=" +
             "2.16.840.1.113883.6.88&mainSearchCriteria.v.c=%s";
+    private static final String MEDLINE_QUERY_URL = "https://vsearch.nlm.nih.gov/vivisimo/cgi-bin/" +
+            "query-meta?v%3Aproject=medlineplus&v%3Asources=medlineplus-bundle&query=";
 
     /* Constants */
     private static final String YES = "Y";
@@ -39,6 +41,7 @@ public class RxNavWrapper {
     private static final String URL_BRANDS = "%s/rxcui/%s/related.json?tty=BN";
     private static final String URL_INGREDIENTS = "%s/rxcui/%s/related.json?tty=IN";
     private static final String URL_SCDC = "%s/rxcui/%s/related.json?tty=SCDC";
+    private static final String URL_SBDC = "%s/rxcui/%s/related.json?tty=SBDC";
 
     /* RXNorm Properties */
     private static final String PROPERTIES_RX_NORM = "RxNorm%20Name";
@@ -239,7 +242,7 @@ public class RxNavWrapper {
         return null;
     }
 
-    public String getMedlineUrl(String rxcui) {
+    public String getMedlineUrl(String name, String rxcui) {
         String url = String.format(MEDLINE_BASE_URL, rxcui);
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
@@ -252,6 +255,27 @@ public class RxNavWrapper {
                     getJSONArray(TAG_LINK).getJSONObject(0).getString(TAG_HREF);
         } catch (InterruptedException | ExecutionException | JSONException e) {
             Log.d(TAG, "Error in get Medline URL request: " + e.getMessage());
+        }
+        return MEDLINE_QUERY_URL + name;
+    }
+
+    public List<String> getSbdc(String rxcui) {
+        String url = String.format(URL_SBDC, RX_NORM_BASE_URL, rxcui);
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
+        try {
+            JSONObject response = future.get();
+            List<String> sbdcList = new ArrayList<>();
+            JSONArray array = response.getJSONObject(TAG_RELATED_GROUP).
+                    getJSONArray(TAG_CONCEPT_GROUP).getJSONObject(0).
+                    getJSONArray(TAG_CONCEPT_PROPERTIES);
+            for (int index = 0; index < array.length(); index++) {
+                sbdcList.add(array.getJSONObject(index).getString(TAG_NAME));
+            }
+            return sbdcList;
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            Log.d(TAG, "Error in get SBDC request: " + e.getMessage());
         }
         return null;
     }

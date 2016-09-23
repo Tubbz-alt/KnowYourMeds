@@ -28,15 +28,16 @@ import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 import com.tompee.utilities.knowyourmeds.view.fragment.BrandFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.PropertiesFragment;
-import com.tompee.utilities.knowyourmeds.view.fragment.SCDCFragment;
+import com.tompee.utilities.knowyourmeds.view.fragment.SbdcFragment;
+import com.tompee.utilities.knowyourmeds.view.fragment.ScdcFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SourceFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.WebViewFragment;
 
 public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.GetMedTaskListener,
         RecyclerView.OnItemTouchListener {
     public static final String TAG_NAME = "name";
-    private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands, R.string.tab_scdc,
-            R.string.tab_info, R.string.tab_sources};
+    private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands,
+            R.string.tab_scdc, R.string.tab_sbdc, R.string.tab_info, R.string.tab_sources};
 
     private RecyclerView mRecyclerView;
     private GestureDetector mGestureDetector;
@@ -49,7 +50,8 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
     private PropertiesFragment mPropertiesFragment;
     private BrandFragment mBrandFragment;
-    private SCDCFragment mSCDCFragment;
+    private ScdcFragment mScdcFragment;
+    private SbdcFragment mSbdcFragment;
     private WebViewFragment mWebViewFragment;
     private SourceFragment mSourcesFragment;
 
@@ -78,7 +80,10 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         drawerToggle.syncState();
 
         Intent intent = getIntent();
-        startTask(intent.getStringExtra(TAG_NAME));
+        String name = intent.getStringExtra(TAG_NAME);
+        TextView title = (TextView) findViewById(R.id.toolbar_text);
+        title.setText(name);
+        startTask(name);
     }
 
     @Override
@@ -133,7 +138,8 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     private void initializeFragments() {
         mPropertiesFragment = PropertiesFragment.getInstance();
         mBrandFragment = BrandFragment.getInstance();
-        mSCDCFragment = SCDCFragment.getInstance();
+        mScdcFragment = ScdcFragment.getInstance();
+        mSbdcFragment = SbdcFragment.getInstance();
         mWebViewFragment = WebViewFragment.getInstance();
         mSourcesFragment = SourceFragment.getInstance();
     }
@@ -147,8 +153,11 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         if (mBrandFragment.isAdded()) {
             transaction.hide(mBrandFragment);
         }
-        if (mSCDCFragment.isAdded()) {
-            transaction.hide(mSCDCFragment);
+        if (mScdcFragment.isAdded()) {
+            transaction.hide(mScdcFragment);
+        }
+        if (mSbdcFragment.isAdded()) {
+            transaction.hide(mSbdcFragment);
         }
         if (mWebViewFragment.isAdded()) {
             transaction.hide(mWebViewFragment);
@@ -182,19 +191,20 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
                 showFragment(mBrandFragment);
                 break;
             case 2:
-                showFragment(mSCDCFragment);
+                showFragment(mScdcFragment);
                 break;
             case 3:
-                showFragment(mWebViewFragment);
+                showFragment(mSbdcFragment);
                 break;
             case 4:
+                showFragment(mWebViewFragment);
+                break;
+            case 5:
                 showFragment(mSourcesFragment);
                 break;
             default:
                 break;
         }
-        TextView title = (TextView) findViewById(R.id.toolbar_text);
-        title.setText(OPTION_IDS[mFragmentIndex]);
     }
 
     @Override

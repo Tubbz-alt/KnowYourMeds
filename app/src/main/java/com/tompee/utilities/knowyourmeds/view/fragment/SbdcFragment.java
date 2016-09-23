@@ -14,12 +14,12 @@ import com.tompee.utilities.knowyourmeds.view.adapter.StringListAdapter;
 
 import java.util.List;
 
-public class ScdcFragment extends Fragment {
-    private static ScdcFragment mSingleton;
+public class SbdcFragment extends Fragment {
+    private static SbdcFragment mSingleton;
 
-    public static ScdcFragment getInstance() {
+    public static SbdcFragment getInstance() {
         if (mSingleton == null) {
-            mSingleton = new ScdcFragment();
+            mSingleton = new SbdcFragment();
         }
         return mSingleton;
     }
@@ -27,15 +27,15 @@ public class ScdcFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_scdc, container, false);
+        View view = inflater.inflate(R.layout.fragment_sbdc, container, false);
         Medicine med = ((MedDetailActivity) getActivity()).getMedicine();
-        List<String> scdcList = med.getScdc();
-        View emptySource = view.findViewById(R.id.scdc_no_items);
-        if (scdcList == null || scdcList.isEmpty()) {
+        List<String> sbdcList = med.getSbdc();
+        View emptySource = view.findViewById(R.id.sbdc_no_items);
+        if (sbdcList == null || sbdcList.isEmpty()) {
             emptySource.setVisibility(View.VISIBLE);
         } else {
-            ListView listView = (ListView) view.findViewById(R.id.list_scdc);
-            listView.setAdapter(new StringListAdapter(getContext(), scdcList));
+            ListView listView = (ListView) view.findViewById(R.id.list_sbdc);
+            listView.setAdapter(new StringListAdapter(getContext(), sbdcList));
             emptySource.setVisibility(View.GONE);
         }
         return view;

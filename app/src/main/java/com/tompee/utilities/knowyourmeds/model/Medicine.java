@@ -12,6 +12,7 @@ public class Medicine {
     private List<String> mBrands;
     private List<String> mIngredients;
     private List<String> mScdc;
+    private List<String> mSbdc;
 
     public Medicine() {
     }
@@ -86,5 +87,13 @@ public class Medicine {
 
     public void setScdc(List<String> scdc) {
         mScdc = scdc;
+    }
+
+    public List<String> getSbdc() {
+        return mSbdc;
+    }
+
+    public void setSbdc(List<String> sbdc) {
+        mSbdc = sbdc;
     }
 }
