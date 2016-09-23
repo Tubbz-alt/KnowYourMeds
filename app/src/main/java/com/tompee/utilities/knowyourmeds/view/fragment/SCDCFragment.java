@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
@@ -37,6 +38,8 @@ public class ScdcFragment extends Fragment {
             ListView listView = (ListView) view.findViewById(R.id.list_scdc);
             listView.setAdapter(new StringListAdapter(getContext(), scdcList));
             emptySource.setVisibility(View.GONE);
+            TextView countView = (TextView) view.findViewById(R.id.count);
+            countView.setText(String.valueOf(scdcList.size()));
         }
         return view;
     }

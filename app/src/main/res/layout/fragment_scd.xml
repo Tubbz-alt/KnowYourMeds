@@ -31,7 +31,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
-                    android:text="@string/tab_sbdg"
+                    android:text="@string/tab_scd"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/dark_text" />
 
@@ -54,21 +54,21 @@
                 android:background="@color/dark_secondary_text" />
 
             <ListView
-                android:id="@+id/list_sbdg"
+                android:id="@+id/list_scd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/search_vertical_padding"
                 android:minHeight="@dimen/list_view_height" />
 
             <TextView
-                android:id="@+id/sbdg_no_items"
+                android:id="@+id/scd_no_items"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/search_vertical_padding"
                 android:gravity="center"
                 android:minHeight="@dimen/list_view_height"
-                android:text="@string/sbdg_no_items"
+                android:text="@string/scd_no_items"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:textColor="@color/dark_text"
                 android:visibility="gone" />

@@ -27,6 +27,7 @@ import com.tompee.utilities.knowyourmeds.view.adapter.DrawerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 import com.tompee.utilities.knowyourmeds.view.fragment.BrandFragment;
+import com.tompee.utilities.knowyourmeds.view.fragment.ScdFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.PropertiesFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SbdcFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SbdgFragment;
@@ -38,7 +39,8 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         RecyclerView.OnItemTouchListener {
     public static final String TAG_NAME = "name";
     private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands,
-            R.string.tab_sbdc, R.string.tab_sbdg, R.string.tab_scdc, R.string.tab_info,
+            R.string.tab_sbdc, R.string.tab_sbdg, R.string.tab_scdc,
+            R.string.tab_scd, R.string.tab_info,
             R.string.tab_sources};
 
     private RecyclerView mRecyclerView;
@@ -53,6 +55,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     private SbdcFragment mSbdcFragment;
     private ScdcFragment mScdcFragment;
     private SbdgFragment mSbdgFragment;
+    private ScdFragment mScdFragment;
     private WebViewFragment mWebViewFragment;
     private SourceFragment mSourcesFragment;
 
@@ -144,6 +147,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         mSbdgFragment = SbdgFragment.getInstance();
         mWebViewFragment = WebViewFragment.getInstance();
         mSourcesFragment = SourceFragment.getInstance();
+        mScdFragment = ScdFragment.getInstance();
     }
 
     private void hideAllFragments() {
@@ -169,6 +173,9 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         }
         if (mSourcesFragment.isAdded()) {
             transaction.hide(mSourcesFragment);
+        }
+        if (mScdFragment.isAdded()) {
+            transaction.hide(mScdFragment);
         }
         transaction.commit();
         fragmentManager.executePendingTransactions();
@@ -210,6 +217,9 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
                 break;
             case R.string.tab_sources:
                 fragment = mSourcesFragment;
+                break;
+            case R.string.tab_scd:
+                fragment = mScdFragment;
                 break;
         }
         showFragment(fragment);

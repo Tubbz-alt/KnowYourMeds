@@ -19,13 +19,10 @@ public class GetMedDetailTask extends AsyncTask<String, Void, Medicine> {
     protected Medicine doInBackground(String... args) {
         Medicine med = mWrapper.searchMed(args[0]);
         med.setUrl(mWrapper.getMedlineUrl(med.getName(), med.getRxnormId()));
-        med.setIsIngredient(mWrapper.isIngredient(med.getRxnormId()));
         med.setSources(mWrapper.getSources(med.getRxnormId()));
-        med.setBrands(mWrapper.getBrandNames(med.getRxnormId()));
-        med.setIngredients(mWrapper.getIngredients(med.getRxnormId()));
-        med.setScdc(mWrapper.getScdc(med.getRxnormId()));
-        med.setSbdc(mWrapper.getSbdc(med.getRxnormId()));
-        med.setSbdg(mWrapper.getSbdg(med.getRxnormId()));
+        med.setIsIngredient(mWrapper.isIngredient(med.getRxnormId()));
+
+        mWrapper.getTtyValues(med);
         return med;
     }
 

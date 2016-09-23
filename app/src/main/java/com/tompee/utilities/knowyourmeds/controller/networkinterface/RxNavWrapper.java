@@ -30,6 +30,11 @@ public class RxNavWrapper {
     /* Constants */
     private static final String YES = "Y";
     private static final String INGREDIENT = "IN";
+    private static final String BRAND = "BN";
+    private static final String SCDC = "SCDC";
+    private static final String SBDC = "SBDC";
+    private static final String SBDG = "SBDG";
+    private static final String SCD = "SCD";
     private static final int URL_REQUEST_TIMEOUT = 10000;
 
     /* RX Norm REST functions */
@@ -38,11 +43,8 @@ public class RxNavWrapper {
     private static final String URL_SPELLING_SUGGESTIONS = "%s/spellingsuggestions.json?name=%s";
     private static final String URL_TERM_TYPE = "%s/rxcui/%s/property.json?propName=TTY";
     private static final String URL_SOURCES = "%s/rxcui/%s/property.json?propName=Source";
-    private static final String URL_BRANDS = "%s/rxcui/%s/related.json?tty=BN";
-    private static final String URL_INGREDIENTS = "%s/rxcui/%s/related.json?tty=IN";
-    private static final String URL_SCDC = "%s/rxcui/%s/related.json?tty=SCDC";
-    private static final String URL_SBDC = "%s/rxcui/%s/related.json?tty=SBDC";
-    private static final String URL_SBDG = "%s/rxcui/%s/related.json?tty=SBDG";
+    private static final String URL_TTY_VALUES = "%s/rxcui/%s/related.json?tty=" + BRAND + "+" +
+            INGREDIENT + "+" + SCDC + "+" + SBDC + "+" + SBDG + "+" + SCD;
 
     /* RXNorm Properties */
     private static final String PROPERTIES_RX_NORM = "RxNorm%20Name";
@@ -58,6 +60,7 @@ public class RxNavWrapper {
     private static final String TAG_SUGGESTION_LIST = "suggestionList";
     private static final String TAG_RELATED_GROUP = "relatedGroup";
     private static final String TAG_CONCEPT_GROUP = "conceptGroup";
+    private static final String TAG_TTY = "tty";
     private static final String TAG_CONCEPT_PROPERTIES = "conceptProperties";
     private static final String TAG_NAME = "name";
     private static final String TAG_FEED = "feed";
@@ -180,69 +183,6 @@ public class RxNavWrapper {
         return null;
     }
 
-    public List<String> getBrandNames(String rxcui) {
-        String url = String.format(URL_BRANDS, RX_NORM_BASE_URL, rxcui);
-        RequestFuture<JSONObject> future = RequestFuture.newFuture();
-        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
-        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
-        try {
-            JSONObject response = future.get();
-            List<String> brandList = new ArrayList<>();
-            JSONArray array = response.getJSONObject(TAG_RELATED_GROUP).
-                    getJSONArray(TAG_CONCEPT_GROUP).getJSONObject(0).
-                    getJSONArray(TAG_CONCEPT_PROPERTIES);
-            for (int index = 0; index < array.length(); index++) {
-                brandList.add(array.getJSONObject(index).getString(TAG_NAME));
-            }
-            return brandList;
-        } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get brands request: " + e.getMessage());
-        }
-        return null;
-    }
-
-    public List<String> getIngredients(String rxcui) {
-        String url = String.format(URL_INGREDIENTS, RX_NORM_BASE_URL, rxcui);
-        RequestFuture<JSONObject> future = RequestFuture.newFuture();
-        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
-        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
-        try {
-            JSONObject response = future.get();
-            List<String> inList = new ArrayList<>();
-            JSONArray array = response.getJSONObject(TAG_RELATED_GROUP).
-                    getJSONArray(TAG_CONCEPT_GROUP).getJSONObject(0).
-                    getJSONArray(TAG_CONCEPT_PROPERTIES);
-            for (int index = 0; index < array.length(); index++) {
-                inList.add(array.getJSONObject(index).getString(TAG_NAME));
-            }
-            return inList;
-        } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get brands request: " + e.getMessage());
-        }
-        return null;
-    }
-
-    public List<String> getScdc(String rxcui) {
-        String url = String.format(URL_SCDC, RX_NORM_BASE_URL, rxcui);
-        RequestFuture<JSONObject> future = RequestFuture.newFuture();
-        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
-        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
-        try {
-            JSONObject response = future.get();
-            List<String> scdcList = new ArrayList<>();
-            JSONArray array = response.getJSONObject(TAG_RELATED_GROUP).
-                    getJSONArray(TAG_CONCEPT_GROUP).getJSONObject(0).
-                    getJSONArray(TAG_CONCEPT_PROPERTIES);
-            for (int index = 0; index < array.length(); index++) {
-                scdcList.add(array.getJSONObject(index).getString(TAG_NAME));
-            }
-            return scdcList;
-        } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get SCDC request: " + e.getMessage());
-        }
-        return null;
-    }
-
     public String getMedlineUrl(String name, String rxcui) {
         String url = String.format(MEDLINE_BASE_URL, rxcui);
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
@@ -260,45 +200,67 @@ public class RxNavWrapper {
         return MEDLINE_QUERY_URL + name;
     }
 
-    public List<String> getSbdc(String rxcui) {
-        String url = String.format(URL_SBDC, RX_NORM_BASE_URL, rxcui);
+    public void getTtyValues(Medicine med) {
+        String url = String.format(URL_TTY_VALUES, RX_NORM_BASE_URL, med.getRxnormId());
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(URL_REQUEST_TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
         try {
             JSONObject response = future.get();
-            List<String> sbdcList = new ArrayList<>();
             JSONArray array = response.getJSONObject(TAG_RELATED_GROUP).
-                    getJSONArray(TAG_CONCEPT_GROUP).getJSONObject(0).
-                    getJSONArray(TAG_CONCEPT_PROPERTIES);
+                    getJSONArray(TAG_CONCEPT_GROUP);
             for (int index = 0; index < array.length(); index++) {
-                sbdcList.add(array.getJSONObject(index).getString(TAG_NAME));
+                List<String> list = new ArrayList<>();
+                JSONObject obj = array.getJSONObject(index);
+                switch (obj.getString(TAG_TTY)) {
+                    case BRAND:
+                        JSONArray brandArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                        for (int i = 0; i < brandArray.length(); i++) {
+                            list.add(brandArray.getJSONObject(i).getString(TAG_NAME));
+                        }
+                        med.setBrands(list);
+                        break;
+                    case INGREDIENT:
+                        JSONArray inArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                        for (int i = 0; i < inArray.length(); i++) {
+                            list.add(inArray.getJSONObject(i).getString(TAG_NAME));
+                        }
+                        med.setIngredients(list);
+                        break;
+                    case SCDC:
+                        JSONArray scdcArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                        for (int i = 0; i < scdcArray.length(); i++) {
+                            list.add(scdcArray.getJSONObject(i).getString(TAG_NAME));
+                        }
+                        med.setScdc(list);
+                        break;
+                    case SBDC:
+                        JSONArray sbdcArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                        for (int i = 0; i < sbdcArray.length(); i++) {
+                            list.add(sbdcArray.getJSONObject(i).getString(TAG_NAME));
+                        }
+                        med.setSbdc(list);
+                        break;
+                    case SBDG:
+                        JSONArray sbdgArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                        for (int i = 0; i < sbdgArray.length(); i++) {
+                            list.add(sbdgArray.getJSONObject(i).getString(TAG_NAME));
+                        }
+                        med.setSbdg(list);
+                        break;
+                    case SCD:
+                        JSONArray gpckArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                        for (int i = 0; i < gpckArray.length(); i++) {
+                            list.add(gpckArray.getJSONObject(i).getString(TAG_NAME));
+                        }
+                        med.setScd(list);
+                        break;
+                }
             }
-            return sbdcList;
         } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get SBDC request: " + e.getMessage());
+            Log.d(TAG, "Error in get is ingredient request: " + e.getMessage());
         }
-        return null;
-    }
-
-    public List<String> getSbdg(String rxcui) {
-        String url = String.format(URL_SBDG, RX_NORM_BASE_URL, rxcui);
-        RequestFuture<JSONObject> future = RequestFuture.newFuture();
-        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
-        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
-        try {
-            JSONObject response = future.get();
-            List<String> sbdgList = new ArrayList<>();
-            JSONArray array = response.getJSONObject(TAG_RELATED_GROUP).
-                    getJSONArray(TAG_CONCEPT_GROUP).getJSONObject(0).
-                    getJSONArray(TAG_CONCEPT_PROPERTIES);
-            for (int index = 0; index < array.length(); index++) {
-                sbdgList.add(array.getJSONObject(index).getString(TAG_NAME));
-            }
-            return sbdgList;
-        } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get SBDG request: " + e.getMessage());
-        }
-        return null;
     }
 }

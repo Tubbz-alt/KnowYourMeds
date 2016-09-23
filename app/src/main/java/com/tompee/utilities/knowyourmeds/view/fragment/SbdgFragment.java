@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
@@ -39,6 +40,8 @@ public class SbdgFragment extends Fragment {
             ListView listView = (ListView) view.findViewById(R.id.list_sbdg);
             listView.setAdapter(new StringListAdapter(getContext(), sbdgList));
             emptySource.setVisibility(View.GONE);
+            TextView countView = (TextView) view.findViewById(R.id.count);
+            countView.setText(String.valueOf(sbdgList.size()));
         }
         return view;
     }

@@ -13,15 +13,14 @@ import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.StringListAdapter;
 
-import java.util.Collections;
 import java.util.List;
 
-public class BrandFragment extends Fragment {
-    private static BrandFragment mSingleton;
+public class ScdFragment extends Fragment {
+    private static ScdFragment mSingleton;
 
-    public static BrandFragment getInstance() {
+    public static ScdFragment getInstance() {
         if (mSingleton == null) {
-            mSingleton = new BrandFragment();
+            mSingleton = new ScdFragment();
         }
         return mSingleton;
     }
@@ -29,19 +28,18 @@ public class BrandFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_brands, container, false);
+        View view = inflater.inflate(R.layout.fragment_scd, container, false);
         Medicine med = ((MedDetailActivity) getActivity()).getMedicine();
-        List<String> brandList = med.getBrands();
-        View emptySource = view.findViewById(R.id.brands_no_items);
-        if (brandList == null || brandList.isEmpty()) {
+        List<String> scdList = med.getScd();
+        View emptySource = view.findViewById(R.id.scd_no_items);
+        if (scdList == null || scdList.isEmpty()) {
             emptySource.setVisibility(View.VISIBLE);
         } else {
-            Collections.sort(brandList);
-            ListView listView = (ListView) view.findViewById(R.id.list_brands);
-            listView.setAdapter(new StringListAdapter(getContext(), brandList));
+            ListView listView = (ListView) view.findViewById(R.id.list_scd);
+            listView.setAdapter(new StringListAdapter(getContext(), scdList));
             emptySource.setVisibility(View.GONE);
             TextView countView = (TextView) view.findViewById(R.id.count);
-            countView.setText(String.valueOf(brandList.size()));
+            countView.setText(String.valueOf(scdList.size()));
         }
         return view;
     }

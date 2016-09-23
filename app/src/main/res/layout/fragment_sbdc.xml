@@ -21,13 +21,30 @@
             android:layout_marginStart="@dimen/search_horizontal_padding"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/search_vertical_padding"
-                android:text="@string/tab_sbdc"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/dark_text" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="@string/tab_sbdc"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/dark_text" />
+
+                <TextView
+                    android:id="@+id/count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_weight="0.3"
+                    android:gravity="end"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/dark_text" />
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"

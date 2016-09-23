@@ -36,6 +36,7 @@
     <string name="tab_scdc">Clinical Drug Component</string>
     <string name="tab_sbdc">Branded Drug Component</string>
     <string name="tab_sbdg">Branded Dose Form Group</string>
+    <string name="tab_scd">Clinical Drug or Pack</string>
 
     <!-- Properties -->
     <string name="property_prescribable_yes">Prescribable</string>
@@ -58,5 +59,8 @@
 
     <!-- SDBG -->
     <string name="sbdg_no_items">No branded dose form group available</string>
+
+    <!-- SCD -->
+    <string name="scd_no_items">No clinical drug or pack available</string>
 
 </resources>

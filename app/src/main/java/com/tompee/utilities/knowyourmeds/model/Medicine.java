@@ -14,6 +14,7 @@ public class Medicine {
     private List<String> mScdc;
     private List<String> mSbdc;
     private List<String> mSbdg;
+    private List<String> mScd;
 
     public Medicine() {
     }
@@ -104,6 +105,14 @@ public class Medicine {
 
     public void setSbdg(List<String> sbdg) {
         mSbdg = sbdg;
+    }
+
+    public List<String> getScd() {
+        return mScd;
+    }
+
+    public void setScd(List<String> scd) {
+        mScd = scd;
     }
 }
 
