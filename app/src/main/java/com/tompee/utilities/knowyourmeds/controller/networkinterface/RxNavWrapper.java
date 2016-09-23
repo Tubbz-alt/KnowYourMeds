@@ -163,14 +163,14 @@ public class RxNavWrapper {
         return false;
     }
 
-    public List<String> getSources(String rxcui) {
+    public ArrayList<String> getSources(String rxcui) {
         String url = String.format(URL_SOURCES, RX_NORM_BASE_URL, rxcui);
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
         VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
         try {
             JSONObject response = future.get();
-            List<String> sourceList = new ArrayList<>();
+            ArrayList<String> sourceList = new ArrayList<>();
             JSONArray array = response.getJSONObject(TAG_PROP_CONCEPT_GROUP).
                     getJSONArray(TAG_PROP_CONCEPT);
             for (int index = 0; index < array.length(); index++) {
@@ -212,7 +212,7 @@ public class RxNavWrapper {
             JSONArray array = response.getJSONObject(TAG_RELATED_GROUP).
                     getJSONArray(TAG_CONCEPT_GROUP);
             for (int index = 0; index < array.length(); index++) {
-                List<String> list = new ArrayList<>();
+                ArrayList<String> list = new ArrayList<>();
                 JSONObject obj = array.getJSONObject(index);
                 switch (obj.getString(TAG_TTY)) {
                     case BRAND:

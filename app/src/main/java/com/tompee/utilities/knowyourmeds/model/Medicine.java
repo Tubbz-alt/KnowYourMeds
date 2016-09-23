@@ -1,6 +1,6 @@
 package com.tompee.utilities.knowyourmeds.model;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Medicine {
     private String mRxnormId;
@@ -8,13 +8,13 @@ public class Medicine {
     private String mUrl;
     private boolean mIsPrescribable;
     private boolean mIsIngredient;
-    private List<String> mSources;
-    private List<String> mBrands;
-    private List<String> mIngredients;
-    private List<String> mScdc;
-    private List<String> mSbdc;
-    private List<String> mSbdg;
-    private List<String> mScd;
+    private ArrayList<String> mSources;
+    private ArrayList<String> mBrands;
+    private ArrayList<String> mIngredients;
+    private ArrayList<String> mScdc;
+    private ArrayList<String> mSbdc;
+    private ArrayList<String> mSbdg;
+    private ArrayList<String> mScd;
 
     public Medicine() {
     }
@@ -59,59 +59,59 @@ public class Medicine {
         mIsIngredient = isIngredient;
     }
 
-    public List<String> getSources() {
+    public ArrayList<String> getSources() {
         return mSources;
     }
 
-    public void setSources(List<String> mSources) {
-        this.mSources = mSources;
+    public void setSources(ArrayList<String> sources) {
+        mSources = sources;
     }
 
-    public List<String> getBrands() {
+    public ArrayList<String> getBrands() {
         return mBrands;
     }
 
-    public void setBrands(List<String> brands) {
+    public void setBrands(ArrayList<String> brands) {
         mBrands = brands;
     }
 
-    public List<String> getIngredients() {
+    public ArrayList<String> getIngredients() {
         return mIngredients;
     }
 
-    public void setIngredients(List<String> ingredients) {
+    public void setIngredients(ArrayList<String> ingredients) {
         mIngredients = ingredients;
     }
 
-    public List<String> getScdc() {
+    public ArrayList<String> getScdc() {
         return mScdc;
     }
 
-    public void setScdc(List<String> scdc) {
+    public void setScdc(ArrayList<String> scdc) {
         mScdc = scdc;
     }
 
-    public List<String> getSbdc() {
+    public ArrayList<String> getSbdc() {
         return mSbdc;
     }
 
-    public void setSbdc(List<String> sbdc) {
+    public void setSbdc(ArrayList<String> sbdc) {
         mSbdc = sbdc;
     }
 
-    public List<String> getSbdg() {
+    public ArrayList<String> getSbdg() {
         return mSbdg;
     }
 
-    public void setSbdg(List<String> sbdg) {
+    public void setSbdg(ArrayList<String> sbdg) {
         mSbdg = sbdg;
     }
 
-    public List<String> getScd() {
+    public ArrayList<String> getScd() {
         return mScd;
     }
 
-    public void setScd(List<String> scd) {
+    public void setScd(ArrayList<String> scd) {
         mScd = scd;
     }
 }

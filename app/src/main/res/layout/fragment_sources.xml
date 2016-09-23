@@ -52,7 +52,6 @@
                 android:layout_marginBottom="@dimen/search_vertical_padding"
                 android:gravity="center"
                 android:minHeight="@dimen/list_view_height"
-                android:text="@string/sources_no_items"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:textColor="@color/dark_text"
                 android:visibility="gone" />

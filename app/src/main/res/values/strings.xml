@@ -14,6 +14,7 @@
     <string name="search_results">Result</string>
     <string name="suggestions_results">Suggestions for %1$s</string>
     <string name="fetch_details">Acquiring information&#8230;</string>
+    <string name="tty_no_items">No %1$s available</string>
 
     <!-- Dialog messages -->
     <string name="delete_recent_message">Are you sure you want to delete the recent list?</string>
@@ -31,7 +32,7 @@
     <!-- Tab titles -->
     <string name="tab_properties">Properties</string>
     <string name="tab_sources">Sources</string>
-    <string name="tab_brands">Brands</string>
+    <string name="tab_brands">Related Brand Names</string>
     <string name="tab_info">Information</string>
     <string name="tab_scdc">Clinical Drug Component</string>
     <string name="tab_sbdc">Branded Drug Component</string>
@@ -43,24 +44,5 @@
     <string name="property_prescribable_no">Not prescribable</string>
     <string name="property_brands">Brand Name</string>
     <string name="property_ingredient">Ingredient</string>
-
-    <!-- Sources -->
-    <string name="sources_no_items">No sources available</string>
-
-    <!-- Brands -->
-    <string name="brands_related">Related Brand Names</string>
-    <string name="brands_no_items">No related brands available</string>
-
-    <!-- SCDC -->
-    <string name="scdc_no_items">No clinical drug component available</string>
-
-    <!-- SBDC -->
-    <string name="sbdc_no_items">No branded drug component available</string>
-
-    <!-- SDBG -->
-    <string name="sbdg_no_items">No branded dose form group available</string>
-
-    <!-- SCD -->
-    <string name="scd_no_items">No clinical drug or pack available</string>
 
 </resources>

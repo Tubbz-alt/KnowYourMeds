@@ -26,13 +26,9 @@ import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.adapter.DrawerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
-import com.tompee.utilities.knowyourmeds.view.fragment.BrandFragment;
-import com.tompee.utilities.knowyourmeds.view.fragment.ScdFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.PropertiesFragment;
-import com.tompee.utilities.knowyourmeds.view.fragment.SbdcFragment;
-import com.tompee.utilities.knowyourmeds.view.fragment.SbdgFragment;
-import com.tompee.utilities.knowyourmeds.view.fragment.ScdcFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SourceFragment;
+import com.tompee.utilities.knowyourmeds.view.fragment.TtyFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.WebViewFragment;
 
 public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.GetMedTaskListener,
@@ -51,11 +47,11 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     private ProcessingDialog mDialog;
     private Medicine mMedicine;
     private PropertiesFragment mPropertiesFragment;
-    private BrandFragment mBrandFragment;
-    private SbdcFragment mSbdcFragment;
-    private ScdcFragment mScdcFragment;
-    private SbdgFragment mSbdgFragment;
-    private ScdFragment mScdFragment;
+    private TtyFragment mBrandFragment;
+    private TtyFragment mSbdcFragment;
+    private TtyFragment mScdcFragment;
+    private TtyFragment mSbdgFragment;
+    private TtyFragment mScdFragment;
     private WebViewFragment mWebViewFragment;
     private SourceFragment mSourcesFragment;
 
@@ -132,22 +128,22 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         mMedicine = med;
         RecyclerView.Adapter adapter = new DrawerAdapter(med.getName(), OPTION_IDS);
         mRecyclerView.setAdapter(adapter);
-        initializeFragments();
+        initializeFragments(med);
         reflectCurrentFragment();
         mGetMedDetailTask = null;
         mDialog.dismiss();
         mDialog = null;
     }
 
-    private void initializeFragments() {
+    private void initializeFragments(Medicine med) {
         mPropertiesFragment = PropertiesFragment.getInstance();
-        mBrandFragment = BrandFragment.getInstance();
-        mScdcFragment = ScdcFragment.getInstance();
-        mSbdcFragment = SbdcFragment.getInstance();
-        mSbdgFragment = SbdgFragment.getInstance();
+        mBrandFragment = TtyFragment.newInstance(med.getBrands(), getString(R.string.tab_brands));
+        mScdcFragment = TtyFragment.newInstance(med.getScdc(), getString(R.string.tab_scdc));
+        mSbdcFragment = TtyFragment.newInstance(med.getSbdc(), getString(R.string.tab_sbdc));
+        mSbdgFragment = TtyFragment.newInstance(med.getSbdg(), getString(R.string.tab_sbdg));
+        mScdFragment = TtyFragment.newInstance(med.getScd(), getString(R.string.tab_scd));
         mWebViewFragment = WebViewFragment.getInstance();
         mSourcesFragment = SourceFragment.getInstance();
-        mScdFragment = ScdFragment.getInstance();
     }
 
     private void hideAllFragments() {
