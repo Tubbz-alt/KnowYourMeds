@@ -25,6 +25,7 @@ public class GetMedDetailTask extends AsyncTask<String, Void, Medicine> {
         med.setIngredients(mWrapper.getIngredients(med.getRxnormId()));
         med.setScdc(mWrapper.getScdc(med.getRxnormId()));
         med.setSbdc(mWrapper.getSbdc(med.getRxnormId()));
+        med.setSbdg(mWrapper.getSbdg(med.getRxnormId()));
         return med;
     }
 

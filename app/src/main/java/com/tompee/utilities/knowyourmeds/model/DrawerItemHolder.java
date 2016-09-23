@@ -15,12 +15,7 @@ public class DrawerItemHolder extends RecyclerView.ViewHolder {
 
     public DrawerItemHolder(View itemView, int viewType) {
         super(itemView);
-
-        if (viewType == HEADER) {
-            mOptionText = null;
-        } else {
-            mOptionText = (TextView) itemView.findViewById(R.id.option_text);
-        }
+        mOptionText = (TextView) itemView.findViewById(R.id.item_text);
         mType = viewType;
     }
 

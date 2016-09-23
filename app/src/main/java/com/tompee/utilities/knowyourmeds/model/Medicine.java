@@ -13,6 +13,7 @@ public class Medicine {
     private List<String> mIngredients;
     private List<String> mScdc;
     private List<String> mSbdc;
+    private List<String> mSbdg;
 
     public Medicine() {
     }
@@ -96,4 +97,13 @@ public class Medicine {
     public void setSbdc(List<String> sbdc) {
         mSbdc = sbdc;
     }
+
+    public List<String> getSbdg() {
+        return mSbdg;
+    }
+
+    public void setSbdg(List<String> sbdg) {
+        mSbdg = sbdg;
+    }
 }
+

@@ -29,6 +29,7 @@ import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 import com.tompee.utilities.knowyourmeds.view.fragment.BrandFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.PropertiesFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SbdcFragment;
+import com.tompee.utilities.knowyourmeds.view.fragment.SbdgFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.ScdcFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SourceFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.WebViewFragment;
@@ -37,21 +38,21 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         RecyclerView.OnItemTouchListener {
     public static final String TAG_NAME = "name";
     private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands,
-            R.string.tab_scdc, R.string.tab_sbdc, R.string.tab_info, R.string.tab_sources};
+            R.string.tab_sbdc, R.string.tab_sbdg, R.string.tab_scdc, R.string.tab_info,
+            R.string.tab_sources};
 
     private RecyclerView mRecyclerView;
     private GestureDetector mGestureDetector;
     private DrawerLayout mDrawer;
     private int mFragmentIndex = 0;
-
     private GetMedDetailTask mGetMedDetailTask;
     private ProcessingDialog mDialog;
     private Medicine mMedicine;
-
     private PropertiesFragment mPropertiesFragment;
     private BrandFragment mBrandFragment;
-    private ScdcFragment mScdcFragment;
     private SbdcFragment mSbdcFragment;
+    private ScdcFragment mScdcFragment;
+    private SbdgFragment mSbdgFragment;
     private WebViewFragment mWebViewFragment;
     private SourceFragment mSourcesFragment;
 
@@ -125,14 +126,14 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
     @Override
     public void onCompleted(Medicine med) {
-        mGetMedDetailTask = null;
-        mDialog.dismiss();
-        mDialog = null;
         mMedicine = med;
-        RecyclerView.Adapter adapter = new DrawerAdapter(OPTION_IDS);
+        RecyclerView.Adapter adapter = new DrawerAdapter(med.getName(), OPTION_IDS);
         mRecyclerView.setAdapter(adapter);
         initializeFragments();
         reflectCurrentFragment();
+        mGetMedDetailTask = null;
+        mDialog.dismiss();
+        mDialog = null;
     }
 
     private void initializeFragments() {
@@ -140,6 +141,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         mBrandFragment = BrandFragment.getInstance();
         mScdcFragment = ScdcFragment.getInstance();
         mSbdcFragment = SbdcFragment.getInstance();
+        mSbdgFragment = SbdgFragment.getInstance();
         mWebViewFragment = WebViewFragment.getInstance();
         mSourcesFragment = SourceFragment.getInstance();
     }
@@ -153,11 +155,14 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         if (mBrandFragment.isAdded()) {
             transaction.hide(mBrandFragment);
         }
+        if (mSbdcFragment.isAdded()) {
+            transaction.hide(mSbdcFragment);
+        }
         if (mScdcFragment.isAdded()) {
             transaction.hide(mScdcFragment);
         }
-        if (mSbdcFragment.isAdded()) {
-            transaction.hide(mSbdcFragment);
+        if (mSbdgFragment.isAdded()) {
+            transaction.hide(mSbdgFragment);
         }
         if (mWebViewFragment.isAdded()) {
             transaction.hide(mWebViewFragment);
@@ -183,38 +188,44 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
     private void reflectCurrentFragment() {
         hideAllFragments();
-        switch (mFragmentIndex) {
-            case 0:
-                showFragment(mPropertiesFragment);
+        Fragment fragment = null;
+        switch (OPTION_IDS[mFragmentIndex]) {
+            case R.string.tab_properties:
+                fragment = mPropertiesFragment;
                 break;
-            case 1:
-                showFragment(mBrandFragment);
+            case R.string.tab_brands:
+                fragment = mBrandFragment;
                 break;
-            case 2:
-                showFragment(mScdcFragment);
+            case R.string.tab_sbdc:
+                fragment = mSbdcFragment;
                 break;
-            case 3:
-                showFragment(mSbdcFragment);
+            case R.string.tab_scdc:
+                fragment = mScdcFragment;
                 break;
-            case 4:
-                showFragment(mWebViewFragment);
+            case R.string.tab_sbdg:
+                fragment = mSbdgFragment;
                 break;
-            case 5:
-                showFragment(mSourcesFragment);
+            case R.string.tab_info:
+                fragment = mWebViewFragment;
                 break;
-            default:
+            case R.string.tab_sources:
+                fragment = mSourcesFragment;
                 break;
         }
+        showFragment(fragment);
     }
 
     @Override
     public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
         View child = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
         if (child != null && mGestureDetector.onTouchEvent(motionEvent)) {
-            mDrawer.closeDrawers();
-            mFragmentIndex = recyclerView.getChildLayoutPosition(child) - 1;
-            reflectCurrentFragment();
-            return true;
+            int index = recyclerView.getChildLayoutPosition(child) - 1;
+            if (index >= 0) {
+                mDrawer.closeDrawers();
+                mFragmentIndex = index;
+                reflectCurrentFragment();
+                return true;
+            }
         }
         return false;
     }

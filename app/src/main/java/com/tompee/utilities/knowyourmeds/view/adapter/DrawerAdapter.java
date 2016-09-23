@@ -10,9 +10,11 @@ import com.tompee.utilities.knowyourmeds.model.DrawerItemHolder;
 
 public class DrawerAdapter extends RecyclerView.Adapter<DrawerItemHolder> {
     private final int[] mOptionIds;
+    private final String mMedName;
 
-    public DrawerAdapter(int[] optionIds) {
+    public DrawerAdapter(String name, int[] optionIds) {
         mOptionIds = optionIds;
+        mMedName = name;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerItemHolder> {
     @Override
     public void onBindViewHolder(DrawerItemHolder holder, int position) {
         if (holder.getType() == DrawerItemHolder.HEADER) {
-            /* TODO add header items */
+            holder.getOptionText().setText(mMedName);
         } else {
             holder.getOptionText().setText(mOptionIds[position - 1]);
         }

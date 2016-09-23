@@ -42,6 +42,7 @@ public class RxNavWrapper {
     private static final String URL_INGREDIENTS = "%s/rxcui/%s/related.json?tty=IN";
     private static final String URL_SCDC = "%s/rxcui/%s/related.json?tty=SCDC";
     private static final String URL_SBDC = "%s/rxcui/%s/related.json?tty=SBDC";
+    private static final String URL_SBDG = "%s/rxcui/%s/related.json?tty=SBDG";
 
     /* RXNorm Properties */
     private static final String PROPERTIES_RX_NORM = "RxNorm%20Name";
@@ -276,6 +277,27 @@ public class RxNavWrapper {
             return sbdcList;
         } catch (InterruptedException | ExecutionException | JSONException e) {
             Log.d(TAG, "Error in get SBDC request: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<String> getSbdg(String rxcui) {
+        String url = String.format(URL_SBDG, RX_NORM_BASE_URL, rxcui);
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
+        try {
+            JSONObject response = future.get();
+            List<String> sbdgList = new ArrayList<>();
+            JSONArray array = response.getJSONObject(TAG_RELATED_GROUP).
+                    getJSONArray(TAG_CONCEPT_GROUP).getJSONObject(0).
+                    getJSONArray(TAG_CONCEPT_PROPERTIES);
+            for (int index = 0; index < array.length(); index++) {
+                sbdgList.add(array.getJSONObject(index).getString(TAG_NAME));
+            }
+            return sbdgList;
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            Log.d(TAG, "Error in get SBDG request: " + e.getMessage());
         }
         return null;
     }

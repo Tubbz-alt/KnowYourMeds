@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/recycler_view_header_height"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/header_bg"
     android:orientation="vertical">
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/item_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="@color/light_text" />
+
+</FrameLayout>
