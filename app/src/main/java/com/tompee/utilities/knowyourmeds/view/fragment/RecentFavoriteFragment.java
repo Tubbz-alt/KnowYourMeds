@@ -11,9 +11,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.android.gms.ads.InterstitialAd;
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
+import com.tompee.utilities.knowyourmeds.view.MainActivity;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.MedListAdapter;
 
@@ -49,15 +51,23 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
         mFavoriteListView = (ListView) view.findViewById(R.id.list_favorite);
         mFavoriteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                InterstitialAd ad = ((MainActivity) getActivity()).getInterstitialAd();
                 startMedListActivity(mFavoriteMedList.get(i));
+                if (ad.isLoaded()) {
+                    ad.show();
+                }
             }
         });
         mRecentListView = (ListView) view.findViewById(R.id.recent_list);
         mRecentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                InterstitialAd ad = ((MainActivity) getActivity()).getInterstitialAd();
                 startMedListActivity(mRecentMedList.get(i));
+                if (ad.isLoaded()) {
+                    ad.show();
+                }
             }
         });
         mFaveNoItemsView = view.findViewById(R.id.fave_no_items);

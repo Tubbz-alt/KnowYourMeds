@@ -19,6 +19,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.task.GetMedDetailTask;
@@ -61,6 +63,10 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_med_detail);
         setToolbar(R.id.toolbar, true);
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("3AD737A018BB67E7108FD1836E34DD1C").build();
+        mAdView.loadAd(adRequest);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);

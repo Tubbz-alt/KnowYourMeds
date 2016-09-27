@@ -7,6 +7,10 @@ import android.support.v4.view.ViewPager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.view.adapter.MainViewPagerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
@@ -14,6 +18,7 @@ import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
     private static final int[] mTabIconList = {R.drawable.ic_star_white, R.drawable.ic_search_white};
     private ViewPager mViewPager;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,6 +28,20 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         setToolbar(R.id.toolbar, false);
         TextView title = (TextView) findViewById(R.id.toolbar_text);
         title.setText(R.string.app_name);
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("3AD737A018BB67E7108FD1836E34DD1C").build();
+        mAdView.loadAd(adRequest);
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.admob_main_interstitial));
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+            }
+        });
+        requestNewInterstitial();
 
         mViewPager = (ViewPager) findViewById(R.id.pager_main);
         mViewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
@@ -34,6 +53,17 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             //noinspection ConstantConditions
             tabLayout.getTabAt(i).setIcon(mTabIconList[i]);
         }
+    }
+
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("3AD737A018BB67E7108FD1836E34DD1C")
+                .build();
+        mInterstitialAd.loadAd(adRequest);
+    }
+
+    public InterstitialAd getInterstitialAd() {
+        return mInterstitialAd;
     }
 
     @Override

@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Know Your Meds</string>
+    <string name="admob_app_id">ca-app-pub-1411804566429951~5595893420</string>
+    <string name="admob_main_banner">ca-app-pub-1411804566429951/7072626626</string>
+    <string name="admob_main_interstitial">ca-app-pub-1411804566429951/2363225428</string>
+    <string name="admob_med_banner">ca-app-pub-1411804566429951/3560757024</string>
 
     <string name="default_content_description">Content Description</string>
     <string name="navigation_drawer_open">Open Drawer</string>
