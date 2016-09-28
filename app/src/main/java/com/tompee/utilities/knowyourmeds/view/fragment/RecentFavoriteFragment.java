@@ -18,13 +18,15 @@ import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MainActivity;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.MedListAdapter;
+import com.tompee.utilities.knowyourmeds.view.custom.SwipeListView;
 
+import java.util.Collections;
 import java.util.List;
 
 public class RecentFavoriteFragment extends Fragment implements View.OnClickListener {
     private DatabaseHelper mDbHelper;
 
-    private ListView mFavoriteListView;
+    private SwipeListView mFavoriteListView;
     private ListView mRecentListView;
     private List<Medicine> mFavoriteMedList;
     private List<Medicine> mRecentMedList;
@@ -48,7 +50,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recent_favorite, container, false);
-        mFavoriteListView = (ListView) view.findViewById(R.id.list_favorite);
+        mFavoriteListView = (SwipeListView) view.findViewById(R.id.list_favorite);
         mFavoriteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
@@ -117,6 +119,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
 
             mRecentMedList = mDbHelper.getAllEntries(DatabaseHelper.RECENT_TABLE);
             if (mRecentMedList.size() > 0) {
+                Collections.reverse(mRecentMedList);
                 MedListAdapter adapter = new MedListAdapter(getContext(), mRecentMedList, true);
                 mRecentListView.setAdapter(adapter);
                 mRecentListView.setVisibility(View.VISIBLE);

@@ -61,7 +61,7 @@
                 android:layout_marginTop="4dp"
                 android:background="@color/dark_secondary_text" />
 
-            <ListView
+            <com.tompee.utilities.knowyourmeds.view.custom.SwipeListView
                 android:id="@+id/list_favorite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
                 android:layout_marginTop="4dp"
                 android:background="@color/dark_secondary_text" />
 
-            <ListView
+            <com.tompee.utilities.knowyourmeds.view.custom.SwipeListView
                 android:id="@+id/recent_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
