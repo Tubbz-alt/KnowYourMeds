@@ -1,5 +1,9 @@
 <resources>
+    <!-- Activity titles -->
     <string name="app_name">Know Your Meds</string>
+    <string name="title_about">About</string>
+
+    <!-- Admob -->
     <string name="admob_app_id">ca-app-pub-1411804566429951~5595893420</string>
     <string name="admob_main_banner">ca-app-pub-1411804566429951/7072626626</string>
     <string name="admob_main_interstitial">ca-app-pub-1411804566429951/2363225428</string>
@@ -33,6 +37,8 @@
     <!-- Menu titles -->
     <string name="menu_favorite">Add to favorites</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="menu_about">About</string>
+    <string name="menu_disclaimer">Disclaimer</string>
 
     <!-- Tab titles -->
     <string name="tab_properties">Properties</string>
@@ -49,5 +55,13 @@
     <string name="property_prescribable_no">Not prescribable</string>
     <string name="property_brands">Brand Name</string>
     <string name="property_ingredient">Ingredient</string>
+
+    <!-- About -->
+    <string name="nlm_message">This product uses publicly available data from the U.S. National
+        Library of Medicine (NLM), National Institutes of Health, Department of Health and Human
+        Services; NLM is not responsible for the product and does not endorse or recommend this or
+        any other product.</string>
+    <string name="version">Version %1$s</string>
+    <string name="copyright">Copyright 2016, Tompee. All rights reserved.</string>
 
 </resources>

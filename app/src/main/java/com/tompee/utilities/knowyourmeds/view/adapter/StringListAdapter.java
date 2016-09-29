@@ -39,6 +39,7 @@ public class StringListAdapter extends ArrayAdapter<String> implements
         }
 
         ((SwipeListItemView) view).setEnableSwipeDetection(false);
+        ((SwipeListItemView) view).setOnClickBackgroundColor(R.color.colorListBackground);
 
         TextView name = (TextView) view.findViewById(R.id.med_name);
         name.setText(getItem(position));

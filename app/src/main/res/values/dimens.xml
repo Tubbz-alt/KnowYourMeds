@@ -46,4 +46,8 @@
     <dimen name="recycler_view_item_vertical_padding">8dp</dimen>
     <dimen name="recycler_view_item_horizontal_padding">16dp</dimen>
 
+    <!-- About -->
+    <dimen name="about_image_dimension">60dp</dimen>
+    <dimen name="about_view_separator">8dp</dimen>
+
 </resources>

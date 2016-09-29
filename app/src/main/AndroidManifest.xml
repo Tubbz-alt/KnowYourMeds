@@ -24,6 +24,9 @@
             android:name=".view.MedDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".view.base.BaseActivity" />
+        <activity
+            android:name=".view.AboutActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
     </application>
 
 </manifest>
