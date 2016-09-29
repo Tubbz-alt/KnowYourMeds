@@ -187,7 +187,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 list.add(array.optString(index));
             }
             return list;
-        } catch (JSONException e) {
+        } catch (JSONException | NullPointerException e) {
             e.printStackTrace();
         }
         return null;
