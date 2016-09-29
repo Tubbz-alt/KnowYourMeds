@@ -1,6 +1,7 @@
 package com.tompee.utilities.knowyourmeds.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Medicine {
     private String mRxnormId;
@@ -15,6 +16,7 @@ public class Medicine {
     private ArrayList<String> mSbdc;
     private ArrayList<String> mSbdg;
     private ArrayList<String> mScd;
+    private Date mDate;
 
     public Medicine() {
     }
@@ -113,6 +115,14 @@ public class Medicine {
 
     public void setScd(ArrayList<String> scd) {
         mScd = scd;
+    }
+
+    public Date getDate() {
+        return mDate;
+    }
+
+    public void setDate(Date date) {
+        mDate = date;
     }
 }
 

@@ -33,6 +33,9 @@ import com.tompee.utilities.knowyourmeds.view.fragment.SourceFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.TtyFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.WebViewFragment;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.GetMedTaskListener,
         RecyclerView.OnItemTouchListener {
     public static final String TAG_NAME = "name";
@@ -40,6 +43,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     public static final int FROM_SEARCH = 0;
     public static final int FROM_RECENTS = 1;
     public static final int FROM_FAVORITES = 2;
+    private static final int CACHE_EXPIRY = 12;
     private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands,
             R.string.tab_sbdc, R.string.tab_sbdg, R.string.tab_scdc,
             R.string.tab_scd, R.string.tab_info,
@@ -99,9 +103,19 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         } else {
             mMedicine = dbHelper.getEntry(origin == FROM_FAVORITES ? DatabaseHelper.FAVORITE_TABLE :
                     DatabaseHelper.RECENT_TABLE, name);
-            initializeDisplay();
+            if (isCacheValid(mMedicine.getDate(), Calendar.getInstance().getTime())) {
+                initializeDisplay();
+            } else {
+                startTask(name);
+            }
         }
     }
+
+    private boolean isCacheValid(Date medDate, Date now) {
+        long diffHours = (now.getTime() - medDate.getTime()) / (60 * 60 * 1000) % 24;
+        return diffHours < CACHE_EXPIRY;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -120,7 +134,6 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
                     mMedicine.getName()));
             builder.setPositiveButton(R.string.control_ok, null);
             builder.create().show();
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -144,7 +157,16 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     public void onCompleted(Medicine med) {
         mMedicine = med;
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        dbHelper.createEntry(DatabaseHelper.RECENT_TABLE, med);
+        int origin = getIntent().getIntExtra(TAG_ORIGIN, FROM_SEARCH);
+        switch (origin) {
+            case FROM_FAVORITES:
+                dbHelper.updateEntry(DatabaseHelper.FAVORITE_TABLE, med);
+                break;
+            case FROM_RECENTS:
+            case FROM_SEARCH:
+                dbHelper.createEntry(DatabaseHelper.RECENT_TABLE, med);
+                break;
+        }
         initializeDisplay();
         mGetMedDetailTask = null;
         mDialog.dismiss();

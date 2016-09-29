@@ -12,12 +12,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String FAVORITE_TABLE = "favorite";
     public static final String RECENT_TABLE = "recent";
+    private static final String DATE_FORMAT = "yyyyMMddHHmmss";
     private static final String COLUMN_ID = "rxcui";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_PRESC = "presc";
@@ -30,20 +36,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_SBDC = "SBDC";
     private static final String COLUMN_SBDG = "SBDG";
     private static final String COLUMN_SCD = "SCD";
+    private static final String COLUMN_DATE = "date";
 
     private static final String CREATE_FAVORITE_TABLE = "create table " + FAVORITE_TABLE +
             " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null," +
             COLUMN_PRESC + " integer," + COLUMN_IS_INGREDIENT + " integer, " +
             COLUMN_URL + " text not null," + COLUMN_INGREDIENTS + " text," +
             COLUMN_SOURCES + " text," + COLUMN_BRANDS + " text," + COLUMN_SCDC + " text," +
-            COLUMN_SBDC + " text," + COLUMN_SBDG + " text, " + COLUMN_SCD + " text" + " )";
+            COLUMN_SBDC + " text," + COLUMN_SBDG + " text, " + COLUMN_SCD + " text," +
+            COLUMN_DATE + " text not null" + " )";
 
     private static final String CREATE_RECENT_TABLE = "create table " + RECENT_TABLE +
             " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null," +
             COLUMN_PRESC + " integer," + COLUMN_IS_INGREDIENT + " integer, " +
             COLUMN_URL + " text not null," + COLUMN_INGREDIENTS + " text," +
             COLUMN_SOURCES + " text," + COLUMN_BRANDS + " text," + COLUMN_SCDC + " text," +
-            COLUMN_SBDC + " text," + COLUMN_SBDG + " text, " + COLUMN_SCD + " text" + " )";
+            COLUMN_SBDC + " text," + COLUMN_SBDG + " text, " + COLUMN_SCD + " text," +
+            COLUMN_DATE + " text not null" + " )";
 
     private static final String DROP_FAVORITE_TABLE = "DROP TABLE IF EXISTS " + FAVORITE_TABLE;
     private static final String DROP_RECENT_TABLE = "DROP TABLE IF EXISTS " + RECENT_TABLE;
@@ -83,9 +92,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SBDC, convertToJsonString(COLUMN_SBDC, med.getSbdc()));
         values.put(COLUMN_SBDG, convertToJsonString(COLUMN_SBDG, med.getSbdg()));
         values.put(COLUMN_SCD, convertToJsonString(COLUMN_SCD, med.getScd()));
+        values.put(COLUMN_DATE, convertToDateString(med.getDate()));
 
         SQLiteDatabase db = getWritableDatabase();
         db.insert(tableName, null, values);
+        db.close();
+    }
+
+    public void updateEntry(String tableName, Medicine med) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_DATE, convertToDateString(med.getDate()));
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.update(tableName, values, COLUMN_ID + "='" + med.getRxnormId() + "'", null);
         db.close();
     }
 
@@ -103,13 +122,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    private String convertToDateString(Date date) {
+        SimpleDateFormat format1 = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
+        return format1.format(date);
+    }
+
     public List<Medicine> getAllEntries(String tableName) {
         List<Medicine> medList = new ArrayList<>();
 
         SQLiteDatabase db = getWritableDatabase();
         String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC, COLUMN_IS_INGREDIENT, COLUMN_URL,
                 COLUMN_INGREDIENTS, COLUMN_SOURCES, COLUMN_BRANDS, COLUMN_SCDC, COLUMN_SBDC,
-                COLUMN_SBDG, COLUMN_SCD};
+                COLUMN_SBDG, COLUMN_SCD, COLUMN_DATE};
         Cursor cursor = db.query(tableName, columns, null, null, null, null, null);
 
         cursor.moveToFirst();
@@ -127,7 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC, COLUMN_IS_INGREDIENT, COLUMN_URL,
                 COLUMN_INGREDIENTS, COLUMN_SOURCES, COLUMN_BRANDS, COLUMN_SCDC, COLUMN_SBDC,
-                COLUMN_SBDG, COLUMN_SCD};
+                COLUMN_SBDG, COLUMN_SCD, COLUMN_DATE};
         Cursor cursor = db.query(tableName, columns, COLUMN_NAME + "='" + name + "'", null, null, null, null);
         cursor.moveToFirst();
         Medicine med = cursorToEntry(cursor);
@@ -143,17 +167,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         medicine.setIsPrescribable(cursor.getInt(2) == 1);
         medicine.setIsIngredient(cursor.getInt(3) == 1);
         medicine.setUrl(cursor.getString(4));
-        medicine.setIngredients(convertFromString(COLUMN_INGREDIENTS, cursor.getString(5)));
-        medicine.setSources(convertFromString(COLUMN_SOURCES, cursor.getString(6)));
-        medicine.setBrands(convertFromString(COLUMN_BRANDS, cursor.getString(7)));
-        medicine.setScdc(convertFromString(COLUMN_SCDC, cursor.getString(8)));
-        medicine.setSbdc(convertFromString(COLUMN_SBDC, cursor.getString(9)));
-        medicine.setSbdg(convertFromString(COLUMN_SBDG, cursor.getString(10)));
-        medicine.setScd(convertFromString(COLUMN_SCD, cursor.getString(11)));
+        medicine.setIngredients(convertFromJsonString(COLUMN_INGREDIENTS, cursor.getString(5)));
+        medicine.setSources(convertFromJsonString(COLUMN_SOURCES, cursor.getString(6)));
+        medicine.setBrands(convertFromJsonString(COLUMN_BRANDS, cursor.getString(7)));
+        medicine.setScdc(convertFromJsonString(COLUMN_SCDC, cursor.getString(8)));
+        medicine.setSbdc(convertFromJsonString(COLUMN_SBDC, cursor.getString(9)));
+        medicine.setSbdg(convertFromJsonString(COLUMN_SBDG, cursor.getString(10)));
+        medicine.setScd(convertFromJsonString(COLUMN_SCD, cursor.getString(11)));
+        medicine.setDate(convertFromDateString(cursor.getString(12)));
         return medicine;
     }
 
-    private ArrayList<String> convertFromString(String column, String string) {
+    private ArrayList<String> convertFromJsonString(String column, String string) {
         try {
             JSONObject json = new JSONObject(string);
             JSONArray array = json.optJSONArray(column);
@@ -163,6 +188,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             return list;
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Date convertFromDateString(String string) {
+        DateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
+        try {
+            return format.parse(string);
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return null;

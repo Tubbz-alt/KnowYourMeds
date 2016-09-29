@@ -42,7 +42,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
         mSharedPreferences = getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
         if (!mSharedPreferences.getBoolean(TAG_DISCLAIMER, false)) {
-            showDisclaimer();
+            showDisclaimer(true);
         }
 
         AdView mAdView = (AdView) findViewById(R.id.adView);
@@ -112,13 +112,13 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                 startActivity(intent);
                 return true;
             case R.id.menu_disclaimer:
-                showDisclaimer();
+                showDisclaimer(false);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void showDisclaimer() {
+    private void showDisclaimer(boolean firstTime) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.menu_disclaimer);
         builder.setPositiveButton(R.string.control_understand, new DialogInterface.OnClickListener() {
@@ -129,12 +129,14 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                 editor.apply();
             }
         });
-        builder.setNegativeButton(R.string.control_cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
-            }
-        });
+        if (firstTime) {
+            builder.setNegativeButton(R.string.control_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            });
+        }
         View view = getLayoutInflater().inflate(R.layout.dialog_disclaimer, null);
         builder.setView(view);
         builder.setCancelable(false);
