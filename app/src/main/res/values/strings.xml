@@ -33,6 +33,7 @@
     <string name="control_delete">Delete</string>
     <string name="control_cancel">Cancel</string>
     <string name="control_ok">OK</string>
+    <string name="control_understand">I understand</string>
 
     <!-- Menu titles -->
     <string name="menu_favorite">Add to favorites</string>
@@ -57,11 +58,17 @@
     <string name="property_ingredient">Ingredient</string>
 
     <!-- About -->
+    <string name="version">Version %1$s</string>
+    <string name="copyright">Copyright 2016, Tompee. All rights reserved.</string>
     <string name="nlm_message">This product uses publicly available data from the U.S. National
         Library of Medicine (NLM), National Institutes of Health, Department of Health and Human
         Services; NLM is not responsible for the product and does not endorse or recommend this or
         any other product.</string>
-    <string name="version">Version %1$s</string>
-    <string name="copyright">Copyright 2016, Tompee. All rights reserved.</string>
 
+    <!-- Disclaimer -->
+    <string name="disclaimer_title_nlm">NLM Disclaimer</string>
+    <string name="disclaimer_message_nlm">It is not the intention of NLM to provide specific
+        medical advice, but rather to provide users with information to better understand their
+        health and their medications. NLM urges you to consult with a qualified physician for
+        advice about medications.</string>
 </resources>

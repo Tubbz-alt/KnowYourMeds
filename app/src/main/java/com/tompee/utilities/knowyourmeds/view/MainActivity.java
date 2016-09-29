@@ -1,13 +1,17 @@
 package com.tompee.utilities.knowyourmeds.view;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
@@ -20,9 +24,12 @@ import com.tompee.utilities.knowyourmeds.view.adapter.MainViewPagerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 
 public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
+    private static final String SHARED_PREF = "knowyourmedspref";
+    private static final String TAG_DISCLAIMER = "disclaimer";
     private static final int[] mTabIconList = {R.drawable.ic_star_white, R.drawable.ic_search_white};
     private ViewPager mViewPager;
     private InterstitialAd mInterstitialAd;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,6 +39,11 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         setToolbar(R.id.toolbar, false);
         TextView title = (TextView) findViewById(R.id.toolbar_text);
         title.setText(R.string.app_name);
+
+        mSharedPreferences = getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
+        if (!mSharedPreferences.getBoolean(TAG_DISCLAIMER, false)) {
+            showDisclaimer();
+        }
 
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("3AD737A018BB67E7108FD1836E34DD1C").build();
@@ -99,7 +111,33 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 return true;
+            case R.id.menu_disclaimer:
+                showDisclaimer();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showDisclaimer() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.menu_disclaimer);
+        builder.setPositiveButton(R.string.control_understand, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.putBoolean(TAG_DISCLAIMER, true);
+                editor.apply();
+            }
+        });
+        builder.setNegativeButton(R.string.control_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        View view = getLayoutInflater().inflate(R.layout.dialog_disclaimer, null);
+        builder.setView(view);
+        builder.setCancelable(false);
+        builder.create().show();
     }
 }

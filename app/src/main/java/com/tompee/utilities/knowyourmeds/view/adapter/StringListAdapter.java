@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.model.ListSwipeHolder;
 import com.tompee.utilities.knowyourmeds.view.custom.SwipeListItemView;
 
 import java.util.List;
@@ -32,10 +33,14 @@ public class StringListAdapter extends ArrayAdapter<String> implements
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
+        ListSwipeHolder holder;
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.list_med, parent, false);
+            holder = new ListSwipeHolder();
+            holder.setFrontView(view.findViewById(R.id.front_view));
+            view.setTag(holder);
         }
 
         ((SwipeListItemView) view).setEnableSwipeDetection(false);

@@ -50,4 +50,7 @@
     <dimen name="about_image_dimension">60dp</dimen>
     <dimen name="about_view_separator">8dp</dimen>
 
+    <!-- Disclaimer -->
+    <dimen name="disclaimer_margin">24dp</dimen>
+    <dimen name="disclaimer_view_separator">8dp</dimen>
 </resources>
