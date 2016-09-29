@@ -36,11 +36,14 @@ import com.tompee.utilities.knowyourmeds.view.fragment.WebViewFragment;
 public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.GetMedTaskListener,
         RecyclerView.OnItemTouchListener {
     public static final String TAG_NAME = "name";
+    public static final String TAG_ORIGIN = "origin";
+    public static final int FROM_SEARCH = 0;
+    public static final int FROM_RECENTS = 1;
+    public static final int FROM_FAVORITES = 2;
     private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands,
             R.string.tab_sbdc, R.string.tab_sbdg, R.string.tab_scdc,
             R.string.tab_scd, R.string.tab_info,
             R.string.tab_sources};
-
     private RecyclerView mRecyclerView;
     private GestureDetector mGestureDetector;
     private DrawerLayout mDrawer;
@@ -89,7 +92,15 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         String name = intent.getStringExtra(TAG_NAME);
         TextView title = (TextView) findViewById(R.id.toolbar_text);
         title.setText(name);
-        startTask(name);
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        int origin = intent.getIntExtra(TAG_ORIGIN, FROM_SEARCH);
+        if (origin == FROM_SEARCH) {
+            startTask(name);
+        } else {
+            mMedicine = dbHelper.getEntry(origin == FROM_FAVORITES ? DatabaseHelper.FAVORITE_TABLE :
+                    DatabaseHelper.RECENT_TABLE, name);
+            initializeDisplay();
+        }
     }
 
     @Override
@@ -132,13 +143,19 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     @Override
     public void onCompleted(Medicine med) {
         mMedicine = med;
-        RecyclerView.Adapter adapter = new DrawerAdapter(med.getName(), OPTION_IDS);
-        mRecyclerView.setAdapter(adapter);
-        initializeFragments(med);
-        reflectCurrentFragment();
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        dbHelper.createEntry(DatabaseHelper.RECENT_TABLE, med);
+        initializeDisplay();
         mGetMedDetailTask = null;
         mDialog.dismiss();
         mDialog = null;
+    }
+
+    private void initializeDisplay() {
+        RecyclerView.Adapter adapter = new DrawerAdapter(mMedicine.getName(), OPTION_IDS);
+        mRecyclerView.setAdapter(adapter);
+        initializeFragments(mMedicine);
+        reflectCurrentFragment();
     }
 
     private void initializeFragments(Medicine med) {

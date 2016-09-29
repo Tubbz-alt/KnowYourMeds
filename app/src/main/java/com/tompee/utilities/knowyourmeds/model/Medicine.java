@@ -5,12 +5,12 @@ import java.util.ArrayList;
 public class Medicine {
     private String mRxnormId;
     private String mName;
-    private String mUrl;
     private boolean mIsPrescribable;
     private boolean mIsIngredient;
+    private String mUrl;
+    private ArrayList<String> mIngredients;
     private ArrayList<String> mSources;
     private ArrayList<String> mBrands;
-    private ArrayList<String> mIngredients;
     private ArrayList<String> mScdc;
     private ArrayList<String> mSbdc;
     private ArrayList<String> mSbdg;

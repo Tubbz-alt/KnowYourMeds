@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
-import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.task.SearchTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
@@ -36,7 +35,6 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     private View mNoResultsView;
     private ListView mListView;
     private List<Medicine> mMedList;
-    private DatabaseHelper mDbHelper;
 
     private SearchTask mTask;
     private ProcessingDialog mDialog;
@@ -48,7 +46,6 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDbHelper = new DatabaseHelper(getContext());
     }
 
     @Override
@@ -132,7 +129,6 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     public void onSearchSuccess(List<Medicine> medList) {
         mTask = null;
         if (medList.size() > 0) {
-            mDbHelper.createEntry(DatabaseHelper.RECENT_TABLE, medList.get(0));
             mMedList = medList;
             mResultText.setText(R.string.search_results);
             mResultBar.setVisibility(View.VISIBLE);

@@ -54,7 +54,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
                 InterstitialAd ad = ((MainActivity) getActivity()).getInterstitialAd();
-                startMedListActivity(mFavoriteMedList.get(i));
+                startMedListActivity(mFavoriteMedList.get(i), MedDetailActivity.FROM_FAVORITES);
                 if (ad.isLoaded()) {
                     ad.show();
                 }
@@ -65,7 +65,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
                 InterstitialAd ad = ((MainActivity) getActivity()).getInterstitialAd();
-                startMedListActivity(mRecentMedList.get(i));
+                startMedListActivity(mRecentMedList.get(i), MedDetailActivity.FROM_RECENTS);
                 if (ad.isLoaded()) {
                     ad.show();
                 }
@@ -80,9 +80,10 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
         return view;
     }
 
-    private void startMedListActivity(Medicine med) {
+    private void startMedListActivity(Medicine med, int origin) {
         Intent intent = new Intent(getContext(), MedDetailActivity.class);
         intent.putExtra(MedDetailActivity.TAG_NAME, med.getName());
+        intent.putExtra(MedDetailActivity.TAG_ORIGIN, origin);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
