@@ -46,7 +46,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     private static final int CACHE_EXPIRY = 12;
     private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands,
             R.string.tab_sbdc, R.string.tab_sbdg, R.string.tab_scdc,
-            R.string.tab_scd, R.string.tab_info,
+            R.string.tab_scd, R.string.tab_scdg, R.string.tab_info,
             R.string.tab_sources};
     private RecyclerView mRecyclerView;
     private GestureDetector mGestureDetector;
@@ -61,6 +61,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     private TtyFragment mScdcFragment;
     private TtyFragment mSbdgFragment;
     private TtyFragment mScdFragment;
+    private TtyFragment mScdgFragment;
     private WebViewFragment mWebViewFragment;
     private SourceFragment mSourcesFragment;
 
@@ -187,6 +188,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         mSbdcFragment = TtyFragment.newInstance(med.getSbdc(), getString(R.string.tab_sbdc));
         mSbdgFragment = TtyFragment.newInstance(med.getSbdg(), getString(R.string.tab_sbdg));
         mScdFragment = TtyFragment.newInstance(med.getScd(), getString(R.string.tab_scd));
+        mScdgFragment = TtyFragment.newInstance(med.getScdg(), getString(R.string.tab_scdg));
         mWebViewFragment = WebViewFragment.getInstance();
         mSourcesFragment = SourceFragment.getInstance();
     }
@@ -217,6 +219,9 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         }
         if (mScdFragment.isAdded()) {
             transaction.hide(mScdFragment);
+        }
+        if (mScdgFragment.isAdded()) {
+            transaction.hide(mScdgFragment);
         }
         transaction.commit();
         fragmentManager.executePendingTransactions();
@@ -261,6 +266,9 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
                 break;
             case R.string.tab_scd:
                 fragment = mScdFragment;
+                break;
+            case R.string.tab_scdg:
+                fragment = mScdgFragment;
                 break;
         }
         showFragment(fragment);

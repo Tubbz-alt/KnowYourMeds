@@ -50,6 +50,7 @@
     <string name="tab_sbdc">Branded Drug Component</string>
     <string name="tab_sbdg">Branded Dose Form Group</string>
     <string name="tab_scd">Clinical Drug or Pack</string>
+    <string name="tab_scdg">Clinical Dose Form Group</string>
 
     <!-- Properties -->
     <string name="property_prescribable_yes">Prescribable</string>

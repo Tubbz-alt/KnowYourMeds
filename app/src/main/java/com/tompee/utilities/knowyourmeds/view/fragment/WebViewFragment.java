@@ -58,6 +58,8 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
             mWebview.clearCache(true);
             WebSettings webSettings = mWebview.getSettings();
             webSettings.setJavaScriptEnabled(true);
+            webSettings.setBuiltInZoomControls(true);
+            webSettings.setDisplayZoomControls(false);
             webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
             webSettings.setUseWideViewPort(true);
             webSettings.setLoadWithOverviewMode(true);

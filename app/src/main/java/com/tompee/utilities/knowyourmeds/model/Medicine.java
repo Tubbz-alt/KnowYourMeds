@@ -17,6 +17,7 @@ public class Medicine {
     private ArrayList<String> mSbdg;
     private ArrayList<String> mScd;
     private Date mDate;
+    private ArrayList<String> mScdg;
 
     public Medicine() {
     }
@@ -124,5 +125,14 @@ public class Medicine {
     public void setDate(Date date) {
         mDate = date;
     }
+
+    public ArrayList<String> getScdg() {
+        return mScdg;
+    }
+
+    public void setScdg(ArrayList<String> scdg) {
+        mScdg = scdg;
+    }
+
 }
 
