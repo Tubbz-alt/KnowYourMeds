@@ -30,6 +30,9 @@
     <dimen name="list_item_height">48dp</dimen>
     <dimen name="list_item_icon_dimension">24dp</dimen>
     <dimen name="list_item_margin">8dp</dimen>
+    <dimen name="list_header_vertical_margin">4dp</dimen>
+    <dimen name="list_border_width">1dp</dimen>
+    <dimen name="list_no_border_width">-2dp</dimen>
 
     <!-- Med detail dimensions -->
     <dimen name="med_detail_margin">16dp</dimen>
@@ -53,4 +56,5 @@
     <!-- Disclaimer -->
     <dimen name="disclaimer_margin">24dp</dimen>
     <dimen name="disclaimer_view_separator">8dp</dimen>
+
 </resources>

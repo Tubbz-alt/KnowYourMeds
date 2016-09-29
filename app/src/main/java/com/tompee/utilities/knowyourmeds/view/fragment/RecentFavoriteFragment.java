@@ -1,7 +1,9 @@
 package com.tompee.utilities.knowyourmeds.view.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +26,7 @@ import java.util.List;
 
 public class RecentFavoriteFragment extends Fragment implements View.OnClickListener {
     private DatabaseHelper mDbHelper;
+    private SharedPreferences mSharedPreferences;
 
     private SwipeListView mFavoriteListView;
     private SwipeListView mRecentListView;
@@ -34,6 +37,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     private View mRecentNoItemsView;
     private View mRecentTrash;
     private View mFavoriteTrash;
+    private View mRecentCard;
 
     public static RecentFavoriteFragment newInstance() {
         return new RecentFavoriteFragment();
@@ -43,6 +47,8 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDbHelper = new DatabaseHelper(getContext());
+        mSharedPreferences = getContext().getSharedPreferences(MainActivity.SHARED_PREF,
+                Context.MODE_PRIVATE);
     }
 
     @Override
@@ -77,6 +83,10 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
         mRecentTrash.setOnClickListener(this);
         mFavoriteTrash = view.findViewById(R.id.image_favorite_trash);
         mFavoriteTrash.setOnClickListener(this);
+
+        mRecentCard = view.findViewById(R.id.recent_card);
+        mRecentCard.setVisibility(mSharedPreferences.getBoolean(SettingsFragment.TAG_RECENT_CB,
+                true) ? View.VISIBLE : View.INVISIBLE);
         return view;
     }
 

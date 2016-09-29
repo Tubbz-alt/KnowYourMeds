@@ -24,9 +24,10 @@ import com.tompee.utilities.knowyourmeds.view.adapter.MainViewPagerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 
 public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
-    private static final String SHARED_PREF = "knowyourmedspref";
+    public static final String SHARED_PREF = "knowyourmedspref";
     private static final String TAG_DISCLAIMER = "disclaimer";
-    private static final int[] mTabIconList = {R.drawable.ic_star_white, R.drawable.ic_search_white};
+    private static final int[] mTabIconList = {R.drawable.ic_star_white, R.drawable.ic_search_white,
+            R.drawable.ic_settings_white};
     private ViewPager mViewPager;
     private InterstitialAd mInterstitialAd;
     private SharedPreferences mSharedPreferences;
