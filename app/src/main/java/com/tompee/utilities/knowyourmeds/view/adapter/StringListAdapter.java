@@ -9,10 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.view.custom.SwipeListItemView;
 
 import java.util.List;
 
-public class StringListAdapter extends ArrayAdapter<String> {
+public class StringListAdapter extends ArrayAdapter<String> implements
+        SwipeListItemView.OnDeleteClickListener {
     private final Context mContext;
     private final int mIconResource;
 
@@ -36,6 +38,8 @@ public class StringListAdapter extends ArrayAdapter<String> {
             view = inflater.inflate(R.layout.list_med, parent, false);
         }
 
+        ((SwipeListItemView) view).setEnableSwipeDetection(false);
+
         TextView name = (TextView) view.findViewById(R.id.med_name);
         name.setText(getItem(position));
 
@@ -46,5 +50,9 @@ public class StringListAdapter extends ArrayAdapter<String> {
             image.setBackgroundResource(mIconResource);
         }
         return view;
+    }
+
+    @Override
+    public void onDeleteClick(int position) {
     }
 }

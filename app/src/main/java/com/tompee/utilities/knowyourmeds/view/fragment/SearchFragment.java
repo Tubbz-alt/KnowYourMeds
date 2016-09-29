@@ -136,7 +136,7 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
             mMedList = medList;
             mResultText.setText(R.string.search_results);
             mResultBar.setVisibility(View.VISIBLE);
-            MedListAdapter adapter = new MedListAdapter(getContext(), medList, true);
+            MedListAdapter adapter = new MedListAdapter(getContext(), medList, true, false);
             mListView.setAdapter(adapter);
         }
         mDialog.dismiss();
@@ -152,7 +152,7 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
             mResultText.setText(String.format(getString(R.string.suggestions_results),
                     mEditText.getText().toString()));
             mResultBar.setVisibility(View.VISIBLE);
-            MedListAdapter adapter = new MedListAdapter(getContext(), suggestedMed, false);
+            MedListAdapter adapter = new MedListAdapter(getContext(), suggestedMed, false, false);
             mListView.setAdapter(adapter);
             mListView.setVisibility(View.VISIBLE);
             mNoResultsView.setVisibility(View.GONE);

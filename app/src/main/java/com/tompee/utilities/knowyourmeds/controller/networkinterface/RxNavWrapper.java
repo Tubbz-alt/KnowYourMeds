@@ -75,7 +75,7 @@ public class RxNavWrapper {
     }
 
     public Medicine searchMed(String name) {
-        String url = String.format(URL_SEARCH_BY_STRING, RX_NORM_BASE_URL, name);
+        String url = String.format(URL_SEARCH_BY_STRING, RX_NORM_BASE_URL, name).replace(" ", "%20");
         Medicine med = new Medicine();
 
         /** Get ID */

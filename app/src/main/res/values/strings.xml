@@ -32,6 +32,7 @@
 
     <!-- Menu titles -->
     <string name="menu_favorite">Add to favorites</string>
+    <string name="menu_refresh">Refresh</string>
 
     <!-- Tab titles -->
     <string name="tab_properties">Properties</string>

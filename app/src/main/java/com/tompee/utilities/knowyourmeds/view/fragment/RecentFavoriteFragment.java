@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.google.android.gms.ads.InterstitialAd;
 import com.tompee.utilities.knowyourmeds.R;
@@ -27,7 +26,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     private DatabaseHelper mDbHelper;
 
     private SwipeListView mFavoriteListView;
-    private ListView mRecentListView;
+    private SwipeListView mRecentListView;
     private List<Medicine> mFavoriteMedList;
     private List<Medicine> mRecentMedList;
 
@@ -61,7 +60,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
                 }
             }
         });
-        mRecentListView = (ListView) view.findViewById(R.id.recent_list);
+        mRecentListView = (SwipeListView) view.findViewById(R.id.recent_list);
         mRecentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
@@ -99,6 +98,8 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             updateLists();
+        } else {
+            closeAllOpenListItems();
         }
     }
 
@@ -106,8 +107,16 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
         if (mDbHelper != null) {
             mFavoriteMedList = mDbHelper.getAllEntries(DatabaseHelper.FAVORITE_TABLE);
             if (mFavoriteMedList.size() > 0) {
-                MedListAdapter adapter = new MedListAdapter(getContext(), mFavoriteMedList, true);
+                MedListAdapter adapter = new MedListAdapter(getContext(), mFavoriteMedList, true, true);
+                View view = mFavoriteListView.getChildAt(0);
+                int position = mFavoriteListView.getFirstVisiblePosition();
                 mFavoriteListView.setAdapter(adapter);
+                if (view == null) {
+                    mFavoriteListView.setSelectionFromTop(position, 0);
+                } else {
+                    mFavoriteListView.setSelectionFromTop(position, view.getTop());
+                }
+
                 mFavoriteListView.setVisibility(View.VISIBLE);
                 mFaveNoItemsView.setVisibility(View.GONE);
                 mFavoriteTrash.setVisibility(View.VISIBLE);
@@ -120,8 +129,16 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
             mRecentMedList = mDbHelper.getAllEntries(DatabaseHelper.RECENT_TABLE);
             if (mRecentMedList.size() > 0) {
                 Collections.reverse(mRecentMedList);
-                MedListAdapter adapter = new MedListAdapter(getContext(), mRecentMedList, true);
+                MedListAdapter adapter = new MedListAdapter(getContext(), mRecentMedList, true, true);
+                View view = mRecentListView.getChildAt(0);
+                int position = mRecentListView.getFirstVisiblePosition();
                 mRecentListView.setAdapter(adapter);
+                if (view == null) {
+                    mRecentListView.setSelectionFromTop(position, 0);
+                } else {
+                    mRecentListView.setSelectionFromTop(position, view.getTop());
+                }
+
                 mRecentListView.setVisibility(View.VISIBLE);
                 mRecentNoItemsView.setVisibility(View.GONE);
                 mRecentTrash.setVisibility(View.VISIBLE);
@@ -158,5 +175,14 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
         }
         builder.setNegativeButton(R.string.control_cancel, null);
         builder.create().show();
+    }
+
+    private void closeAllOpenListItems() {
+        if (mFavoriteListView != null) {
+            mFavoriteListView.resetVisibleView();
+        }
+        if (mRecentListView != null) {
+            mRecentListView.resetVisibleView();
+        }
     }
 }
