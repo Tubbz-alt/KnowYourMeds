@@ -37,6 +37,7 @@ public class RxNavWrapper {
     private static final String SBDG = "SBDG";
     private static final String SCD = "SCD";
     private static final String SCDG = "SCDG";
+    private static final String SBD = "SBD";
     private static final int URL_REQUEST_TIMEOUT = 10000;
 
     /* RX Norm REST functions */
@@ -46,7 +47,7 @@ public class RxNavWrapper {
     private static final String URL_TERM_TYPE = "%s/rxcui/%s/property.json?propName=TTY";
     private static final String URL_SOURCES = "%s/rxcui/%s/property.json?propName=Source";
     private static final String URL_TTY_VALUES = "%s/rxcui/%s/related.json?tty=" + BRAND + "+" +
-            INGREDIENT + "+" + SCDC + "+" + SBDC + "+" + SBDG + "+" + SCD + "+" + SCDG;
+            INGREDIENT + "+" + SCDC + "+" + SBDC + "+" + SBDG + "+" + SCD + "+" + SCDG + "+" + SBD;
 
     /* RXNorm Properties */
     private static final String PROPERTIES_RX_NORM = "RxNorm%20Name";
@@ -286,6 +287,13 @@ public class RxNavWrapper {
                             list.add(scdgArray.getJSONObject(i).getString(TAG_NAME));
                         }
                         med.setScdg(list);
+                        break;
+                    case SBD:
+                        JSONArray sbdArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                        for (int i = 0; i < sbdArray.length(); i++) {
+                            list.add(sbdArray.getJSONObject(i).getString(TAG_NAME));
+                        }
+                        med.setSbd(list);
                         break;
                 }
             }
