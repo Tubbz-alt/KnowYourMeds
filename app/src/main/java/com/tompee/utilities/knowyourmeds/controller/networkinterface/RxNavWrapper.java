@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
@@ -75,7 +76,7 @@ public class RxNavWrapper {
         mContext = context;
     }
 
-    public Medicine searchMed(String name) {
+    public Medicine searchMed(String name) throws NoConnectionError {
         String url = String.format(URL_SEARCH_BY_STRING, RX_NORM_BASE_URL, name).replace(" ", "%20");
         Medicine med = new Medicine();
 
@@ -90,7 +91,10 @@ public class RxNavWrapper {
             JSONArray arrayId = group.getJSONArray(TAG_RX_NORM_ID);
             med.setRxnormId(arrayId.getString(0));
         } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get ID request: " + e.getMessage());
+            Log.e(TAG, "Error in get ID request: " + e.getMessage());
+            if (e.getCause() instanceof NoConnectionError) {
+                throw (NoConnectionError) e.getCause();
+            }
             return null;
         }
 
@@ -104,7 +108,10 @@ public class RxNavWrapper {
             med.setName(response.getJSONObject(TAG_PROP_CONCEPT_GROUP).
                     getJSONArray(TAG_PROP_CONCEPT).getJSONObject(0).getString(TAG_PROP_VALUE));
         } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get name request: " + e.getMessage());
+            Log.e(TAG, "Error in get name request: " + e.getMessage());
+            if (e.getCause() instanceof NoConnectionError) {
+                throw (NoConnectionError) e.getCause();
+            }
             return null;
         }
 
@@ -119,13 +126,16 @@ public class RxNavWrapper {
                     getJSONArray(TAG_PROP_CONCEPT).getJSONObject(0).
                     getString(TAG_PROP_VALUE).equals(YES));
         } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get prescribable request: " + e.getMessage());
+            Log.e(TAG, "Error in get prescribable request: " + e.getMessage());
+            if (e.getCause() instanceof NoConnectionError) {
+                throw (NoConnectionError) e.getCause();
+            }
             med.setIsPrescribable(false);
         }
         return med;
     }
 
-    public List<Medicine> suggestedNames(String name) {
+    public List<Medicine> suggestedNames(String name) throws NoConnectionError {
         String url = String.format(URL_SPELLING_SUGGESTIONS, RX_NORM_BASE_URL, name);
         List<Medicine> suggestedNames = new ArrayList<>();
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
@@ -141,12 +151,15 @@ public class RxNavWrapper {
                 suggestedNames.add(med);
             }
         } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get suggestedNames request: " + e.getMessage());
+            Log.e(TAG, "Error in get suggestedNames request: " + e.getMessage());
+            if (e.getCause() instanceof NoConnectionError) {
+                throw (NoConnectionError) e.getCause();
+            }
         }
         return suggestedNames;
     }
 
-    public boolean isIngredient(String rxcui) {
+    public boolean isIngredient(String rxcui) throws NoConnectionError {
         String url = String.format(URL_TERM_TYPE, RX_NORM_BASE_URL, rxcui);
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
@@ -159,12 +172,15 @@ public class RxNavWrapper {
                 return true;
             }
         } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get is ingredient request: " + e.getMessage());
+            Log.e(TAG, "Error in get is ingredient request: " + e.getMessage());
+            if (e.getCause() instanceof NoConnectionError) {
+                throw (NoConnectionError) e.getCause();
+            }
         }
         return false;
     }
 
-    public ArrayList<String> getSources(String rxcui) {
+    public ArrayList<String> getSources(String rxcui) throws NoConnectionError {
         String url = String.format(URL_SOURCES, RX_NORM_BASE_URL, rxcui);
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
@@ -179,12 +195,15 @@ public class RxNavWrapper {
             }
             return sourceList;
         } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get sources request: " + e.getMessage());
+            Log.e(TAG, "Error in get sources request: " + e.getMessage());
+            if (e.getCause() instanceof NoConnectionError) {
+                throw (NoConnectionError) e.getCause();
+            }
         }
         return null;
     }
 
-    public String getMedlineUrl(String name, String rxcui) {
+    public String getMedlineUrl(String name, String rxcui) throws NoConnectionError {
         String url = String.format(MEDLINE_BASE_URL, rxcui);
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
@@ -196,12 +215,15 @@ public class RxNavWrapper {
             return response.getJSONObject(TAG_FEED).getJSONArray(TAG_ENTRY).getJSONObject(0).
                     getJSONArray(TAG_LINK).getJSONObject(0).getString(TAG_HREF);
         } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get Medline URL request: " + e.getMessage());
+            Log.e(TAG, "Error in get Medline URL request: " + e.getMessage());
+            if (e.getCause() instanceof NoConnectionError) {
+                throw (NoConnectionError) e.getCause();
+            }
         }
         return MEDLINE_QUERY_URL + name;
     }
 
-    public void getTtyValues(Medicine med) {
+    public void getTtyValues(Medicine med) throws NoConnectionError {
         String url = String.format(URL_TTY_VALUES, RX_NORM_BASE_URL, med.getRxnormId());
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
@@ -268,7 +290,10 @@ public class RxNavWrapper {
                 }
             }
         } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.d(TAG, "Error in get is ingredient request: " + e.getMessage());
+            Log.e(TAG, "Error in get is ingredient request: " + e.getMessage());
+            if (e.getCause() instanceof NoConnectionError) {
+                throw (NoConnectionError) e.getCause();
+            }
         }
     }
 }

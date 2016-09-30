@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.task.SearchTask;
@@ -153,6 +154,15 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
         }
         mDialog.dismiss();
         mDialog = null;
+    }
+
+    @Override
+    public void onConnectionError() {
+        mTask = null;
+        mDialog.dismiss();
+        mDialog = null;
+        Toast.makeText(getContext(), getString(R.string.toast_no_internet),
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override

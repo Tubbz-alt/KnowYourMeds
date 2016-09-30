@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -172,6 +173,15 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         mGetMedDetailTask = null;
         mDialog.dismiss();
         mDialog = null;
+    }
+
+    @Override
+    public void onConnectionError() {
+        Toast.makeText(this, getString(R.string.toast_no_internet), Toast.LENGTH_SHORT).show();
+        mGetMedDetailTask = null;
+        mDialog.dismiss();
+        mDialog = null;
+        finish();
     }
 
     private void initializeDisplay() {
