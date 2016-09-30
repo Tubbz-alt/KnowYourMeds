@@ -1,6 +1,8 @@
 package com.tompee.utilities.knowyourmeds.view;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,6 +32,7 @@ import com.tompee.utilities.knowyourmeds.view.adapter.DrawerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 import com.tompee.utilities.knowyourmeds.view.fragment.PropertiesFragment;
+import com.tompee.utilities.knowyourmeds.view.fragment.SettingsFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SourceFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.TtyFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.WebViewFragment;
@@ -99,16 +102,27 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         TextView title = (TextView) findViewById(R.id.toolbar_text);
         title.setText(name);
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        int origin = intent.getIntExtra(TAG_ORIGIN, FROM_SEARCH);
-        if (origin == FROM_SEARCH) {
-            startTask(name);
+        SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.SHARED_PREF,
+                Context.MODE_PRIVATE);
+        if (sharedPreferences.getBoolean(SettingsFragment.TAG_OFFLINE_MODE_CB, false)) {
+            DatabaseHelper db = new DatabaseHelper(this);
+            mMedicine = db.getEntry(DatabaseHelper.FAVORITE_TABLE, name);
+            if (mMedicine == null) {
+                mMedicine = db.getEntry(DatabaseHelper.RECENT_TABLE, name);
+            }
+            initializeDisplay();
         } else {
-            mMedicine = dbHelper.getEntry(origin == FROM_FAVORITES ? DatabaseHelper.FAVORITE_TABLE :
-                    DatabaseHelper.RECENT_TABLE, name);
-            if (isCacheValid(mMedicine.getDate(), Calendar.getInstance().getTime())) {
-                initializeDisplay();
-            } else {
+            int origin = intent.getIntExtra(TAG_ORIGIN, FROM_SEARCH);
+            if (origin == FROM_SEARCH) {
                 startTask(name);
+            } else {
+                mMedicine = dbHelper.getEntry(origin == FROM_FAVORITES ? DatabaseHelper.FAVORITE_TABLE :
+                        DatabaseHelper.RECENT_TABLE, name);
+                if (isCacheValid(mMedicine.getDate(), Calendar.getInstance().getTime())) {
+                    initializeDisplay();
+                } else {
+                    startTask(name);
+                }
             }
         }
     }

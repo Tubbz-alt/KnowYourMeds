@@ -1,7 +1,10 @@
 package com.tompee.utilities.knowyourmeds.view.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,12 +20,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.task.SearchTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
+import com.tompee.utilities.knowyourmeds.view.MainActivity;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.MedListAdapter;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFragment extends Fragment implements TextWatcher, View.OnFocusChangeListener,
@@ -36,12 +42,20 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     private View mNoResultsView;
     private ListView mListView;
     private List<Medicine> mMedList;
+    private SharedPreferences mSharedPreferences;
 
     private SearchTask mTask;
     private ProcessingDialog mDialog;
 
     public static SearchFragment newInstance() {
         return new SearchFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mSharedPreferences = getContext().getSharedPreferences(MainActivity.SHARED_PREF,
+                Context.MODE_PRIVATE);
     }
 
     @Override
@@ -103,10 +117,36 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             mEditText.clearFocus();
-            startSearch();
+            if (mSharedPreferences.getBoolean(SettingsFragment.TAG_OFFLINE_MODE_CB, false)) {
+                searchFromDatabase();
+            } else {
+                startSearch();
+            }
             return true;
         }
         return false;
+    }
+
+    private void searchFromDatabase() {
+        mResultBar.setVisibility(View.VISIBLE);
+        mResultText.setText(R.string.search_results);
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        Medicine med = db.getEntry(DatabaseHelper.FAVORITE_TABLE, mEditText.getText().toString());
+        if (med == null) {
+            med = db.getEntry(DatabaseHelper.RECENT_TABLE, mEditText.getText().toString());
+            if (med == null) {
+                mListView.setVisibility(View.GONE);
+                mNoResultsView.setVisibility(View.VISIBLE);
+                return;
+            }
+        }
+        mListView.setVisibility(View.VISIBLE);
+        mNoResultsView.setVisibility(View.GONE);
+        List<Medicine> medList = new ArrayList<>();
+        medList.add(med);
+        MedListAdapter adapter = new MedListAdapter(getContext(), medList, true, false);
+        mListView.setAdapter(adapter);
+        mMedList = medList;
     }
 
     private void startSearch() {
@@ -174,8 +214,17 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
         } else {
             Intent intent = new Intent(getContext(), MedDetailActivity.class);
             intent.putExtra(MedDetailActivity.TAG_NAME, med.getName());
+            intent.putExtra(MedDetailActivity.TAG_ORIGIN, MedDetailActivity.FROM_SEARCH);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (!isVisibleToUser && mResultBar != null) {
+            mResultBar.setVisibility(View.GONE);
         }
     }
 }

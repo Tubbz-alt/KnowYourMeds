@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 
@@ -40,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_SCDG = "SCDG";
 
     private static final String CREATE_FAVORITE_TABLE = "create table " + FAVORITE_TABLE +
-            " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null," +
+            " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null collate nocase," +
             COLUMN_PRESC + " integer," + COLUMN_IS_INGREDIENT + " integer, " +
             COLUMN_URL + " text not null," + COLUMN_INGREDIENTS + " text," +
             COLUMN_SOURCES + " text," + COLUMN_BRANDS + " text," + COLUMN_SCDC + " text," +
@@ -48,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COLUMN_DATE + " text not null," + COLUMN_SCDG + " text" + " )";
 
     private static final String CREATE_RECENT_TABLE = "create table " + RECENT_TABLE +
-            " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null," +
+            " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null collate nocase," +
             COLUMN_PRESC + " integer," + COLUMN_IS_INGREDIENT + " integer, " +
             COLUMN_URL + " text not null," + COLUMN_INGREDIENTS + " text," +
             COLUMN_SOURCES + " text," + COLUMN_BRANDS + " text," + COLUMN_SCDC + " text," +
@@ -156,6 +157,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_SBDG, COLUMN_SCD, COLUMN_DATE, COLUMN_SCDG};
         Cursor cursor = db.query(tableName, columns, COLUMN_NAME + "='" + name + "'", null, null, null, null);
         cursor.moveToFirst();
+        if (cursor.getCount() == 0) {
+            return null;
+        }
         Medicine med = cursorToEntry(cursor);
         cursor.close();
         db.close();

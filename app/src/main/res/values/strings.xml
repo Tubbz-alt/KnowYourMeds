@@ -35,6 +35,8 @@
     <string name="control_cancel">Cancel</string>
     <string name="control_ok">OK</string>
     <string name="control_understand">I understand</string>
+    <string name="control_enable">Enable</string>
+    <string name="control_disable">Disable</string>
 
     <!-- Menu titles -->
     <string name="menu_favorite">Add to favorites</string>
@@ -76,6 +78,9 @@
 
     <!-- Settings -->
     <string name="settings">Settings</string>
-    <string name="settings_offline_mode">Enable offline mode</string>
+    <string name="settings_offline_mode_title">Offline Mode</string>
+    <string name="settings_offline_mode_message">Offline mode allows you to view your favorites and
+        recent searches even without internet connection.\n\nIn offline mode, Search feature will
+        lookup on your recent and favorite lists.\n\nNote: Data in offline mode maybe outdated.</string>
     <string name="settings_show_recent">Show recent searches</string>
 </resources>
