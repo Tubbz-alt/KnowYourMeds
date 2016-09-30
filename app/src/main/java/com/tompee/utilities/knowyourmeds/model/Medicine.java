@@ -19,6 +19,7 @@ public class Medicine {
     private Date mDate;
     private ArrayList<String> mScdg;
     private ArrayList<String> mSbd;
+    private ArrayList<String> mSplSetId;
 
     public Medicine() {
     }
@@ -141,6 +142,14 @@ public class Medicine {
 
     public void setSbd(ArrayList<String> sbd) {
         mSbd = sbd;
+    }
+
+    public ArrayList<String> getSplSetId() {
+        return mSplSetId;
+    }
+
+    public void setSplSetId(ArrayList<String> splSetId) {
+        mSplSetId = splSetId;
     }
 }
 

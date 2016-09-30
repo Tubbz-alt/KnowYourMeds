@@ -23,9 +23,9 @@ public class GetMedDetailTask extends AsyncTask<String, Void, Medicine> {
     protected Medicine doInBackground(String... args) {
         try {
             Medicine med = mWrapper.searchMed(args[0]);
-            med.setUrl(mWrapper.getMedlineUrl(med.getName(), med.getRxnormId()));
+            med.setUrl(mWrapper.getMedLineUrl(med.getName(), med.getRxnormId()));
             med.setSources(mWrapper.getSources(med.getRxnormId()));
-            med.setIsIngredient(mWrapper.isIngredient(med.getRxnormId()));
+            mWrapper.getAttributes(med);
             mWrapper.getTtyValues(med);
             med.setDate(Calendar.getInstance().getTime());
             return med;
@@ -46,6 +46,7 @@ public class GetMedDetailTask extends AsyncTask<String, Void, Medicine> {
 
     public interface GetMedTaskListener {
         void onCompleted(Medicine med);
+
         void onConnectionError();
     }
 }

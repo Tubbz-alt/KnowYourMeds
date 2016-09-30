@@ -82,6 +82,7 @@
     <string name="settings_offline_mode_title">Offline Mode</string>
     <string name="settings_offline_mode_message">Offline mode allows you to view your favorites and
         recent searches even without internet connection.\n\nIn offline mode, Search feature will
-        lookup on your recent and favorite lists.\n\nNote: Data in offline mode maybe outdated.</string>
+        lookup on your recent and favorite lists.\n\nNote: Data in offline mode maybe outdated and
+        browser based screens may not display data.</string>
     <string name="settings_show_recent">Show recent searches</string>
 </resources>

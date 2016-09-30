@@ -31,6 +31,7 @@ public class RxNavWrapper {
     /* Constants */
     private static final String YES = "Y";
     private static final String INGREDIENT = "IN";
+    private static final String TTY = "TTY";
     private static final String BRAND = "BN";
     private static final String SCDC = "SCDC";
     private static final String SBDC = "SBDC";
@@ -38,16 +39,18 @@ public class RxNavWrapper {
     private static final String SCD = "SCD";
     private static final String SCDG = "SCDG";
     private static final String SBD = "SBD";
+    private static final String SPL_SET_ID = "SPL_SET_ID";
     private static final int URL_REQUEST_TIMEOUT = 10000;
 
     /* RX Norm REST functions */
     private static final String URL_SEARCH_BY_STRING = "%s/rxcui.json?name=%s";
     private static final String URL_PROPERTY_NAME = "%s/rxcui/%s/property.json?propName=%s";
     private static final String URL_SPELLING_SUGGESTIONS = "%s/spellingsuggestions.json?name=%s";
-    private static final String URL_TERM_TYPE = "%s/rxcui/%s/property.json?propName=TTY";
-    private static final String URL_SOURCES = "%s/rxcui/%s/property.json?propName=Source";
+    private static final String URL_ATTRIBUTES = "%s/rxcui/%s/property.json?propName=ATTRIBUTES";
+    private static final String URL_CODES = "%s/rxcui/%s/property.json?propName=CODES";
     private static final String URL_TTY_VALUES = "%s/rxcui/%s/related.json?tty=" + BRAND + "+" +
             INGREDIENT + "+" + SCDC + "+" + SBDC + "+" + SBDG + "+" + SCD + "+" + SCDG + "+" + SBD;
+    private static final String URL_SOURCES = "%s/rxcui/%s/property.json?propName=Source";
 
     /* RXNorm Properties */
     private static final String PROPERTIES_RX_NORM = "RxNorm%20Name";
@@ -59,6 +62,7 @@ public class RxNavWrapper {
     private static final String TAG_PROP_CONCEPT_GROUP = "propConceptGroup";
     private static final String TAG_PROP_CONCEPT = "propConcept";
     private static final String TAG_PROP_VALUE = "propValue";
+    private static final String TAG_PROP_NAME = "propName";
     private static final String TAG_SUGGESTION_GROUP = "suggestionGroup";
     private static final String TAG_SUGGESTION_LIST = "suggestionList";
     private static final String TAG_RELATED_GROUP = "relatedGroup";
@@ -160,17 +164,24 @@ public class RxNavWrapper {
         return suggestedNames;
     }
 
-    public boolean isIngredient(String rxcui) throws NoConnectionError {
-        String url = String.format(URL_TERM_TYPE, RX_NORM_BASE_URL, rxcui);
+    public void getAttributes(Medicine med) throws NoConnectionError {
+        String url = String.format(URL_ATTRIBUTES, RX_NORM_BASE_URL, med.getRxnormId());
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(URL_REQUEST_TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
         try {
             JSONObject response = future.get();
-            if (response.getJSONObject(TAG_PROP_CONCEPT_GROUP).
-                    getJSONArray(TAG_PROP_CONCEPT).getJSONObject(0).
-                    getString(TAG_PROP_VALUE).equals(INGREDIENT)) {
-                return true;
+            JSONArray array = response.getJSONObject(TAG_PROP_CONCEPT_GROUP).
+                    getJSONArray(TAG_PROP_CONCEPT);
+            for (int index = 0; index < array.length(); index++) {
+                JSONObject obj = array.getJSONObject(index);
+                switch (obj.getString(TAG_PROP_NAME)) {
+                    case TTY:
+                        med.setIsIngredient(obj.getString(TAG_PROP_VALUE).equals(INGREDIENT));
+                        break;
+                }
             }
         } catch (InterruptedException | ExecutionException | JSONException e) {
             Log.e(TAG, "Error in get is ingredient request: " + e.getMessage());
@@ -178,7 +189,35 @@ public class RxNavWrapper {
                 throw (NoConnectionError) e.getCause();
             }
         }
-        return false;
+    }
+
+    public void getCodes(Medicine med) throws NoConnectionError {
+        String url = String.format(URL_CODES, RX_NORM_BASE_URL, med.getRxnormId());
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(URL_REQUEST_TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
+        try {
+            JSONObject response = future.get();
+            JSONArray array = response.getJSONObject(TAG_PROP_CONCEPT_GROUP).
+                    getJSONArray(TAG_PROP_CONCEPT);
+            ArrayList<String> splList = new ArrayList<>();
+            for (int index = 0; index < array.length(); index++) {
+                JSONObject obj = array.getJSONObject(index);
+                switch (obj.getString(TAG_PROP_NAME)) {
+                    case SPL_SET_ID:
+                        splList.add(obj.getString(TAG_PROP_VALUE));
+                        break;
+                }
+            }
+            med.setSplSetId(splList);
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            Log.e(TAG, "Error in get is ingredient request: " + e.getMessage());
+            if (e.getCause() instanceof NoConnectionError) {
+                throw (NoConnectionError) e.getCause();
+            }
+        }
     }
 
     public ArrayList<String> getSources(String rxcui) throws NoConnectionError {
@@ -204,7 +243,7 @@ public class RxNavWrapper {
         return null;
     }
 
-    public String getMedlineUrl(String name, String rxcui) throws NoConnectionError {
+    public String getMedLineUrl(String name, String rxcui) throws NoConnectionError {
         String url = String.format(MEDLINE_BASE_URL, rxcui);
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
