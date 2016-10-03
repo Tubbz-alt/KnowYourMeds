@@ -37,7 +37,6 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     private View mRecentNoItemsView;
     private View mRecentTrash;
     private View mFavoriteTrash;
-    private View mRecentCard;
 
     public static RecentFavoriteFragment newInstance() {
         return new RecentFavoriteFragment();
@@ -84,8 +83,8 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
         mFavoriteTrash = view.findViewById(R.id.image_favorite_trash);
         mFavoriteTrash.setOnClickListener(this);
 
-        mRecentCard = view.findViewById(R.id.recent_card);
-        mRecentCard.setVisibility(mSharedPreferences.getBoolean(SettingsFragment.TAG_RECENT_CB,
+        View recentCard = view.findViewById(R.id.recent_card);
+        recentCard.setVisibility(mSharedPreferences.getBoolean(SettingsFragment.TAG_RECENT_CB,
                 true) ? View.VISIBLE : View.INVISIBLE);
         return view;
     }

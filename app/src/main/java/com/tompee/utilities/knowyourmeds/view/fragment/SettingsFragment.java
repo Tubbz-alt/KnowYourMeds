@@ -11,7 +11,6 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.view.MainActivity;
@@ -48,7 +47,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         mSplCheckBox = (AppCompatCheckBox) view.findViewById(R.id.spl_support_cb);
         mSplCheckBox.setChecked(mSharedPreferences.getBoolean(TAG_SPL_CB, false));
-        rowView  = view.findViewById(R.id.spl_support);
+        rowView = view.findViewById(R.id.spl_support);
         rowView.setOnClickListener(this);
 
         mRecentCheckBox = (AppCompatCheckBox) view.findViewById(R.id.recent_cb);

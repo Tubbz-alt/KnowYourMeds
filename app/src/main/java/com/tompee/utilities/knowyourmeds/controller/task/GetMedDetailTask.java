@@ -15,8 +15,8 @@ import java.util.Calendar;
 public class GetMedDetailTask extends AsyncTask<String, Void, Medicine> {
     private final RxNavWrapper mWrapper;
     private final GetMedTaskListener mListener;
+    private final boolean mIsSplEnabled;
     private boolean mIsOffline;
-    private boolean mIsSplEnabled;
 
     public GetMedDetailTask(Context context, GetMedTaskListener listener) {
         mWrapper = new RxNavWrapper(context);

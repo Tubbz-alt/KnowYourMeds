@@ -42,7 +42,6 @@ public class RxNavWrapper {
     private static final String SCD = "SCD";
     private static final String SCDG = "SCDG";
     private static final String SBD = "SBD";
-    private static final String SPL_SET_ID = "SPL_SET_ID";
     private static final int URL_REQUEST_TIMEOUT = 10000;
 
     /* RX Norm REST functions */

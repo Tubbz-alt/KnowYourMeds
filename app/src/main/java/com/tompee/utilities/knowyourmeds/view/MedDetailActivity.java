@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,7 +54,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands,
             R.string.tab_sbdc, R.string.tab_sbd, R.string.tab_sbdg, R.string.tab_scdc,
             R.string.tab_scd, R.string.tab_scdg, R.string.tab_info,
-            R.string.tab_sources};
+            R.string.tab_sources, R.string.tab_exit};
     private RecyclerView mRecyclerView;
     private GestureDetector mGestureDetector;
     private DrawerLayout mDrawer;
@@ -236,6 +237,11 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         mSourcesFragment = SourceFragment.getInstance();
     }
 
+    @Override
+    public void onBackPressed() {
+        mDrawer.openDrawer(Gravity.LEFT);
+    }
+
     private void hideAllFragments() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -291,6 +297,10 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     }
 
     private void reflectCurrentFragment() {
+        if (OPTION_IDS[mFragmentIndex] == R.string.tab_exit) {
+            finish();
+            return;
+        }
         hideAllFragments();
         Fragment fragment = null;
         switch (OPTION_IDS[mFragmentIndex]) {

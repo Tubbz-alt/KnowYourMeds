@@ -224,7 +224,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    public Map<String, String> jsonToMap(String column, String string) {
+    private Map<String, String> jsonToMap(String column, String string) {
         Map<String, String> retMap = new LinkedHashMap<>();
         try {
             JSONObject json = new JSONObject(string).getJSONObject(column);
