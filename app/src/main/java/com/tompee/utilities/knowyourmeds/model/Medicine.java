@@ -2,6 +2,7 @@ package com.tompee.utilities.knowyourmeds.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 public class Medicine {
     private String mRxnormId;
@@ -19,7 +20,7 @@ public class Medicine {
     private Date mDate;
     private ArrayList<String> mScdg;
     private ArrayList<String> mSbd;
-    private ArrayList<String> mSplSetId;
+    private Map<String, String> mSplSetId;
 
     public Medicine() {
     }
@@ -144,11 +145,11 @@ public class Medicine {
         mSbd = sbd;
     }
 
-    public ArrayList<String> getSplSetId() {
+    public Map<String, String> getSplSetId() {
         return mSplSetId;
     }
 
-    public void setSplSetId(ArrayList<String> splSetId) {
+    public void setSplSetId(Map<String, String> splSetId) {
         mSplSetId = splSetId;
     }
 }

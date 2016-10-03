@@ -16,7 +16,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class RxNavWrapper {
@@ -27,6 +29,7 @@ public class RxNavWrapper {
             "2.16.840.1.113883.6.88&mainSearchCriteria.v.c=%s";
     private static final String MEDLINE_QUERY_URL = "https://vsearch.nlm.nih.gov/vivisimo/cgi-bin/" +
             "query-meta?v%3Aproject=medlineplus&v%3Asources=medlineplus-bundle&query=";
+    private static final String DAILY_MED_BASE_URL = "https://dailymed.nlm.nih.gov/dailymed/services/v2";
 
     /* Constants */
     private static final String YES = "Y";
@@ -46,11 +49,14 @@ public class RxNavWrapper {
     private static final String URL_SEARCH_BY_STRING = "%s/rxcui.json?name=%s";
     private static final String URL_PROPERTY_NAME = "%s/rxcui/%s/property.json?propName=%s";
     private static final String URL_SPELLING_SUGGESTIONS = "%s/spellingsuggestions.json?name=%s";
-    private static final String URL_ATTRIBUTES = "%s/rxcui/%s/property.json?propName=ATTRIBUTES";
-    private static final String URL_CODES = "%s/rxcui/%s/property.json?propName=CODES";
+    private static final String URL_ATTRIBUTES = "%s/rxcui/%s/allProperties.json?prop=ATTRIBUTES";
+    private static final String URL_CODES = "%s/rxcui/%s/allProperties.json?prop=CODES";
+    private static final String URL_SOURCES = "%s/rxcui/%s/property.json?propName=Source";
     private static final String URL_TTY_VALUES = "%s/rxcui/%s/related.json?tty=" + BRAND + "+" +
             INGREDIENT + "+" + SCDC + "+" + SBDC + "+" + SBDG + "+" + SCD + "+" + SCDG + "+" + SBD;
-    private static final String URL_SOURCES = "%s/rxcui/%s/property.json?propName=Source";
+
+    /* Daily med REST functions */
+    private static final String URL_SPL = "%s/spls.json?rxcui=%s&page=%d";
 
     /* RXNorm Properties */
     private static final String PROPERTIES_RX_NORM = "RxNorm%20Name";
@@ -74,6 +80,12 @@ public class RxNavWrapper {
     private static final String TAG_ENTRY = "entry";
     private static final String TAG_LINK = "link";
     private static final String TAG_HREF = "href";
+    private static final String TAG_DATA = "data";
+    private static final String TAG_TITLE = "title";
+    private static final String TAG_SET_ID = "setid";
+    private static final String TAG_METADATA = "metadata";
+    private static final String TAG_TOTAL_PAGES = "total_pages";
+    private static final String TAG_CURRENT_PAGE = "current_page";
 
     private final Context mContext;
 
@@ -192,36 +204,39 @@ public class RxNavWrapper {
     }
 
     public void getCodes(Medicine med) throws NoConnectionError {
-        String url = String.format(URL_CODES, RX_NORM_BASE_URL, med.getRxnormId());
-        RequestFuture<JSONObject> future = RequestFuture.newFuture();
-        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
-        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(URL_REQUEST_TIMEOUT,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
-        try {
-            JSONObject response = future.get();
-            JSONArray array = response.getJSONObject(TAG_PROP_CONCEPT_GROUP).
-                    getJSONArray(TAG_PROP_CONCEPT);
-            ArrayList<String> splList = new ArrayList<>();
-            for (int index = 0; index < array.length(); index++) {
-                JSONObject obj = array.getJSONObject(index);
-                switch (obj.getString(TAG_PROP_NAME)) {
-                    case SPL_SET_ID:
-                        splList.add(obj.getString(TAG_PROP_VALUE));
-                        break;
+        Map<String, String> codeMap = new HashMap<>();
+        int totalPages = 0;
+        int currentPage = 0;
+        do {
+            String url = String.format(URL_SPL, DAILY_MED_BASE_URL, med.getRxnormId(), ++currentPage);
+            RequestFuture<JSONObject> future = RequestFuture.newFuture();
+            JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+            jsonRequest.setRetryPolicy(new DefaultRetryPolicy(URL_REQUEST_TIMEOUT,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
+            try {
+                JSONObject response = future.get();
+                /** Get data */
+                JSONArray array = response.getJSONArray(TAG_DATA);
+                for (int index = 0; index < array.length(); index++) {
+                    JSONObject obj = array.getJSONObject(index);
+                    codeMap.put(obj.getString(TAG_SET_ID), obj.getString(TAG_TITLE));
+                }
+                /** Get Metadata */
+                totalPages = response.getJSONObject(TAG_METADATA).getInt(TAG_TOTAL_PAGES);
+                currentPage = response.getJSONObject(TAG_METADATA).getInt(TAG_CURRENT_PAGE);
+            } catch (InterruptedException | ExecutionException | JSONException e) {
+                Log.e(TAG, "Error in get codes request: " + e.getMessage());
+                if (e.getCause() instanceof NoConnectionError) {
+                    throw (NoConnectionError) e.getCause();
                 }
             }
-            med.setSplSetId(splList);
-        } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.e(TAG, "Error in get is ingredient request: " + e.getMessage());
-            if (e.getCause() instanceof NoConnectionError) {
-                throw (NoConnectionError) e.getCause();
-            }
-        }
+        } while (currentPage < totalPages);
+        med.setSplSetId(codeMap);
     }
 
-    public ArrayList<String> getSources(String rxcui) throws NoConnectionError {
-        String url = String.format(URL_SOURCES, RX_NORM_BASE_URL, rxcui);
+    public void getSources(Medicine med) throws NoConnectionError {
+        String url = String.format(URL_SOURCES, RX_NORM_BASE_URL, med.getRxnormId());
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
         VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
@@ -233,18 +248,17 @@ public class RxNavWrapper {
             for (int index = 0; index < array.length(); index++) {
                 sourceList.add(array.getJSONObject(index).getString(TAG_PROP_VALUE));
             }
-            return sourceList;
+            med.setSources(sourceList);
         } catch (InterruptedException | ExecutionException | JSONException e) {
             Log.e(TAG, "Error in get sources request: " + e.getMessage());
             if (e.getCause() instanceof NoConnectionError) {
                 throw (NoConnectionError) e.getCause();
             }
         }
-        return null;
     }
 
-    public String getMedLineUrl(String name, String rxcui) throws NoConnectionError {
-        String url = String.format(MEDLINE_BASE_URL, rxcui);
+    public void getMedLineUrl(Medicine med) throws NoConnectionError {
+        String url = String.format(MEDLINE_BASE_URL, med.getRxnormId());
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
         jsonRequest.setRetryPolicy(new DefaultRetryPolicy(URL_REQUEST_TIMEOUT,
@@ -252,15 +266,16 @@ public class RxNavWrapper {
         VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
         try {
             JSONObject response = future.get();
-            return response.getJSONObject(TAG_FEED).getJSONArray(TAG_ENTRY).getJSONObject(0).
-                    getJSONArray(TAG_LINK).getJSONObject(0).getString(TAG_HREF);
+            med.setUrl(response.getJSONObject(TAG_FEED).getJSONArray(TAG_ENTRY).getJSONObject(0).
+                    getJSONArray(TAG_LINK).getJSONObject(0).getString(TAG_HREF));
+            return;
         } catch (InterruptedException | ExecutionException | JSONException e) {
             Log.e(TAG, "Error in get Medline URL request: " + e.getMessage());
             if (e.getCause() instanceof NoConnectionError) {
                 throw (NoConnectionError) e.getCause();
             }
         }
-        return MEDLINE_QUERY_URL + name;
+        med.setUrl(MEDLINE_QUERY_URL + med.getName());
     }
 
     public void getTtyValues(Medicine med) throws NoConnectionError {

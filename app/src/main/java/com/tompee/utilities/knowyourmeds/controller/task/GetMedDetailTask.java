@@ -23,11 +23,12 @@ public class GetMedDetailTask extends AsyncTask<String, Void, Medicine> {
     protected Medicine doInBackground(String... args) {
         try {
             Medicine med = mWrapper.searchMed(args[0]);
-            med.setUrl(mWrapper.getMedLineUrl(med.getName(), med.getRxnormId()));
-            med.setSources(mWrapper.getSources(med.getRxnormId()));
-            mWrapper.getAttributes(med);
-            mWrapper.getTtyValues(med);
             med.setDate(Calendar.getInstance().getTime());
+            mWrapper.getMedLineUrl(med);
+            mWrapper.getSources(med);
+            mWrapper.getAttributes(med);
+            mWrapper.getCodes(med);
+            mWrapper.getTtyValues(med);
             return med;
         } catch (NoConnectionError noConnectionError) {
             mIsOffline = true;

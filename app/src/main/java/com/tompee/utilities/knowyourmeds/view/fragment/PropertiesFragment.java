@@ -14,6 +14,10 @@ import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.StringListAdapter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class PropertiesFragment extends Fragment {
     private static PropertiesFragment mSingleton;
 
@@ -51,6 +55,17 @@ public class PropertiesFragment extends Fragment {
             ListView listView = (ListView) view.findViewById(R.id.list_ingredients);
             listView.setAdapter(new StringListAdapter(getContext(), med.getIngredients(),
                     R.drawable.ic_ingredient));
+        }
+        View splView = view.findViewById(R.id.spls);
+        Map<String, String> splMap = med.getSplSetId();
+        if (splMap == null || splMap.isEmpty()) {
+            splView.setVisibility(View.INVISIBLE);
+        } else {
+            ListView listView = (ListView) view.findViewById(R.id.list_spls);
+            listView.setAdapter(new StringListAdapter(getContext(),
+                    new ArrayList<>(splMap.values()), 0));
+            TextView count = (TextView) view.findViewById(R.id.count);
+            count.setText(String.valueOf(splMap.size()));
         }
         return view;
     }
