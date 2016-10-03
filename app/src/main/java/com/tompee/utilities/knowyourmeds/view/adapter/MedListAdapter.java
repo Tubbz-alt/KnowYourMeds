@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
-import com.tompee.utilities.knowyourmeds.model.ListSwipeHolder;
+import com.tompee.utilities.knowyourmeds.model.MedListHolder;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.custom.SwipeListItemView;
 
@@ -30,30 +30,34 @@ public class MedListAdapter extends ArrayAdapter<Medicine> implements SwipeListI
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        ListSwipeHolder holder;
+        MedListHolder holder;
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.list_med, parent, false);
-            holder = new ListSwipeHolder();
+            holder = new MedListHolder();
             holder.setFrontView(view.findViewById(R.id.front_view));
             holder.setBackView(view.findViewById(R.id.back_view));
+            holder.setTextView((TextView) view.findViewById(R.id.med_name));
+            holder.setImageView((ImageView) view.findViewById(R.id.presc_icon));
             view.setTag(holder);
+        } else {
+            holder = (MedListHolder) view.getTag();
         }
 
         ((SwipeListItemView) view).setEnableSwipeDetection(mSwipeable);
         ((SwipeListItemView) view).setOnClickBackgroundColor(R.color.colorListBackground);
 
-        TextView name = (TextView) view.findViewById(R.id.med_name);
-        name.setText(getItem(position).getName());
+        holder.getTextView().setText(getItem(position).getName());
 
-        ImageView image = (ImageView) view.findViewById(R.id.presc_icon);
         if (mWithIcon) {
             if (getItem(position).isPrescribable()) {
-                image.setBackgroundResource(R.drawable.ic_rx_on);
+                holder.getImageView().setBackgroundResource(R.drawable.ic_rx_on);
+            } else {
+                holder.getImageView().setBackgroundResource(R.drawable.ic_rx_off);
             }
         } else {
-            image.setVisibility(View.GONE);
+            holder.getImageView().setVisibility(View.GONE);
         }
         return view;
     }

@@ -17,8 +17,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -225,7 +225,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Map<String, String> jsonToMap(String column, String string) {
-        Map<String, String> retMap = new HashMap<>();
+        Map<String, String> retMap = new LinkedHashMap<>();
         try {
             JSONObject json = new JSONObject(string).getJSONObject(column);
             Iterator<String> keysItr = json.keys();

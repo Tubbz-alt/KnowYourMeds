@@ -57,7 +57,7 @@
                     android:layout_marginStart="@dimen/list_item_margin"
                     android:ellipsize="end"
                     android:text="@string/property_prescribable_no"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?android:textAppearanceListItem"
                     android:textColor="@color/dark_text" />
             </LinearLayout>
 
@@ -82,7 +82,7 @@
                     android:layout_marginStart="@dimen/list_item_margin"
                     android:ellipsize="end"
                     android:text="@string/property_prescribable_no"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?android:textAppearanceListItem"
                     android:textColor="@color/dark_text" />
             </LinearLayout>
         </LinearLayout>
@@ -96,7 +96,6 @@
         android:layout_marginBottom="@dimen/med_detail_margin"
         android:layout_marginLeft="@dimen/med_detail_margin"
         android:layout_marginRight="@dimen/med_detail_margin"
-        android:layout_weight="0.5"
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="5dp">
 
@@ -142,7 +141,7 @@
         android:layout_marginBottom="@dimen/med_detail_margin"
         android:layout_marginLeft="@dimen/med_detail_margin"
         android:layout_marginRight="@dimen/med_detail_margin"
-        android:layout_weight="0.5"
+        android:layout_weight="1"
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="5dp">
 

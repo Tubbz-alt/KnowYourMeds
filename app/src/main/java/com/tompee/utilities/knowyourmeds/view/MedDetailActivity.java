@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.controller.PauseableHandler;
 import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.task.GetMedDetailTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
@@ -41,7 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.GetMedTaskListener,
-        RecyclerView.OnItemTouchListener {
+        RecyclerView.OnItemTouchListener, PauseableHandler.PauseableHandlerCallback {
     public static final String TAG_NAME = "name";
     public static final String TAG_ORIGIN = "origin";
     public static final int FROM_SEARCH = 0;
@@ -69,6 +71,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     private TtyFragment mSbdFragment;
     private WebViewFragment mWebViewFragment;
     private SourceFragment mSourcesFragment;
+    private PauseableHandler mPauseableHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,6 +92,8 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
+
+        mPauseableHandler = new PauseableHandler(this);
 
         //Set drawer
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -126,6 +131,18 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
                 }
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPauseableHandler.resume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPauseableHandler.pause();
     }
 
     private boolean isCacheValid(Date medDate, Date now) {
@@ -203,7 +220,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         RecyclerView.Adapter adapter = new DrawerAdapter(mMedicine.getName(), OPTION_IDS);
         mRecyclerView.setAdapter(adapter);
         initializeFragments(mMedicine);
-        reflectCurrentFragment();
+        sendMessageToReflectFragment();
     }
 
     private void initializeFragments(Medicine med) {
@@ -215,7 +232,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         mScdFragment = TtyFragment.newInstance(med.getScd(), getString(R.string.tab_scd));
         mScdgFragment = TtyFragment.newInstance(med.getScdg(), getString(R.string.tab_scdg));
         mSbdFragment = TtyFragment.newInstance(med.getSbd(), getString(R.string.tab_sbd));
-        mWebViewFragment = WebViewFragment.getInstance();
+        mWebViewFragment = WebViewFragment.getInstance(med.getUrl());
         mSourcesFragment = SourceFragment.getInstance();
     }
 
@@ -268,6 +285,11 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         fragmentManager.executePendingTransactions();
     }
 
+    private void sendMessageToReflectFragment() {
+        Message newMessage = Message.obtain(mPauseableHandler, 0);
+        mPauseableHandler.sendMessage(newMessage);
+    }
+
     private void reflectCurrentFragment() {
         hideAllFragments();
         Fragment fragment = null;
@@ -314,7 +336,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
             if (index >= 0) {
                 mDrawer.closeDrawers();
                 mFragmentIndex = index;
-                reflectCurrentFragment();
+                sendMessageToReflectFragment();
                 return true;
             }
         }
@@ -327,6 +349,16 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+    }
+
+    @Override
+    public boolean storeMessage(Message message) {
+        return true;
+    }
+
+    @Override
+    public void processMessage(Message message) {
+        reflectCurrentFragment();
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {

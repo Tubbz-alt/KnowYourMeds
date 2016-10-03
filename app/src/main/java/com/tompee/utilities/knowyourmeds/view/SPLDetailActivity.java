@@ -1,60 +1,43 @@
-package com.tompee.utilities.knowyourmeds.view.fragment;
+package com.tompee.utilities.knowyourmeds.view;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 
-public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class SPLDetailActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
+    public static final String NAME = "name";
     public static final String URL = "url";
-    private static WebViewFragment mSingleton;
+
+    private WebView mWebview;
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private WebView mWebview;
-    private String mUrl;
-
-    public static WebViewFragment getInstance(String url) {
-        if (mSingleton == null) {
-            mSingleton = new WebViewFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(URL, url);
-            mSingleton.setArguments(bundle);
-        }
-        return mSingleton;
-    }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        mUrl = getArguments().getString(URL);
-    }
+        setContentView(R.layout.activity_spl_detail);
+        setToolbar(R.id.toolbar, true);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_webview, container, false);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.container);
-        mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(),
-                R.color.colorPrimary));
+        TextView title = (TextView) findViewById(R.id.toolbar_text);
+        title.setText(getIntent().getStringExtra(NAME));
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.container);
+        mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorPrimary));
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progressbar);
-        mWebview = (WebView) view.findViewById(R.id.webview);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressbar);
+        mWebview = (WebView) findViewById(R.id.webview);
         mWebview.setWebViewClient(new GenericWebClient());
         mWebview.setWebChromeClient(new GenericWebChromeClient());
         mWebview.clearCache(true);
@@ -67,24 +50,16 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
-        mWebview.loadUrl(mUrl);
-        return view;
+        mWebview.loadUrl(getIntent().getStringExtra(URL));
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_webview, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_refresh) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            refresh();
-            return true;
+    public void onBackPressed() {
+        if (mWebview.canGoBack()) {
+            mWebview.goBack();
+        } else {
+            super.onBackPressed();
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -16,7 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -50,7 +50,6 @@ public class RxNavWrapper {
     private static final String URL_PROPERTY_NAME = "%s/rxcui/%s/property.json?propName=%s";
     private static final String URL_SPELLING_SUGGESTIONS = "%s/spellingsuggestions.json?name=%s";
     private static final String URL_ATTRIBUTES = "%s/rxcui/%s/allProperties.json?prop=ATTRIBUTES";
-    private static final String URL_CODES = "%s/rxcui/%s/allProperties.json?prop=CODES";
     private static final String URL_SOURCES = "%s/rxcui/%s/property.json?propName=Source";
     private static final String URL_TTY_VALUES = "%s/rxcui/%s/related.json?tty=" + BRAND + "+" +
             INGREDIENT + "+" + SCDC + "+" + SBDC + "+" + SBDG + "+" + SCD + "+" + SCDG + "+" + SBD;
@@ -204,7 +203,7 @@ public class RxNavWrapper {
     }
 
     public void getCodes(Medicine med) throws NoConnectionError {
-        Map<String, String> codeMap = new HashMap<>();
+        Map<String, String> codeMap = new LinkedHashMap<>();
         int totalPages = 0;
         int currentPage = 0;
         do {
@@ -290,69 +289,73 @@ public class RxNavWrapper {
             JSONArray array = response.getJSONObject(TAG_RELATED_GROUP).
                     getJSONArray(TAG_CONCEPT_GROUP);
             for (int index = 0; index < array.length(); index++) {
-                ArrayList<String> list = new ArrayList<>();
-                JSONObject obj = array.getJSONObject(index);
-                switch (obj.getString(TAG_TTY)) {
-                    case BRAND:
-                        JSONArray brandArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
-                        for (int i = 0; i < brandArray.length(); i++) {
-                            list.add(brandArray.getJSONObject(i).getString(TAG_NAME));
-                        }
-                        med.setBrands(list);
-                        break;
-                    case INGREDIENT:
-                        JSONArray inArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
-                        for (int i = 0; i < inArray.length(); i++) {
-                            list.add(inArray.getJSONObject(i).getString(TAG_NAME));
-                        }
-                        med.setIngredients(list);
-                        break;
-                    case SCDC:
-                        JSONArray scdcArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
-                        for (int i = 0; i < scdcArray.length(); i++) {
-                            list.add(scdcArray.getJSONObject(i).getString(TAG_NAME));
-                        }
-                        med.setScdc(list);
-                        break;
-                    case SBDC:
-                        JSONArray sbdcArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
-                        for (int i = 0; i < sbdcArray.length(); i++) {
-                            list.add(sbdcArray.getJSONObject(i).getString(TAG_NAME));
-                        }
-                        med.setSbdc(list);
-                        break;
-                    case SBDG:
-                        JSONArray sbdgArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
-                        for (int i = 0; i < sbdgArray.length(); i++) {
-                            list.add(sbdgArray.getJSONObject(i).getString(TAG_NAME));
-                        }
-                        med.setSbdg(list);
-                        break;
-                    case SCD:
-                        JSONArray gpckArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
-                        for (int i = 0; i < gpckArray.length(); i++) {
-                            list.add(gpckArray.getJSONObject(i).getString(TAG_NAME));
-                        }
-                        med.setScd(list);
-                        break;
-                    case SCDG:
-                        JSONArray scdgArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
-                        for (int i = 0; i < scdgArray.length(); i++) {
-                            list.add(scdgArray.getJSONObject(i).getString(TAG_NAME));
-                        }
-                        med.setScdg(list);
-                        break;
-                    case SBD:
-                        JSONArray sbdArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
-                        for (int i = 0; i < sbdArray.length(); i++) {
-                            list.add(sbdArray.getJSONObject(i).getString(TAG_NAME));
-                        }
-                        med.setSbd(list);
-                        break;
+                try {
+                    ArrayList<String> list = new ArrayList<>();
+                    JSONObject obj = array.getJSONObject(index);
+                    switch (obj.getString(TAG_TTY)) {
+                        case BRAND:
+                            JSONArray brandArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                            for (int i = 0; i < brandArray.length(); i++) {
+                                list.add(brandArray.getJSONObject(i).getString(TAG_NAME));
+                            }
+                            med.setBrands(list);
+                            break;
+                        case INGREDIENT:
+                            JSONArray inArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                            for (int i = 0; i < inArray.length(); i++) {
+                                list.add(inArray.getJSONObject(i).getString(TAG_NAME));
+                            }
+                            med.setIngredients(list);
+                            break;
+                        case SCDC:
+                            JSONArray scdcArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                            for (int i = 0; i < scdcArray.length(); i++) {
+                                list.add(scdcArray.getJSONObject(i).getString(TAG_NAME));
+                            }
+                            med.setScdc(list);
+                            break;
+                        case SBDC:
+                            JSONArray sbdcArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                            for (int i = 0; i < sbdcArray.length(); i++) {
+                                list.add(sbdcArray.getJSONObject(i).getString(TAG_NAME));
+                            }
+                            med.setSbdc(list);
+                            break;
+                        case SBDG:
+                            JSONArray sbdgArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                            for (int i = 0; i < sbdgArray.length(); i++) {
+                                list.add(sbdgArray.getJSONObject(i).getString(TAG_NAME));
+                            }
+                            med.setSbdg(list);
+                            break;
+                        case SCD:
+                            JSONArray gpckArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                            for (int i = 0; i < gpckArray.length(); i++) {
+                                list.add(gpckArray.getJSONObject(i).getString(TAG_NAME));
+                            }
+                            med.setScd(list);
+                            break;
+                        case SCDG:
+                            JSONArray scdgArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                            for (int i = 0; i < scdgArray.length(); i++) {
+                                list.add(scdgArray.getJSONObject(i).getString(TAG_NAME));
+                            }
+                            med.setScdg(list);
+                            break;
+                        case SBD:
+                            JSONArray sbdArray = obj.getJSONArray(TAG_CONCEPT_PROPERTIES);
+                            for (int i = 0; i < sbdArray.length(); i++) {
+                                list.add(sbdArray.getJSONObject(i).getString(TAG_NAME));
+                            }
+                            med.setSbd(list);
+                            break;
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "JSONException: " + e.getMessage());
                 }
             }
         } catch (InterruptedException | ExecutionException | JSONException e) {
-            Log.e(TAG, "Error in get is ingredient request: " + e.getMessage());
+            Log.e(TAG, "Error in get TTY request: " + e.getMessage());
             if (e.getCause() instanceof NoConnectionError) {
                 throw (NoConnectionError) e.getCause();
             }
