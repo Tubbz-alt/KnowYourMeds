@@ -19,9 +19,11 @@ import com.tompee.utilities.knowyourmeds.view.MainActivity;
 public class SettingsFragment extends Fragment implements View.OnClickListener {
     public static final String TAG_RECENT_CB = "recent_cb";
     public static final String TAG_OFFLINE_MODE_CB = "offline_cb";
+    public static final String TAG_SPL_CB = "spl_cb";
     private SharedPreferences mSharedPreferences;
     private AppCompatCheckBox mRecentCheckBox;
     private AppCompatCheckBox mOfflineModeCheckBox;
+    private AppCompatCheckBox mSplCheckBox;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -41,21 +43,27 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         mOfflineModeCheckBox = (AppCompatCheckBox) view.findViewById(R.id.offline_mode_cb);
         mOfflineModeCheckBox.setChecked(mSharedPreferences.getBoolean(TAG_OFFLINE_MODE_CB, false));
-        View offlineMode = view.findViewById(R.id.offline_mode);
-        offlineMode.setOnClickListener(this);
+        View rowView = view.findViewById(R.id.offline_mode);
+        rowView.setOnClickListener(this);
+
+        mSplCheckBox = (AppCompatCheckBox) view.findViewById(R.id.spl_support_cb);
+        mSplCheckBox.setChecked(mSharedPreferences.getBoolean(TAG_SPL_CB, false));
+        rowView  = view.findViewById(R.id.spl_support);
+        rowView.setOnClickListener(this);
 
         mRecentCheckBox = (AppCompatCheckBox) view.findViewById(R.id.recent_cb);
         mRecentCheckBox.setChecked(mSharedPreferences.getBoolean(TAG_RECENT_CB, true));
-        View recentVisibility = view.findViewById(R.id.recent_visibility);
-        recentVisibility.setOnClickListener(this);
+        rowView = view.findViewById(R.id.recent_visibility);
+        rowView.setOnClickListener(this);
         return view;
     }
 
     @Override
     public void onClick(View view) {
+        AlertDialog.Builder builder;
         switch (view.getId()) {
             case R.id.offline_mode:
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder = new AlertDialog.Builder(getContext());
                 builder.setTitle(R.string.settings_offline_mode_title);
                 builder.setMessage(R.string.settings_offline_mode_message);
                 builder.setPositiveButton(R.string.control_enable, new DialogInterface.OnClickListener() {
@@ -73,6 +81,31 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                         mOfflineModeCheckBox.setChecked(false);
                         SharedPreferences.Editor editor = mSharedPreferences.edit();
                         editor.putBoolean(TAG_OFFLINE_MODE_CB, false);
+                        editor.apply();
+                    }
+                });
+                builder.setCancelable(false);
+                builder.create().show();
+                break;
+            case R.id.spl_support:
+                builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.settings_spl_support_title);
+                builder.setMessage(R.string.settings_spl_support_message);
+                builder.setPositiveButton(R.string.control_enable, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mSplCheckBox.setChecked(true);
+                        SharedPreferences.Editor editor = mSharedPreferences.edit();
+                        editor.putBoolean(TAG_SPL_CB, true);
+                        editor.apply();
+                    }
+                });
+                builder.setNegativeButton(R.string.control_disable, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mSplCheckBox.setChecked(false);
+                        SharedPreferences.Editor editor = mSharedPreferences.edit();
+                        editor.putBoolean(TAG_SPL_CB, false);
                         editor.apply();
                     }
                 });
