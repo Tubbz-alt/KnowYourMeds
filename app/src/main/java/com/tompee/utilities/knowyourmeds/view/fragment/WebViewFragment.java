@@ -22,20 +22,17 @@ import com.tompee.utilities.knowyourmeds.R;
 
 public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     public static final String URL = "url";
-    private static WebViewFragment mSingleton;
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private WebView mWebview;
     private String mUrl;
 
-    public static WebViewFragment getInstance(String url) {
-        if (mSingleton == null) {
-            mSingleton = new WebViewFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(URL, url);
-            mSingleton.setArguments(bundle);
-        }
-        return mSingleton;
+    public static WebViewFragment newInstance(String url) {
+        WebViewFragment webViewFragment = new WebViewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(URL, url);
+        webViewFragment.setArguments(bundle);
+        return webViewFragment;
     }
 
     @Override

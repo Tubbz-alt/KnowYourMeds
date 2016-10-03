@@ -232,7 +232,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         mScdFragment = TtyFragment.newInstance(med.getScd(), getString(R.string.tab_scd));
         mScdgFragment = TtyFragment.newInstance(med.getScdg(), getString(R.string.tab_scdg));
         mSbdFragment = TtyFragment.newInstance(med.getSbd(), getString(R.string.tab_sbd));
-        mWebViewFragment = WebViewFragment.getInstance(med.getUrl());
+        mWebViewFragment = WebViewFragment.newInstance(med.getUrl());
         mSourcesFragment = SourceFragment.getInstance();
     }
 
