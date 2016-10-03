@@ -12,6 +12,9 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.tompee.utilities.knowyourmeds.BuildConfig;
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 
@@ -51,6 +54,13 @@ public class SPLDetailActivity extends BaseActivity implements SwipeRefreshLayou
         webSettings.setDomStorageEnabled(true);
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         mWebview.loadUrl(getIntent().getStringExtra(URL));
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest.Builder builder = new AdRequest.Builder();
+        if (BuildConfig.DEBUG){
+            builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
+        }
+        mAdView.loadAd(builder.build());
     }
 
     @Override

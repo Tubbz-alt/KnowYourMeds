@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -19,6 +20,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.tompee.utilities.knowyourmeds.BuildConfig;
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.view.adapter.MainViewPagerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
@@ -47,8 +49,11 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         }
 
         AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("3AD737A018BB67E7108FD1836E34DD1C").build();
-        mAdView.loadAd(adRequest);
+        AdRequest.Builder builder = new AdRequest.Builder();
+        if (BuildConfig.DEBUG){
+            builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
+        }
+        mAdView.loadAd(builder.build());
 
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.admob_main_interstitial));
@@ -73,10 +78,11 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     }
 
     private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("3AD737A018BB67E7108FD1836E34DD1C")
-                .build();
-        mInterstitialAd.loadAd(adRequest);
+        AdRequest.Builder builder = new AdRequest.Builder();
+        if (BuildConfig.DEBUG){
+            builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
+        }
+        mInterstitialAd.loadAd(builder.build());
     }
 
     public InterstitialAd getInterstitialAd() {
