@@ -10,6 +10,15 @@
         android:layout_marginLeft="@dimen/disclaimer_margin"
         android:layout_marginRight="@dimen/disclaimer_margin"
         android:layout_marginTop="@dimen/disclaimer_view_separator"
+        android:text="@string/disclaimer_message_app"
+        android:textAppearance="?android:attr/textAppearanceListItem" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/disclaimer_margin"
+        android:layout_marginRight="@dimen/disclaimer_margin"
+        android:layout_marginTop="@dimen/disclaimer_view_separator"
         android:text="@string/disclaimer_title_nlm"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:textStyle="bold" />

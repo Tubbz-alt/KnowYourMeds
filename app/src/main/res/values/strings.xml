@@ -74,6 +74,9 @@
         any other product.</string>
 
     <!-- Disclaimer -->
+    <string name="disclaimer_message_app">This application is intended for educational purposes only
+        and is not a substitute for professional medical advice. The use of this application and the
+        information provided is at your own risk.</string>
     <string name="disclaimer_title_nlm">NLM Disclaimer</string>
     <string name="disclaimer_message_nlm">It is not the intention of NLM to provide specific
         medical advice, but rather to provide users with information to better understand their

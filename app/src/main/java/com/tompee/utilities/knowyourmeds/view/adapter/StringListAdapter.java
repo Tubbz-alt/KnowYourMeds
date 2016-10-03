@@ -15,7 +15,7 @@ import com.tompee.utilities.knowyourmeds.view.custom.SwipeListItemView;
 import java.util.List;
 
 public class StringListAdapter extends ArrayAdapter<String> implements
-        SwipeListItemView.OnDeleteClickListener {
+        SwipeListItemView.SwipeListItemViewListener {
     private final Context mContext;
     private final int mIconResource;
 
@@ -59,6 +59,6 @@ public class StringListAdapter extends ArrayAdapter<String> implements
     }
 
     @Override
-    public void onDeleteClick(int position) {
+    public void onBackViewClicked(int position) {
     }
 }

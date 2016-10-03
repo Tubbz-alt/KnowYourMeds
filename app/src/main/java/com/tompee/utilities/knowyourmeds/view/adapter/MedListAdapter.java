@@ -15,7 +15,7 @@ import com.tompee.utilities.knowyourmeds.view.custom.SwipeListItemView;
 
 import java.util.List;
 
-public class MedListAdapter extends ArrayAdapter<Medicine> implements SwipeListItemView.OnDeleteClickListener {
+public class MedListAdapter extends ArrayAdapter<Medicine> implements SwipeListItemView.SwipeListItemViewListener {
     private final Context mContext;
     private final boolean mWithIcon;
     private final boolean mSwipeable;
@@ -63,6 +63,6 @@ public class MedListAdapter extends ArrayAdapter<Medicine> implements SwipeListI
     }
 
     @Override
-    public void onDeleteClick(int position) {
+    public void onBackViewClicked(int position) {
     }
 }

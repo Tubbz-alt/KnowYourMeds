@@ -15,7 +15,7 @@ public class SwipeListItemView extends FrameLayout {
     private static final String HORIZONTAL_TRANSLATION_PROPERTY = "translationX";
     private static final int MIN_LOCK_DISTANCE = 50;
     private static final int ANIMATION_DURATION = 150;
-    private OnDeleteClickListener mListener;
+    private SwipeListItemViewListener mListener;
     private int mStartX;
     private boolean mIsSwipeEnabled;
     private boolean mIsSwipeDetected;
@@ -35,12 +35,13 @@ public class SwipeListItemView extends FrameLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mListener = (OnDeleteClickListener) ((AdapterView) getParent()).getAdapter();
+        mListener = (SwipeListItemViewListener) ((AdapterView) getParent()).getAdapter();
         mListHolder = (ListSwipeHolder) getTag();
     }
 
     public void setEnableSwipeDetection(boolean mode) {
-        mIsSwipeEnabled = mode;
+        /* Note: always disable swipe for now */
+        mIsSwipeEnabled = false;
     }
 
     public void setOnClickBackgroundColor(int resId) {
@@ -100,7 +101,7 @@ public class SwipeListItemView extends FrameLayout {
     private void performOnDeleteClick() {
         AdapterView view = (AdapterView) getParent();
         int position = view.getPositionForView(SwipeListItemView.this);
-        mListener.onDeleteClick(position);
+        mListener.onBackViewClicked(position);
     }
 
     private void performAdapterViewItemClick() {
@@ -155,7 +156,7 @@ public class SwipeListItemView extends FrameLayout {
         CLOSED,
     }
 
-    public interface OnDeleteClickListener {
-        void onDeleteClick(int position);
+    public interface SwipeListItemViewListener {
+        void onBackViewClicked(int position);
     }
 }
