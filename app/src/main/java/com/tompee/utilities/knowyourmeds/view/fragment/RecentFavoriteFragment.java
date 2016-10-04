@@ -45,7 +45,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDbHelper = new DatabaseHelper(getContext());
+        mDbHelper = DatabaseHelper.getInstance(getContext());
         mSharedPreferences = getContext().getSharedPreferences(MainActivity.SHARED_PREF,
                 Context.MODE_PRIVATE);
     }
@@ -92,6 +92,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     private void startMedListActivity(Medicine med, int origin) {
         Intent intent = new Intent(getContext(), MedDetailActivity.class);
         intent.putExtra(MedDetailActivity.TAG_NAME, med.getName());
+        intent.putExtra(MedDetailActivity.TAG_ID, med.getRxnormId());
         intent.putExtra(MedDetailActivity.TAG_ORIGIN, origin);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -115,7 +116,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
 
     private void updateLists() {
         if (mDbHelper != null) {
-            mFavoriteMedList = mDbHelper.getAllEntries(DatabaseHelper.FAVORITE_TABLE);
+            mFavoriteMedList = mDbHelper.getAllShortEntries(DatabaseHelper.FAVORITE_TABLE);
             if (mFavoriteMedList.size() > 0) {
                 MedListAdapter adapter = new MedListAdapter(getContext(), mFavoriteMedList, true, true);
                 View view = mFavoriteListView.getChildAt(0);
@@ -136,7 +137,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
                 mFavoriteTrash.setVisibility(View.GONE);
             }
 
-            mRecentMedList = mDbHelper.getAllEntries(DatabaseHelper.RECENT_TABLE);
+            mRecentMedList = mDbHelper.getAllShortEntries(DatabaseHelper.RECENT_TABLE);
             if (mRecentMedList.size() > 0) {
                 Collections.reverse(mRecentMedList);
                 MedListAdapter adapter = new MedListAdapter(getContext(), mRecentMedList, true, true);

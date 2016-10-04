@@ -28,7 +28,6 @@ import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.MedListAdapter;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFragment extends Fragment implements TextWatcher, View.OnFocusChangeListener,
@@ -130,20 +129,15 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     private void searchFromDatabase() {
         mResultBar.setVisibility(View.VISIBLE);
         mResultText.setText(R.string.search_results);
-        DatabaseHelper db = new DatabaseHelper(getContext());
-        Medicine med = db.getEntry(DatabaseHelper.FAVORITE_TABLE, mEditText.getText().toString());
-        if (med == null) {
-            med = db.getEntry(DatabaseHelper.RECENT_TABLE, mEditText.getText().toString());
-            if (med == null) {
-                mListView.setVisibility(View.GONE);
-                mNoResultsView.setVisibility(View.VISIBLE);
-                return;
-            }
+        DatabaseHelper db = DatabaseHelper.getInstance(getContext());
+        List<Medicine> medList = db.getAllShortEntriesByName(mEditText.getText().toString());
+        if (medList.isEmpty()) {
+            mListView.setVisibility(View.GONE);
+            mNoResultsView.setVisibility(View.VISIBLE);
+            return;
         }
         mListView.setVisibility(View.VISIBLE);
         mNoResultsView.setVisibility(View.GONE);
-        List<Medicine> medList = new ArrayList<>();
-        medList.add(med);
         MedListAdapter adapter = new MedListAdapter(getContext(), medList, true, false);
         mListView.setAdapter(adapter);
         mMedList = medList;
@@ -214,6 +208,7 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
         } else {
             Intent intent = new Intent(getContext(), MedDetailActivity.class);
             intent.putExtra(MedDetailActivity.TAG_NAME, med.getName());
+            intent.putExtra(MedDetailActivity.TAG_ID, med.getRxnormId());
             intent.putExtra(MedDetailActivity.TAG_ORIGIN, MedDetailActivity.FROM_SEARCH);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

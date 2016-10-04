@@ -23,7 +23,7 @@ public class GetMedDetailTask extends AsyncTask<String, Void, Medicine> {
         mListener = listener;
         SharedPreferences sharedPreferences = context.getSharedPreferences(MainActivity.SHARED_PREF,
                 Context.MODE_PRIVATE);
-        mIsSplEnabled = sharedPreferences.getBoolean(SettingsFragment.TAG_SPL_CB, false);
+        mIsSplEnabled = sharedPreferences.getBoolean(SettingsFragment.TAG_SPL_CB, true);
     }
 
     @Override

@@ -23,7 +23,8 @@
     <string name="search_results">Result</string>
     <string name="suggestions_results">Suggestions for %1$s</string>
     <string name="fetch_details">Gathering all available information.\nThis may take a while
-        depending on the genericity of the item&#8230;</string>
+        depending on the genericity of the item&#8230;\n\nIf search is taking too much time,
+        consider disabling Structured Product Label Search in Settings</string>
     <string name="tty_no_items">No %1$s available</string>
 
     <!-- Dialog messages -->
@@ -57,7 +58,7 @@
     <string name="tab_scd">Clinical Drug or Pack</string>
     <string name="tab_scdg">Clinical Dose Form Group</string>
     <string name="tab_sbd">Branded Drug of Pack</string>
-    <string name="tab_exit">Exit</string>
+    <string name="tab_exit">Return to Search</string>
 
     <!-- Properties -->
     <string name="property_prescribable_yes">Prescribable</string>
@@ -87,10 +88,10 @@
     <!-- Settings -->
     <string name="settings">Settings</string>
     <string name="settings_offline_mode_title">Offline Mode</string>
-    <string name="settings_offline_mode_message">Offline mode allows you to view your saved items
-        even without internet connection.\n\nIn offline mode, Search feature will
-        lookup on your recent and favorite lists only.\n\nNote: Data in offline mode maybe outdated
-        and some features may not be available.</string>
+    <string name="settings_offline_mode_message">Offline mode allows you to view cached items
+        even without internet connection.\n\nIn offline mode, Search feature will lookup on cached
+        list only.\n\nNote: Data in offline mode maybe outdated and some features may not
+        be available.</string>
     <string name="settings_show_recent">Show recent searches</string>
     <string name="settings_spl_support_title">Structured Product Label Search</string>
         recent searches even without internet connection.\n\nIn offline mode, Search feature will

@@ -26,6 +26,7 @@ import java.util.Map;
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String FAVORITE_TABLE = "favorite";
     public static final String RECENT_TABLE = "recent";
+    private static final String MAIN_TABLE = "main";
     private static final String DATE_FORMAT = "yyyyMMddHHmmss";
     private static final String COLUMN_ID = "rxcui";
     private static final String COLUMN_NAME = "name";
@@ -43,50 +44,56 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_SCDG = "SCDG";
     private static final String COLUMN_SBD = "SBD";
     private static final String COLUMN_SPL_SET = "SPL_SET";
-
+    private static final String CREATE_MAIN_TABLE = "create table " + MAIN_TABLE +
+            " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null collate nocase," +
+            COLUMN_PRESC + " integer," + COLUMN_IS_INGREDIENT + " integer, " +
+            COLUMN_URL + " text not null," + COLUMN_INGREDIENTS + " text," +
+            COLUMN_SOURCES + " text," + COLUMN_BRANDS + " text," + COLUMN_SCDC + " text," +
+            COLUMN_SBDC + " text," + COLUMN_SBDG + " text, " + COLUMN_SCD + " text," +
+            COLUMN_DATE + " text not null," + COLUMN_SCDG + " text," + COLUMN_SBD + " text," +
+            COLUMN_SPL_SET + " text" + " )";
     private static final String CREATE_FAVORITE_TABLE = "create table " + FAVORITE_TABLE +
             " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null collate nocase," +
-            COLUMN_PRESC + " integer," + COLUMN_IS_INGREDIENT + " integer, " +
-            COLUMN_URL + " text not null," + COLUMN_INGREDIENTS + " text," +
-            COLUMN_SOURCES + " text," + COLUMN_BRANDS + " text," + COLUMN_SCDC + " text," +
-            COLUMN_SBDC + " text," + COLUMN_SBDG + " text, " + COLUMN_SCD + " text," +
-            COLUMN_DATE + " text not null," + COLUMN_SCDG + " text," + COLUMN_SBD + " text," +
-            COLUMN_SPL_SET + " text" + " )";
-
+            COLUMN_PRESC + " integer" + " )";
     private static final String CREATE_RECENT_TABLE = "create table " + RECENT_TABLE +
             " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null collate nocase," +
-            COLUMN_PRESC + " integer," + COLUMN_IS_INGREDIENT + " integer, " +
-            COLUMN_URL + " text not null," + COLUMN_INGREDIENTS + " text," +
-            COLUMN_SOURCES + " text," + COLUMN_BRANDS + " text," + COLUMN_SCDC + " text," +
-            COLUMN_SBDC + " text," + COLUMN_SBDG + " text, " + COLUMN_SCD + " text," +
-            COLUMN_DATE + " text not null," + COLUMN_SCDG + " text," + COLUMN_SBD + " text," +
-            COLUMN_SPL_SET + " text" + " )";
-
+            COLUMN_PRESC + " integer" + " )";
+    private static final String DROP_MAIN_TABLE = "DROP TABLE IF EXISTS " + MAIN_TABLE;
     private static final String DROP_FAVORITE_TABLE = "DROP TABLE IF EXISTS " + FAVORITE_TABLE;
     private static final String DROP_RECENT_TABLE = "DROP TABLE IF EXISTS " + RECENT_TABLE;
-
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "KnowYourMeds.db";
+    private static DatabaseHelper mSingleton;
 
-    public DatabaseHelper(Context context) {
+    private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static synchronized DatabaseHelper getInstance(Context context) {
+        if (mSingleton == null) {
+            mSingleton = new DatabaseHelper(context);
+        }
+        return mSingleton;
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        sqLiteDatabase.execSQL(CREATE_MAIN_TABLE);
         sqLiteDatabase.execSQL(CREATE_FAVORITE_TABLE);
         sqLiteDatabase.execSQL(CREATE_RECENT_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        sqLiteDatabase.execSQL(DROP_MAIN_TABLE);
         sqLiteDatabase.execSQL(DROP_FAVORITE_TABLE);
         sqLiteDatabase.execSQL(DROP_RECENT_TABLE);
         onCreate(sqLiteDatabase);
     }
 
     public void createEntry(String tableName, Medicine med) {
-        deleteEntry(tableName, med);
+        /** Add info to main table first */
+        deleteEntry(MAIN_TABLE, med);
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, med.getRxnormId());
         values.put(COLUMN_NAME, med.getName());
@@ -104,17 +111,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SCDG, convertToJsonString(COLUMN_SCDG, med.getScdg()));
         values.put(COLUMN_SBD, convertToJsonString(COLUMN_SBD, med.getSbd()));
         values.put(COLUMN_SPL_SET, convertToJsonString(COLUMN_SBD, med.getSplSetId()));
-
         SQLiteDatabase db = getWritableDatabase();
+        db.insert(MAIN_TABLE, null, values);
+        db.close();
+
+        /** Add entry to specific table */
+        deleteEntry(tableName, med);
+        values = new ContentValues();
+        values.put(COLUMN_ID, med.getRxnormId());
+        values.put(COLUMN_NAME, med.getName());
+        values.put(COLUMN_PRESC, med.isPrescribable() ? 1 : 0);
+        db = getWritableDatabase();
         db.insert(tableName, null, values);
         db.close();
     }
 
     public void updateEntry(String tableName, Medicine med) {
+        /** Update main table first */
         ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, med.getName());
+        values.put(COLUMN_PRESC, med.isPrescribable() ? 1 : 0);
+        values.put(COLUMN_IS_INGREDIENT, med.isIngredient() ? 1 : 0);
+        values.put(COLUMN_URL, med.getUrl());
+        values.put(COLUMN_INGREDIENTS, convertToJsonString(COLUMN_INGREDIENTS, med.getIngredients()));
+        values.put(COLUMN_SOURCES, convertToJsonString(COLUMN_SOURCES, med.getSources()));
+        values.put(COLUMN_BRANDS, convertToJsonString(COLUMN_BRANDS, med.getBrands()));
+        values.put(COLUMN_SCDC, convertToJsonString(COLUMN_SCDC, med.getScdc()));
+        values.put(COLUMN_SBDC, convertToJsonString(COLUMN_SBDC, med.getSbdc()));
+        values.put(COLUMN_SBDG, convertToJsonString(COLUMN_SBDG, med.getSbdg()));
+        values.put(COLUMN_SCD, convertToJsonString(COLUMN_SCD, med.getScd()));
         values.put(COLUMN_DATE, convertToDateString(med.getDate()));
-
+        values.put(COLUMN_SCDG, convertToJsonString(COLUMN_SCDG, med.getScdg()));
+        values.put(COLUMN_SBD, convertToJsonString(COLUMN_SBD, med.getSbd()));
+        values.put(COLUMN_SPL_SET, convertToJsonString(COLUMN_SBD, med.getSplSetId()));
         SQLiteDatabase db = getWritableDatabase();
+        db.update(MAIN_TABLE, values, COLUMN_ID + "='" + med.getRxnormId() + "'", null);
+
+        /** Update specific table */
+        values = new ContentValues();
+        values.put(COLUMN_NAME, med.getName());
+        values.put(COLUMN_PRESC, med.isPrescribable() ? 1 : 0);
+        values.put(COLUMN_IS_INGREDIENT, med.isIngredient() ? 1 : 0);
         db.update(tableName, values, COLUMN_ID + "='" + med.getRxnormId() + "'", null);
         db.close();
     }
@@ -152,18 +189,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return format1.format(date);
     }
 
-    public List<Medicine> getAllEntries(String tableName) {
+    public List<Medicine> getAllShortEntries(String tableName) {
         List<Medicine> medList = new ArrayList<>();
 
         SQLiteDatabase db = getWritableDatabase();
-        String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC, COLUMN_IS_INGREDIENT, COLUMN_URL,
-                COLUMN_INGREDIENTS, COLUMN_SOURCES, COLUMN_BRANDS, COLUMN_SCDC, COLUMN_SBDC,
-                COLUMN_SBDG, COLUMN_SCD, COLUMN_DATE, COLUMN_SCDG, COLUMN_SBD, COLUMN_SPL_SET};
+        String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC};
         Cursor cursor = db.query(tableName, columns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Medicine med = cursorToEntry(cursor);
+            Medicine med = cursorToEntry(cursor, true);
             medList.add(med);
             cursor.moveToNext();
         }
@@ -172,40 +207,59 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return medList;
     }
 
-    public Medicine getEntry(String tableName, String name) {
+    public List<Medicine> getAllShortEntriesByName(String name) {
+        List<Medicine> medList = new ArrayList<>();
+        SQLiteDatabase db = getWritableDatabase();
+        String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC};
+        Cursor cursor = db.query(MAIN_TABLE, columns, COLUMN_NAME + "='" + name + "'",
+                null, null, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Medicine med = cursorToEntry(cursor, true);
+            medList.add(med);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        return medList;
+    }
+
+    public Medicine getEntry(String rxcui) {
         SQLiteDatabase db = getWritableDatabase();
         String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC, COLUMN_IS_INGREDIENT, COLUMN_URL,
                 COLUMN_INGREDIENTS, COLUMN_SOURCES, COLUMN_BRANDS, COLUMN_SCDC, COLUMN_SBDC,
                 COLUMN_SBDG, COLUMN_SCD, COLUMN_DATE, COLUMN_SCDG, COLUMN_SBD, COLUMN_SPL_SET};
-        Cursor cursor = db.query(tableName, columns, COLUMN_NAME + "='" + name + "'", null, null, null, null);
+        Cursor cursor = db.query(MAIN_TABLE, columns, COLUMN_ID + "='" + rxcui + "'", null, null, null, null);
         cursor.moveToFirst();
         if (cursor.getCount() == 0) {
             return null;
         }
-        Medicine med = cursorToEntry(cursor);
+        Medicine med = cursorToEntry(cursor, false);
         cursor.close();
         db.close();
         return med;
     }
 
-    private Medicine cursorToEntry(Cursor cursor) {
+    private Medicine cursorToEntry(Cursor cursor, boolean isShort) {
         Medicine medicine = new Medicine();
         medicine.setRxnormId(cursor.getString(0));
         medicine.setName(cursor.getString(1));
         medicine.setIsPrescribable(cursor.getInt(2) == 1);
-        medicine.setIsIngredient(cursor.getInt(3) == 1);
-        medicine.setUrl(cursor.getString(4));
-        medicine.setIngredients(jsonToList(COLUMN_INGREDIENTS, cursor.getString(5)));
-        medicine.setSources(jsonToList(COLUMN_SOURCES, cursor.getString(6)));
-        medicine.setBrands(jsonToList(COLUMN_BRANDS, cursor.getString(7)));
-        medicine.setScdc(jsonToList(COLUMN_SCDC, cursor.getString(8)));
-        medicine.setSbdc(jsonToList(COLUMN_SBDC, cursor.getString(9)));
-        medicine.setSbdg(jsonToList(COLUMN_SBDG, cursor.getString(10)));
-        medicine.setScd(jsonToList(COLUMN_SCD, cursor.getString(11)));
-        medicine.setDate(convertFromDateString(cursor.getString(12)));
-        medicine.setScdg(jsonToList(COLUMN_SCDG, cursor.getString(13)));
-        medicine.setSbd(jsonToList(COLUMN_SBD, cursor.getString(14)));
-        medicine.setSplSetId(jsonToMap(COLUMN_SBD, cursor.getString(15)));
+        if (!isShort) {
+            medicine.setIsIngredient(cursor.getInt(3) == 1);
+            medicine.setUrl(cursor.getString(4));
+            medicine.setIngredients(jsonToList(COLUMN_INGREDIENTS, cursor.getString(5)));
+            medicine.setSources(jsonToList(COLUMN_SOURCES, cursor.getString(6)));
+            medicine.setBrands(jsonToList(COLUMN_BRANDS, cursor.getString(7)));
+            medicine.setScdc(jsonToList(COLUMN_SCDC, cursor.getString(8)));
+            medicine.setSbdc(jsonToList(COLUMN_SBDC, cursor.getString(9)));
+            medicine.setSbdg(jsonToList(COLUMN_SBDG, cursor.getString(10)));
+            medicine.setScd(jsonToList(COLUMN_SCD, cursor.getString(11)));
+            medicine.setDate(convertFromDateString(cursor.getString(12)));
+            medicine.setScdg(jsonToList(COLUMN_SCDG, cursor.getString(13)));
+            medicine.setSbd(jsonToList(COLUMN_SBD, cursor.getString(14)));
+            medicine.setSplSetId(jsonToMap(COLUMN_SBD, cursor.getString(15)));
+        }
         return medicine;
     }
 

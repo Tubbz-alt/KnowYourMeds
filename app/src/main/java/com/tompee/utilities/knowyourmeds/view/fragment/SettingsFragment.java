@@ -46,7 +46,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         rowView.setOnClickListener(this);
 
         mSplCheckBox = (AppCompatCheckBox) view.findViewById(R.id.spl_support_cb);
-        mSplCheckBox.setChecked(mSharedPreferences.getBoolean(TAG_SPL_CB, false));
+        mSplCheckBox.setChecked(mSharedPreferences.getBoolean(TAG_SPL_CB, true));
         rowView = view.findViewById(R.id.spl_support);
         rowView.setOnClickListener(this);
 

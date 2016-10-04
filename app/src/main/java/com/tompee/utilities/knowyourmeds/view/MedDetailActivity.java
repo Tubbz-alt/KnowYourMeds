@@ -47,6 +47,7 @@ import java.util.Date;
 public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.GetMedTaskListener,
         RecyclerView.OnItemTouchListener, PauseableHandler.PauseableHandlerCallback {
     public static final String TAG_NAME = "name";
+    public static final String TAG_ID = "id";
     public static final String TAG_ORIGIN = "origin";
     public static final int FROM_SEARCH = 0;
     public static final int FROM_RECENTS = 1;
@@ -84,7 +85,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest.Builder builder = new AdRequest.Builder();
-        if (BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
         }
         mAdView.loadAd(builder.build());
@@ -112,30 +113,28 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         String name = intent.getStringExtra(TAG_NAME);
         TextView title = (TextView) findViewById(R.id.toolbar_text);
         title.setText(name);
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.SHARED_PREF,
+
+        /** Regardless of origin, search database first */
+        DatabaseHelper db = DatabaseHelper.getInstance(this);
+        SharedPreferences sp = getSharedPreferences(MainActivity.SHARED_PREF,
                 Context.MODE_PRIVATE);
-        if (sharedPreferences.getBoolean(SettingsFragment.TAG_OFFLINE_MODE_CB, false)) {
-            DatabaseHelper db = new DatabaseHelper(this);
-            mMedicine = db.getEntry(DatabaseHelper.FAVORITE_TABLE, name);
-            if (mMedicine == null) {
-                mMedicine = db.getEntry(DatabaseHelper.RECENT_TABLE, name);
-            }
-            initializeDisplay();
-        } else {
-            int origin = intent.getIntExtra(TAG_ORIGIN, FROM_SEARCH);
-            if (origin == FROM_SEARCH) {
-                startTask(name);
-            } else {
-                mMedicine = dbHelper.getEntry(origin == FROM_FAVORITES ? DatabaseHelper.FAVORITE_TABLE :
-                        DatabaseHelper.RECENT_TABLE, name);
-                if (isCacheValid(mMedicine.getDate(), Calendar.getInstance().getTime())) {
-                    initializeDisplay();
-                } else {
-                    startTask(name);
-                }
-            }
+        mMedicine = db.getEntry(getIntent().getStringExtra(TAG_ID));
+        if (mMedicine == null) {
+            startTask(name);
+            return;
         }
+
+        /** Check if offline mode is enabled */
+        if (!sp.getBoolean(SettingsFragment.TAG_OFFLINE_MODE_CB, false) &&
+                !isCacheValid(mMedicine.getDate(), Calendar.getInstance().getTime())) {
+            startTask(name);
+            return;
+        }
+
+        if (getIntent().getIntExtra(TAG_ORIGIN, FROM_SEARCH) == FROM_SEARCH) {
+            db.createEntry(DatabaseHelper.RECENT_TABLE, mMedicine);
+        }
+        initializeDisplay();
     }
 
     @Override
@@ -155,7 +154,6 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         return diffHours < CACHE_EXPIRY;
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -166,7 +164,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_favorite) {
-            DatabaseHelper dbHelper = new DatabaseHelper(this);
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
             dbHelper.createEntry(DatabaseHelper.FAVORITE_TABLE, mMedicine);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(String.format(getString(R.string.add_to_favorites),
@@ -195,7 +193,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     @Override
     public void onCompleted(Medicine med) {
         mMedicine = med;
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
         int origin = getIntent().getIntExtra(TAG_ORIGIN, FROM_SEARCH);
         switch (origin) {
             case FROM_FAVORITES:
