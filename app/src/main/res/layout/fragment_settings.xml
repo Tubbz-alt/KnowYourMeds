@@ -77,6 +77,27 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/cache"
+        style="@style/ListViewStyle"
+        android:background="@drawable/selector_list_bottom_border_background"
+        android:clickable="true"
+        android:descendantFocusability="blocksDescendants">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/ListViewSingleTextStyle"
+                android:text="@string/settings_cache_title" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/recent_visibility"
         style="@style/ListViewStyle"
         android:layout_marginTop="@dimen/activity_vertical_margin"

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.view.MainActivity;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
@@ -53,6 +54,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         mRecentCheckBox = (AppCompatCheckBox) view.findViewById(R.id.recent_cb);
         mRecentCheckBox.setChecked(mSharedPreferences.getBoolean(TAG_RECENT_CB, true));
         rowView = view.findViewById(R.id.recent_visibility);
+        rowView.setOnClickListener(this);
+
+        rowView = view.findViewById(R.id.cache);
         rowView.setOnClickListener(this);
         return view;
     }
@@ -108,6 +112,21 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                         editor.apply();
                     }
                 });
+                builder.setCancelable(false);
+                builder.create().show();
+                break;
+            case R.id.cache:
+                builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.settings_cache_title);
+                builder.setMessage(R.string.settings_cache_message);
+                builder.setPositiveButton(R.string.control_empty_cache, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        DatabaseHelper db = DatabaseHelper.getInstance(getContext());
+                        db.deleteAll();
+                    }
+                });
+                builder.setNegativeButton(R.string.control_cancel, null);
                 builder.setCancelable(false);
                 builder.create().show();
                 break;
