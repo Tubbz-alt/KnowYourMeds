@@ -99,7 +99,7 @@
     <string name="settings_spl_support_message">Enabling SPL search may take considerable
         amount of time depending on genericity of item.</string>
     <string name="settings_cache_title">Clear cache</string>
-    <string name="settings_cache_message">Cache contains all previously viewed items. Clearing 
+    <string name="settings_cache_message">Cache contains all previously viewed items. Clearing
         this will affect the features of offline mode.</string>
 
 </resources>
