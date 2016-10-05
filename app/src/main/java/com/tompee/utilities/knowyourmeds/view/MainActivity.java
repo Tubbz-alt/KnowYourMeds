@@ -24,8 +24,10 @@ import com.tompee.utilities.knowyourmeds.BuildConfig;
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.view.adapter.MainViewPagerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
+import com.tompee.utilities.knowyourmeds.view.dialog.DisclaimerDialog;
 
-public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
+public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener,
+        DisclaimerDialog.DisclaimerDialogListener {
     public static final String SHARED_PREF = "knowyourmedspref";
     private static final String TAG_DISCLAIMER = "disclaimer";
     private static final int[] mTabIconList = {R.drawable.ic_star_white, R.drawable.ic_search_white,
@@ -126,27 +128,12 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     }
 
     private void showDisclaimer(boolean firstTime) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.menu_disclaimer);
-        builder.setPositiveButton(R.string.control_understand, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                SharedPreferences.Editor editor = mSharedPreferences.edit();
-                editor.putBoolean(TAG_DISCLAIMER, true);
-                editor.apply();
-            }
-        });
-        if (firstTime) {
-            builder.setNegativeButton(R.string.control_cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    finish();
-                }
-            });
-        }
-        View view = getLayoutInflater().inflate(R.layout.dialog_disclaimer, null);
-        builder.setView(view);
-        builder.setCancelable(false);
-        builder.create().show();
+        DisclaimerDialog dialog = DisclaimerDialog.newInstance(firstTime);
+        dialog.show(getSupportFragmentManager(), "disclaimer");
+    }
+
+    @Override
+    public void onCancelled() {
+        finish();
     }
 }

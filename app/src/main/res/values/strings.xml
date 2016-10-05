@@ -52,7 +52,7 @@
     <string name="tab_properties">Properties</string>
     <string name="tab_sources">Sources</string>
     <string name="tab_brands">Related Brand Names</string>
-    <string name="tab_info">Medline Plus Information</string>
+    <string name="tab_info">MedlinePlus</string>
     <string name="tab_scdc">Clinical Drug Component</string>
     <string name="tab_sbdc">Branded Drug Component</string>
     <string name="tab_sbdg">Branded Dose Form Group</string>
@@ -77,7 +77,10 @@
         any other product.</string>
 
     <!-- Disclaimer -->
-    <string name="disclaimer_message_app">This application is intended for educational purposes only
+    <string name="disclaimer_message_app">This product uses publicly available data from the U.S. National
+        Library of Medicine (NLM), National Institutes of Health, Department of Health and Human
+        Services; NLM is not responsible for the product and does not endorse or recommend this or
+        any other product.\n\nThis application is intended for educational purposes only
         and is not a substitute for professional medical advice. The use of this application and the
         information provided is at your own risk.</string>
     <string name="disclaimer_title_nlm">NLM Disclaimer</string>
@@ -85,6 +88,17 @@
         medical advice, but rather to provide users with information to better understand their
         health and their medications. NLM urges you to consult with a qualified physician for
         advice about medications.</string>
+    <string name="disclaimer_title_drug_bank">DrugBank Disclaimer</string>
+    <string name="disclaimer_message_drug_bank">DrugBank is intended for educational and scientific
+        research purposes only and you expressly acknowledge and agree that use of DrugBank is at
+        your sole risk. The accuracy of DrugBank information is not guaranteed and reliance on
+        DrugBank shall be at your sole risk. DrugBank is not intended as a substitute for
+        professional medical advice, diagnosis or treatment..[www.drugbank.ca]</string>
+    <string name="disclaimer_title_citing_drug_bank">Citing DrugBank</string>
+    <string name="disclaimer_message_citing_drug_bank">Wishart DS, Knox C, Guo AC, Shrivastava S,
+        Hassanali M, Stothard P, Chang Z, Woolsey J. DrugBank: a comprehensive resource for in
+        silico drug discovery and exploration. Nucleic Acids Res. 2006 Jan 1;34(Database
+        issue):D668-72. 16381955.</string>
 
     <!-- Settings -->
     <string name="settings">Settings</string>

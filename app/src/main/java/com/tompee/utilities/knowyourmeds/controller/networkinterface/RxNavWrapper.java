@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 public class RxNavWrapper {
     private static final String TAG = "RxNavWrapper";
     private static final String RX_NORM_BASE_URL = "https://rxnav.nlm.nih.gov/REST";
+    private static final String RX_NORM_INTERACTION_BASE_URL = "https://rxnav.nlm.nih.gov/REST/interaction";
     private static final String MEDLINE_BASE_URL = "https://apps.nlm.nih.gov/medlineplus/services/" +
             "mpconnect_service.cfm?knowledgeResponseType=application/json&mainSearchCriteria.v.cs=" +
             "2.16.840.1.113883.6.88&mainSearchCriteria.v.c=%s";
