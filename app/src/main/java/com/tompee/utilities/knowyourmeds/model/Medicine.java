@@ -21,6 +21,7 @@ public class Medicine {
     private ArrayList<String> mScdg;
     private ArrayList<String> mSbd;
     private Map<String, String> mSplSetId;
+    private Map<String, Map<String, String>> mInteractions;
 
     public Medicine() {
     }
@@ -151,6 +152,14 @@ public class Medicine {
 
     public void setSplSetId(Map<String, String> splSetId) {
         mSplSetId = splSetId;
+    }
+
+    public Map<String, Map<String, String>> getInteractions() {
+        return mInteractions;
+    }
+
+    public void setInteractions(Map<String, Map<String, String>> interactions) {
+        mInteractions = interactions;
     }
 }
 

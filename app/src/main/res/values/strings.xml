@@ -41,6 +41,7 @@
     <string name="control_enable">Enable</string>
     <string name="control_disable">Disable</string>
     <string name="control_empty_cache">Empty Cache</string>
+    <string name="control_select">&lt;Select item here&gt;</string>
 
     <!-- Menu titles -->
     <string name="menu_favorite">Add to favorites</string>
@@ -58,8 +59,9 @@
     <string name="tab_sbdg">Branded Dose Form Group</string>
     <string name="tab_scd">Clinical Drug or Pack</string>
     <string name="tab_scdg">Clinical Dose Form Group</string>
-    <string name="tab_sbd">Branded Drug of Pack</string>
+    <string name="tab_sbd">Branded Drug or Pack</string>
     <string name="tab_exit">Return to Search</string>
+    <string name="tab_interaction">Interactions</string>
 
     <!-- Properties -->
     <string name="property_prescribable_yes">Prescribable</string>

@@ -53,6 +53,7 @@ public class RxNavWrapper {
     private static final String URL_SOURCES = "%s/rxcui/%s/property.json?propName=Source";
     private static final String URL_TTY_VALUES = "%s/rxcui/%s/related.json?tty=" + BRAND + "+" +
             INGREDIENT + "+" + SCDC + "+" + SBDC + "+" + SBDG + "+" + SCD + "+" + SCDG + "+" + SBD;
+    private static final String URL_INTERACTION = "%s/interaction.json?rxcui=%s";
 
     /* Daily med REST functions */
     private static final String URL_SPL = "%s/spls.json?rxcui=%s&page=%d";
@@ -85,6 +86,12 @@ public class RxNavWrapper {
     private static final String TAG_METADATA = "metadata";
     private static final String TAG_TOTAL_PAGES = "total_pages";
     private static final String TAG_CURRENT_PAGE = "current_page";
+    private static final String TAG_INTERACTION_TYPE_GROUP = "interactionTypeGroup";
+    private static final String TAG_INTERACTION_TYPE = "interactionType";
+    private static final String TAG_INTERACTION_PAIR = "interactionPair";
+    private static final String TAG_INTERACTION_CONCEPT = "interactionConcept";
+    private static final String TAG_SOURCE_CONCEPT_ITEM = "sourceConceptItem";
+    private static final String TAG_DESCRIPTION = "description";
 
     private final Context mContext;
 
@@ -356,6 +363,50 @@ public class RxNavWrapper {
             }
         } catch (InterruptedException | ExecutionException | JSONException e) {
             Log.e(TAG, "Error in get TTY request: " + e.getMessage());
+            if (e.getCause() instanceof NoConnectionError) {
+                throw (NoConnectionError) e.getCause();
+            }
+        }
+    }
+
+    public void getDrugInteractions(Medicine med) throws NoConnectionError {
+        String url = String.format(URL_INTERACTION, RX_NORM_INTERACTION_BASE_URL, med.getRxnormId());
+        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        JsonRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null, future, future);
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(URL_REQUEST_TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleyRequestQueue.getInstance(mContext).addToRequestQueue(jsonRequest);
+        try {
+            JSONObject response = future.get();
+            Map<String, Map<String, String>> interactionTypeMap = new LinkedHashMap<>();
+            JSONArray interactionTypeGroupArray = response.getJSONArray(TAG_INTERACTION_TYPE_GROUP);
+            for (int i = 0; i < interactionTypeGroupArray.length(); i++) {
+                JSONArray interactionTypeArray = interactionTypeGroupArray.getJSONObject(i).
+                        getJSONArray(TAG_INTERACTION_TYPE);
+                for (int j = 0; j < interactionTypeArray.length(); j++) {
+                    JSONArray interactionPairArray = interactionTypeArray.getJSONObject(j).
+                            getJSONArray(TAG_INTERACTION_PAIR);
+                    String key = "";
+                    Map<String, String> map = new LinkedHashMap<>();
+                    for (int k = 0; k < interactionPairArray.length(); k++) {
+                        JSONObject interactionPair = interactionPairArray.getJSONObject(k);
+                        key = interactionPair.getJSONArray(TAG_INTERACTION_CONCEPT).
+                                getJSONObject(0).getJSONObject(TAG_SOURCE_CONCEPT_ITEM).
+                                getString(TAG_NAME);
+                        String valueKey = interactionPair.getJSONArray(TAG_INTERACTION_CONCEPT).
+                                getJSONObject(1).getJSONObject(TAG_SOURCE_CONCEPT_ITEM).
+                                getString(TAG_NAME);
+                        String value = interactionPair.getString(TAG_DESCRIPTION);
+                        map.put(valueKey, value);
+                    }
+                    if (!map.isEmpty()) {
+                        interactionTypeMap.put(key, map);
+                    }
+                }
+            }
+            med.setInteractions(interactionTypeMap);
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            Log.e(TAG, "Error in get drug interaction request: " + e.getMessage());
             if (e.getCause() instanceof NoConnectionError) {
                 throw (NoConnectionError) e.getCause();
             }

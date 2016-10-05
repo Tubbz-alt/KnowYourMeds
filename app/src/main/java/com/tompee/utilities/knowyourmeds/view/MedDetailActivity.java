@@ -35,6 +35,7 @@ import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.adapter.DrawerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
+import com.tompee.utilities.knowyourmeds.view.fragment.InteractionFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.PropertiesFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SettingsFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SourceFragment;
@@ -55,7 +56,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     private static final int CACHE_EXPIRY = 12;
     private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands,
             R.string.tab_sbdc, R.string.tab_sbd, R.string.tab_sbdg, R.string.tab_scdc,
-            R.string.tab_scd, R.string.tab_scdg, R.string.tab_info,
+            R.string.tab_scd, R.string.tab_scdg, R.string.tab_info, R.string.tab_interaction,
             R.string.tab_sources, R.string.tab_exit};
     private RecyclerView mRecyclerView;
     private GestureDetector mGestureDetector;
@@ -72,6 +73,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     private TtyFragment mScdFragment;
     private TtyFragment mScdgFragment;
     private TtyFragment mSbdFragment;
+    private InteractionFragment mInteractionFragment;
     private WebViewFragment mWebViewFragment;
     private SourceFragment mSourcesFragment;
     private PauseableHandler mPauseableHandler;
@@ -237,6 +239,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         mSbdFragment = TtyFragment.newInstance(med.getSbd(), getString(R.string.tab_sbd));
         mWebViewFragment = WebViewFragment.newInstance(med.getUrl());
         mSourcesFragment = SourceFragment.getInstance();
+        mInteractionFragment = InteractionFragment.newInstance();
     }
 
     @Override
@@ -276,6 +279,9 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         }
         if (mSbdFragment.isAdded()) {
             transaction.hide(mSbdFragment);
+        }
+        if (mInteractionFragment.isAdded()) {
+            transaction.hide(mInteractionFragment);
         }
         transaction.commit();
         fragmentManager.executePendingTransactions();
@@ -335,6 +341,9 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
                 break;
             case R.string.tab_sbd:
                 fragment = mSbdFragment;
+                break;
+            case R.string.tab_interaction:
+                fragment = mInteractionFragment;
                 break;
         }
         showFragment(fragment);

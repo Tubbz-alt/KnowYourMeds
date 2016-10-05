@@ -133,6 +133,13 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     }
 
     @Override
+    public void onUnderstand() {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putBoolean(TAG_DISCLAIMER, true);
+        editor.apply();
+    }
+
+    @Override
     public void onCancelled() {
         finish();
     }

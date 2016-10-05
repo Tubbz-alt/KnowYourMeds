@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 
@@ -44,6 +45,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_SCDG = "SCDG";
     private static final String COLUMN_SBD = "SBD";
     private static final String COLUMN_SPL_SET = "SPL_SET";
+    private static final String COLUMN_INTERACTION = "INTERACTION";
+
     private static final String CREATE_MAIN_TABLE = "create table " + MAIN_TABLE +
             " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null collate nocase," +
             COLUMN_PRESC + " integer," + COLUMN_IS_INGREDIENT + " integer, " +
@@ -51,7 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COLUMN_SOURCES + " text," + COLUMN_BRANDS + " text," + COLUMN_SCDC + " text," +
             COLUMN_SBDC + " text," + COLUMN_SBDG + " text, " + COLUMN_SCD + " text," +
             COLUMN_DATE + " text not null," + COLUMN_SCDG + " text," + COLUMN_SBD + " text," +
-            COLUMN_SPL_SET + " text" + " )";
+            COLUMN_SPL_SET + " text," + COLUMN_INTERACTION + " text" + " )";
     private static final String CREATE_FAVORITE_TABLE = "create table " + FAVORITE_TABLE +
             " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null collate nocase," +
             COLUMN_PRESC + " integer" + " )";
@@ -111,6 +114,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SCDG, convertToJsonString(COLUMN_SCDG, med.getScdg()));
         values.put(COLUMN_SBD, convertToJsonString(COLUMN_SBD, med.getSbd()));
         values.put(COLUMN_SPL_SET, convertToJsonString(COLUMN_SBD, med.getSplSetId()));
+        values.put(COLUMN_INTERACTION, convertRecursiveMapToJsonString(COLUMN_INTERACTION,
+                med.getInteractions()));
         SQLiteDatabase db = getWritableDatabase();
         db.insert(MAIN_TABLE, null, values);
         db.close();
@@ -144,6 +149,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SCDG, convertToJsonString(COLUMN_SCDG, med.getScdg()));
         values.put(COLUMN_SBD, convertToJsonString(COLUMN_SBD, med.getSbd()));
         values.put(COLUMN_SPL_SET, convertToJsonString(COLUMN_SBD, med.getSplSetId()));
+        values.put(COLUMN_INTERACTION, convertRecursiveMapToJsonString(COLUMN_INTERACTION,
+                med.getInteractions()));
         SQLiteDatabase db = getWritableDatabase();
         db.update(MAIN_TABLE, values, COLUMN_ID + "='" + med.getRxnormId() + "'", null);
 
@@ -171,6 +178,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private String convertToJsonString(String column, Map<String, String> map) {
+        if (map == null) {
+            return null;
+        }
+        JSONObject json = new JSONObject();
+        try {
+            json.put(column, new JSONObject(map));
+            return json.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String convertRecursiveMapToJsonString(String column, Map<String,
+            Map<String, String>> map) {
         if (map == null) {
             return null;
         }
@@ -228,7 +250,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC, COLUMN_IS_INGREDIENT, COLUMN_URL,
                 COLUMN_INGREDIENTS, COLUMN_SOURCES, COLUMN_BRANDS, COLUMN_SCDC, COLUMN_SBDC,
-                COLUMN_SBDG, COLUMN_SCD, COLUMN_DATE, COLUMN_SCDG, COLUMN_SBD, COLUMN_SPL_SET};
+                COLUMN_SBDG, COLUMN_SCD, COLUMN_DATE, COLUMN_SCDG, COLUMN_SBD, COLUMN_SPL_SET,
+                COLUMN_INTERACTION};
         Cursor cursor = db.query(MAIN_TABLE, columns, COLUMN_ID + "='" + rxcui + "'", null, null, null, null);
         cursor.moveToFirst();
         if (cursor.getCount() == 0) {
@@ -259,6 +282,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             medicine.setScdg(jsonToList(COLUMN_SCDG, cursor.getString(13)));
             medicine.setSbd(jsonToList(COLUMN_SBD, cursor.getString(14)));
             medicine.setSplSetId(jsonToMap(COLUMN_SBD, cursor.getString(15)));
+            medicine.setInteractions(jsonToRecursiveMap(COLUMN_INTERACTION, cursor.getString(16)));
         }
         return medicine;
     }
@@ -293,6 +317,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return retMap;
     }
+
+    private Map<String, Map<String, String>> jsonToRecursiveMap(String column, String string) {
+        Map<String, Map<String, String>> retMap = new LinkedHashMap<>();
+        try {
+            JSONObject json = new JSONObject(string).getJSONObject(column);
+            Iterator<String> keysItr = json.keys();
+            while (keysItr.hasNext()) {
+                String key = keysItr.next();
+                Object value = json.get(key);
+                Map<String, String> map = new LinkedHashMap<>();
+                if (value instanceof JSONObject) {
+                    JSONObject jsonObject = (JSONObject) value;
+                    Iterator<String> iterator = jsonObject.keys();
+                    while (iterator.hasNext()) {
+                        String innerKey = iterator.next();
+                        map.put(innerKey, (String) jsonObject.get(innerKey));
+                    }
+                }
+                retMap.put(key, map);
+            }
+            Log.d("RxNav", retMap.toString());
+        } catch (JSONException | NullPointerException e) {
+            e.printStackTrace();
+        }
+        return retMap;
+    }
+
 
     private Date convertFromDateString(String string) {
         DateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);

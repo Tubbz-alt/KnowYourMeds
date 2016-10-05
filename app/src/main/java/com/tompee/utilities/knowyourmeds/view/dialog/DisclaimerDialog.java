@@ -28,7 +28,8 @@ public class DisclaimerDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.menu_disclaimer);
         builder.setView(view);
-        if (getArguments().getBoolean(TAG_FIRST_TIME)) {
+        boolean firstTime = getArguments().getBoolean(TAG_FIRST_TIME);
+        if (firstTime) {
             builder.setNegativeButton(R.string.control_cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -36,7 +37,12 @@ public class DisclaimerDialog extends DialogFragment {
                 }
             });
         }
-        builder.setPositiveButton(R.string.control_understand, null);
+        builder.setPositiveButton(R.string.control_understand, firstTime ? new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ((DisclaimerDialogListener) getActivity()).onUnderstand();
+            }
+        } : null);
         return builder.create();
     }
 
@@ -47,6 +53,7 @@ public class DisclaimerDialog extends DialogFragment {
     }
 
     public interface DisclaimerDialogListener {
+        void onUnderstand();
         void onCancelled();
     }
 }

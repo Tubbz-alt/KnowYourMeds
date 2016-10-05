@@ -38,6 +38,7 @@ public class GetMedDetailTask extends AsyncTask<String, Void, Medicine> {
                 mWrapper.getCodes(med);
             }
             mWrapper.getTtyValues(med);
+            mWrapper.getDrugInteractions(med);
             return med;
         } catch (NoConnectionError noConnectionError) {
             mIsOffline = true;
