@@ -1,6 +1,7 @@
 package com.tompee.utilities.knowyourmeds.view;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -120,19 +121,29 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         DatabaseHelper db = DatabaseHelper.getInstance(this);
         SharedPreferences sp = getSharedPreferences(MainActivity.SHARED_PREF,
                 Context.MODE_PRIVATE);
+
         mMedicine = db.getEntry(getIntent().getStringExtra(TAG_ID));
-        if (mMedicine == null) {
-            startTask(name);
-            return;
-        }
-
         /** Check if offline mode is enabled */
-        if (!sp.getBoolean(SettingsFragment.TAG_OFFLINE_MODE_CB, false) &&
-                !isCacheValid(mMedicine.getDate(), Calendar.getInstance().getTime())) {
-            startTask(name);
-            return;
+        if (sp.getBoolean(SettingsFragment.TAG_OFFLINE_MODE_CB, false)){
+            if (mMedicine == null) {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+                dialogBuilder.setMessage(R.string.not_available_offline);
+                dialogBuilder.setPositiveButton(R.string.control_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });
+                dialogBuilder.create().show();
+                return;
+            }
+        } else {
+            if (mMedicine == null || !isCacheValid(mMedicine.getDate(),
+                    Calendar.getInstance().getTime())) {
+                startTask(name);
+                return;
+            }
         }
-
         if (getIntent().getIntExtra(TAG_ORIGIN, FROM_SEARCH) == FROM_SEARCH) {
             db.createEntry(DatabaseHelper.RECENT_TABLE, mMedicine);
         }

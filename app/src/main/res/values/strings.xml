@@ -26,6 +26,7 @@
         depending on the genericity of the item&#8230;\n\nIf search is taking too much time,
         consider disabling Structured Product Label Search in Settings</string>
     <string name="tty_no_items">No %1$s available</string>
+    <string name="not_available_offline">Entry is not available in offline mode</string>
 
     <!-- Dialog messages -->
     <string name="delete_recent_message">Are you sure you want to delete the recent list?</string>

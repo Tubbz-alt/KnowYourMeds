@@ -2,14 +2,15 @@ package com.tompee.utilities.knowyourmeds.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
@@ -19,9 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class InteractionFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class InteractionFragment extends Fragment implements AdapterView.OnItemSelectedListener,
+        AdapterView.OnItemClickListener {
     private ListView mListView;
     private Map<String, Map<String, String>> mInteractionMap;
+    private String mKey;
 
     public static InteractionFragment newInstance() {
         return new InteractionFragment();
@@ -48,9 +51,15 @@ public class InteractionFragment extends Fragment implements AdapterView.OnItemS
             dropDownList.add(getString(R.string.tab_interaction));
             adapter = new ArrayAdapter<>(getContext(), android.R.layout.
                     simple_spinner_item, dropDownList);
+            spinner.setEnabled(false);
+            TextView tv = (TextView) view.findViewById(R.id.tv_no_items);
+            tv.setText(String.format(getString(R.string.tty_no_items),
+                    getString(R.string.tab_interaction)));
+            tv.setVisibility(View.VISIBLE);
         }
         spinner.setAdapter(adapter);
         mListView = (ListView) view.findViewById(R.id.list);
+        mListView.setOnItemClickListener(this);
         return view;
     }
 
@@ -59,13 +68,23 @@ public class InteractionFragment extends Fragment implements AdapterView.OnItemS
         if (i == 0) {
             return;
         }
-        String key = new ArrayList<>(mInteractionMap.keySet()).get(i - 1);
+        mKey = new ArrayList<>(mInteractionMap.keySet()).get(i - 1);
         StringListAdapter adapter = new StringListAdapter(getContext(),
-                new ArrayList<>(mInteractionMap.get(key).keySet()));
+                new ArrayList<>(mInteractionMap.get(mKey).keySet()));
         mListView.setAdapter(adapter);
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        String key = new ArrayList<>(mInteractionMap.get(mKey).keySet()).get(i);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(key);
+        builder.setMessage(mInteractionMap.get(mKey).get(key));
+        builder.setPositiveButton(R.string.control_ok, null);
+        builder.create().show();
     }
 }
