@@ -27,6 +27,7 @@
         depending on the genericity of the item&#8230;\n\nIf search is taking too much time,
         consider disabling Marketed Drug Search in Settings</string>
     <string name="tty_no_items">No %1$s available</string>
+    <string name="source_no_items">No sources available</string>
     <string name="explore">Explore</string>
 
     <!-- Dialog messages -->
@@ -35,6 +36,7 @@
     <string name="delete_favorite_message">Are you sure you want to delete the favorite list?</string>
     <string name="add_to_favorites">%1$s was added to favorites.</string>
     <string name="toast_no_internet">No Internet Connection</string>
+    <string name="search_item_message">Do you want to search for %1$s?</string>
 
     <!-- Control -->
     <string name="control_delete">Delete</string>
@@ -45,6 +47,7 @@
     <string name="control_disable">Disable</string>
     <string name="control_empty_cache">Empty Cache</string>
     <string name="control_select">&lt;Select item here&gt;</string>
+    <string name="control_search">Search</string>
 
     <!-- Menu titles -->
     <string name="menu_favorite">Add to favorites</string>
