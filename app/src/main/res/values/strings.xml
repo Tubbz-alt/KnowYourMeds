@@ -14,6 +14,7 @@
     <string name="navigation_drawer_open">Open Drawer</string>
     <string name="navigation_drawer_close">Close Drawer</string>
 
+    <!-- Main Screen -->
     <string name="favorites">Favorites</string>
     <string name="recent">Recent Searches</string>
     <string name="no_suggestions">No items found</string>
@@ -24,11 +25,12 @@
     <string name="suggestions_results">Suggestions for %1$s</string>
     <string name="fetch_details">Gathering all available information.\nThis may take a while
         depending on the genericity of the item&#8230;\n\nIf search is taking too much time,
-        consider disabling Structured Product Label Search in Settings</string>
+        consider disabling Marketed Drug Search in Settings</string>
     <string name="tty_no_items">No %1$s available</string>
-    <string name="not_available_offline">Entry is not available in offline mode</string>
+    <string name="explore">Explore</string>
 
     <!-- Dialog messages -->
+    <string name="not_available_offline">Entry is not available in offline mode</string>
     <string name="delete_recent_message">Are you sure you want to delete the recent list?</string>
     <string name="delete_favorite_message">Are you sure you want to delete the favorite list?</string>
     <string name="add_to_favorites">%1$s was added to favorites.</string>
@@ -69,7 +71,7 @@
     <string name="property_prescribable_no">Not prescribable</string>
     <string name="property_brands">Brand Name</string>
     <string name="property_ingredient">Ingredient</string>
-    <string name="property_spl">Structured Product Labels</string>
+    <string name="property_spl">Marketed Drugs</string>
 
     <!-- About -->
     <string name="version">Version %1$s</string>
@@ -111,10 +113,10 @@
         list only.\n\nNote: Data in offline mode maybe outdated and some features may not
         be available.</string>
     <string name="settings_show_recent">Show recent searches</string>
-    <string name="settings_spl_support_title">Structured Product Label Search</string>
+    <string name="settings_spl_support_title">Marketed Drug Search</string>
     recent searches even without internet connection.\n\nIn offline mode, Search feature will
-    <string name="settings_spl_support_message">Enabling SPL search may take considerable
-        amount of time depending on genericity of item.</string>
+    <string name="settings_spl_support_message">Enabling Marketed Drug search may take considerable
+        amount of time depending on the genericity of item.</string>
     <string name="settings_cache_title">Clear cache</string>
     <string name="settings_cache_message">Cache contains all previously viewed items. Clearing
         this will affect the features of offline mode.</string>

@@ -66,6 +66,7 @@ public class InteractionFragment extends Fragment implements AdapterView.OnItemS
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if (i == 0) {
+            mListView.setAdapter(null);
             return;
         }
         mKey = new ArrayList<>(mInteractionMap.keySet()).get(i - 1);

@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -61,6 +64,24 @@ public class SPLDetailActivity extends BaseActivity implements SwipeRefreshLayou
             builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
         }
         mAdView.loadAd(builder.build());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_webview, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_refresh:
+                mSwipeRefreshLayout.setRefreshing(true);
+                refresh();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

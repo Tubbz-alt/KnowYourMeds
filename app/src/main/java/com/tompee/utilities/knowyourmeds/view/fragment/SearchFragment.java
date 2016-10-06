@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.InterstitialAd;
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.task.SearchTask;
@@ -212,6 +213,10 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
             intent.putExtra(MedDetailActivity.TAG_ORIGIN, MedDetailActivity.FROM_SEARCH);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+            InterstitialAd ad = ((MainActivity) getActivity()).getInterstitialAd();
+            if (ad.isLoaded()) {
+                ad.show();
+            }
         }
     }
 

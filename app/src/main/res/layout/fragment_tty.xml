@@ -67,7 +67,6 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/search_vertical_padding"
                 android:gravity="center"
-                android:minHeight="@dimen/list_view_height"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:textColor="@color/dark_text"
                 android:visibility="gone" />
