@@ -16,4 +16,13 @@
 
     <color name="background">#FFFFFF</color>
     <color name="progress_dialog_background">#C03F51D7</color>
+
+    <color name="tty_brand">#1B96FE</color>
+    <color name="tty_ingredients">#920F88</color>
+    <color name="tty_scdc">#FF69B4</color>
+    <color name="tty_sbdc">#DC143C</color>
+    <color name="tty_sbd">#7CFC00</color>
+    <color name="tty_sbdg">#778899</color>
+    <color name="tty_scd">#FF8C00</color>
+    <color name="tty_scdg">#0000CD</color>
 </resources>

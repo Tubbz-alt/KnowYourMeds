@@ -22,6 +22,15 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class RxNavWrapper {
+    public static final String INGREDIENT = "IN";
+    public static final String BRAND = "BN";
+    public static final String SCDC = "SCDC";
+    public static final String SBDC = "SBDC";
+    public static final String SBD = "SBD";
+    public static final String SBDG = "SBDG";
+    public static final String SCD = "SCD";
+    public static final String SCDG = "SCDG";
+
     private static final String TAG = "RxNavWrapper";
     private static final String RX_NORM_BASE_URL = "https://rxnav.nlm.nih.gov/REST";
     private static final String RX_NORM_INTERACTION_BASE_URL = "https://rxnav.nlm.nih.gov/REST/interaction";
@@ -31,18 +40,9 @@ public class RxNavWrapper {
     private static final String MEDLINE_QUERY_URL = "https://vsearch.nlm.nih.gov/vivisimo/cgi-bin/" +
             "query-meta?v%3Aproject=medlineplus&v%3Asources=medlineplus-bundle&query=";
     private static final String DAILY_MED_BASE_URL = "https://dailymed.nlm.nih.gov/dailymed/services/v2";
-
     /* Constants */
     private static final String YES = "Y";
-    private static final String INGREDIENT = "IN";
     private static final String TTY = "TTY";
-    private static final String BRAND = "BN";
-    private static final String SCDC = "SCDC";
-    private static final String SBDC = "SBDC";
-    private static final String SBDG = "SBDG";
-    private static final String SCD = "SCD";
-    private static final String SCDG = "SCDG";
-    private static final String SBD = "SBD";
     private static final int URL_REQUEST_TIMEOUT = 10000;
 
     /* RX Norm REST functions */
@@ -197,7 +197,7 @@ public class RxNavWrapper {
                 JSONObject obj = array.getJSONObject(index);
                 switch (obj.getString(TAG_PROP_NAME)) {
                     case TTY:
-                        med.setIsIngredient(obj.getString(TAG_PROP_VALUE).equals(INGREDIENT));
+                        med.setTty(obj.getString(TAG_PROP_VALUE));
                         break;
                 }
             }

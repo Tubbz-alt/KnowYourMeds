@@ -32,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ID = "rxcui";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_PRESC = "presc";
-    private static final String COLUMN_IS_INGREDIENT = "isingredient";
+    private static final String COLUMN_TTY = "isingredient";
     private static final String COLUMN_URL = "url";
     private static final String COLUMN_INGREDIENTS = "ingredients";
     private static final String COLUMN_SOURCES = "sources";
@@ -49,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_MAIN_TABLE = "create table " + MAIN_TABLE +
             " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null collate nocase," +
-            COLUMN_PRESC + " integer," + COLUMN_IS_INGREDIENT + " integer, " +
+            COLUMN_PRESC + " integer," + COLUMN_TTY + " text, " +
             COLUMN_URL + " text not null," + COLUMN_INGREDIENTS + " text," +
             COLUMN_SOURCES + " text," + COLUMN_BRANDS + " text," + COLUMN_SCDC + " text," +
             COLUMN_SBDC + " text," + COLUMN_SBDG + " text, " + COLUMN_SCD + " text," +
@@ -101,7 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_ID, med.getRxnormId());
         values.put(COLUMN_NAME, med.getName());
         values.put(COLUMN_PRESC, med.isPrescribable() ? 1 : 0);
-        values.put(COLUMN_IS_INGREDIENT, med.isIngredient() ? 1 : 0);
+        values.put(COLUMN_TTY, med.getTty());
         values.put(COLUMN_URL, med.getUrl());
         values.put(COLUMN_INGREDIENTS, convertToJsonString(COLUMN_INGREDIENTS, med.getIngredients()));
         values.put(COLUMN_SOURCES, convertToJsonString(COLUMN_SOURCES, med.getSources()));
@@ -136,7 +136,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, med.getName());
         values.put(COLUMN_PRESC, med.isPrescribable() ? 1 : 0);
-        values.put(COLUMN_IS_INGREDIENT, med.isIngredient() ? 1 : 0);
+        values.put(COLUMN_TTY, med.getTty());
         values.put(COLUMN_URL, med.getUrl());
         values.put(COLUMN_INGREDIENTS, convertToJsonString(COLUMN_INGREDIENTS, med.getIngredients()));
         values.put(COLUMN_SOURCES, convertToJsonString(COLUMN_SOURCES, med.getSources()));
@@ -158,7 +158,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values = new ContentValues();
         values.put(COLUMN_NAME, med.getName());
         values.put(COLUMN_PRESC, med.isPrescribable() ? 1 : 0);
-        values.put(COLUMN_IS_INGREDIENT, med.isIngredient() ? 1 : 0);
+        values.put(COLUMN_TTY, med.getTty());
         db.update(tableName, values, COLUMN_ID + "='" + med.getRxnormId() + "'", null);
         db.close();
     }
@@ -248,7 +248,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Medicine getEntry(String rxcui) {
         SQLiteDatabase db = getWritableDatabase();
-        String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC, COLUMN_IS_INGREDIENT, COLUMN_URL,
+        String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC, COLUMN_TTY, COLUMN_URL,
                 COLUMN_INGREDIENTS, COLUMN_SOURCES, COLUMN_BRANDS, COLUMN_SCDC, COLUMN_SBDC,
                 COLUMN_SBDG, COLUMN_SCD, COLUMN_DATE, COLUMN_SCDG, COLUMN_SBD, COLUMN_SPL_SET,
                 COLUMN_INTERACTION};
@@ -269,7 +269,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         medicine.setName(cursor.getString(1));
         medicine.setIsPrescribable(cursor.getInt(2) == 1);
         if (!isShort) {
-            medicine.setIsIngredient(cursor.getInt(3) == 1);
+            medicine.setTty(cursor.getString(3));
             medicine.setUrl(cursor.getString(4));
             medicine.setIngredients(jsonToList(COLUMN_INGREDIENTS, cursor.getString(5)));
             medicine.setSources(jsonToList(COLUMN_SOURCES, cursor.getString(6)));

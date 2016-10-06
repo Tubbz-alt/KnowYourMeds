@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.controller.networkinterface.RxNavWrapper;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.SPLDetailActivity;
@@ -48,17 +49,48 @@ public class PropertiesFragment extends Fragment implements AdapterView.OnItemCl
         }
         ImageView inIcon = (ImageView) view.findViewById(R.id.in_icon);
         TextView inText = (TextView) view.findViewById(R.id.in_text);
-        if (med.isIngredient()) {
-            inIcon.setBackgroundResource(R.drawable.ic_ingredient);
-            inText.setText(R.string.property_ingredient);
-            View inView = view.findViewById(R.id.ingredients);
-            inView.setVisibility(View.GONE);
-        } else {
-            inIcon.setBackgroundResource(R.drawable.ic_brand);
-            inText.setText(R.string.property_brands);
+        switch (med.getTty()) {
+            case RxNavWrapper.BRAND:
+                inIcon.setBackgroundResource(R.drawable.shape_tty_brand);
+                inText.setText(R.string.property_brands);
+                break;
+            case RxNavWrapper.INGREDIENT:
+                inIcon.setBackgroundResource(R.drawable.shape_tty_ingredients);
+                inText.setText(R.string.property_ingredient);
+                break;
+            case RxNavWrapper.SCDC:
+                inIcon.setBackgroundResource(R.drawable.shape_tty_scdc);
+                inText.setText(R.string.tab_scdc);
+                break;
+            case RxNavWrapper.SBDC:
+                inIcon.setBackgroundResource(R.drawable.shape_tty_sbdc);
+                inText.setText(R.string.tab_sbdc);
+                break;
+            case RxNavWrapper.SBD:
+                inIcon.setBackgroundResource(R.drawable.shape_tty_sbd);
+                inText.setText(R.string.tab_sbd);
+                break;
+            case RxNavWrapper.SBDG:
+                inIcon.setBackgroundResource(R.drawable.shape_tty_sbdg);
+                inText.setText(R.string.tab_sbdg);
+                break;
+            case RxNavWrapper.SCD:
+                inIcon.setBackgroundResource(R.drawable.shape_tty_scd);
+                inText.setText(R.string.tab_scd);
+                break;
+            case RxNavWrapper.SCDG:
+                inIcon.setBackgroundResource(R.drawable.shape_tty_scdg);
+                inText.setText(R.string.tab_scdg);
+                break;
+        }
+        ArrayList<String> ingredients = med.getIngredients();
+        if (ingredients != null && !ingredients.isEmpty()) {
             ListView listView = (ListView) view.findViewById(R.id.list_ingredients);
             listView.setAdapter(new StringListAdapter(getContext(), med.getIngredients(),
-                    R.drawable.ic_ingredient));
+                    R.drawable.shape_tty_ingredients));
+        } else {
+            View inView = view.findViewById(R.id.ingredients);
+            inView.setVisibility(View.GONE);
         }
         View splView = view.findViewById(R.id.spls);
         mSplMap = med.getSplSetId();

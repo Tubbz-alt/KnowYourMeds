@@ -58,7 +58,7 @@
     <!-- Tab titles -->
     <string name="tab_properties">Properties</string>
     <string name="tab_sources">Sources</string>
-    <string name="tab_brands">Related Brand Names</string>
+    <string name="tab_brands">Brand Names</string>
     <string name="tab_info">MedlinePlus</string>
     <string name="tab_scdc">Clinical Drug Component</string>
     <string name="tab_sbdc">Branded Drug Component</string>

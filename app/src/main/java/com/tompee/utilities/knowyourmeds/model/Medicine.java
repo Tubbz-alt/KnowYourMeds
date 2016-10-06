@@ -8,7 +8,7 @@ public class Medicine {
     private String mRxnormId;
     private String mName;
     private boolean mIsPrescribable;
-    private boolean mIsIngredient;
+    private String mTty;
     private String mUrl;
     private ArrayList<String> mIngredients;
     private ArrayList<String> mSources;
@@ -58,12 +58,12 @@ public class Medicine {
         mIsPrescribable = isPrescribable;
     }
 
-    public boolean isIngredient() {
-        return mIsIngredient;
+    public String getTty() {
+        return mTty;
     }
 
-    public void setIsIngredient(boolean isIngredient) {
-        mIsIngredient = isIngredient;
+    public void setTty(String tty) {
+        mTty = tty;
     }
 
     public ArrayList<String> getSources() {
