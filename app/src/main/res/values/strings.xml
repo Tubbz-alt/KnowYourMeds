@@ -134,4 +134,9 @@
         graphic by Vectors Market from Flaticon\nHealthy graphic by Darius Dan from Flaticon\n\nAll
         icons are licensed under Creative Commons BY 3.0.\nMade with Logo Maker.
     </string>
+
+    <!-- List headers -->
+    <string name="header_name">Name</string>
+    <string name="header_prescribable">Prescribable</string>
+    <string name="header_tty">Term Type</string>
 </resources>

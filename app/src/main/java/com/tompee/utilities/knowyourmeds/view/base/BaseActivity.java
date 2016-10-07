@@ -64,7 +64,7 @@ public class BaseActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected boolean isFullLayoutSupported() {
+    public boolean isFullLayoutSupported() {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();

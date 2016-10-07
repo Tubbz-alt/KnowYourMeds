@@ -128,6 +128,10 @@
                 android:layout_marginTop="4dp"
                 android:background="@color/dark_secondary_text" />
 
+            <include
+                android:id="@+id/list_header"
+                layout="@layout/list_header" />
+
             <ListView
                 android:id="@+id/list_view_search"
                 android:layout_width="match_parent"

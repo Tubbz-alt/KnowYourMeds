@@ -155,6 +155,7 @@ public class RxNavWrapper {
             }
             med.setIsPrescribable(false);
         }
+        getAttributes(med);
         return med;
     }
 

@@ -57,6 +57,10 @@
                 android:layout_marginTop="4dp"
                 android:background="@color/dark_secondary_text" />
 
+            <include
+                android:id="@+id/header_favorite"
+                layout="@layout/list_header" />
+
             <com.tompee.utilities.knowyourmeds.view.custom.SwipeListView
                 android:id="@+id/list_favorite"
                 android:layout_width="match_parent"
@@ -130,6 +134,10 @@
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
                 android:background="@color/dark_secondary_text" />
+
+            <include
+                android:id="@+id/header_recent"
+                layout="@layout/list_header" />
 
             <com.tompee.utilities.knowyourmeds.view.custom.SwipeListView
                 android:id="@+id/recent_list"

@@ -26,9 +26,11 @@ import com.tompee.utilities.knowyourmeds.controller.task.SearchTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MainActivity;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
-import com.tompee.utilities.knowyourmeds.view.adapter.MedListAdapter;
+import com.tompee.utilities.knowyourmeds.view.adapter.MainListAdapter;
+import com.tompee.utilities.knowyourmeds.view.adapter.StringListAdapter;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFragment extends Fragment implements TextWatcher, View.OnFocusChangeListener,
@@ -43,6 +45,7 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
     private ListView mListView;
     private List<Medicine> mMedList;
     private SharedPreferences mSharedPreferences;
+    private View mListHeader;
 
     private SearchTask mTask;
     private ProcessingDialog mDialog;
@@ -74,6 +77,7 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
         mResultBar = view.findViewById(R.id.result_bar);
         mResultText = (TextView) view.findViewById(R.id.text_result);
         mNoResultsView = view.findViewById(R.id.text_no_items);
+        mListHeader = view.findViewById(R.id.list_header);
         return view;
     }
 
@@ -139,7 +143,9 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
         }
         mListView.setVisibility(View.VISIBLE);
         mNoResultsView.setVisibility(View.GONE);
-        MedListAdapter adapter = new MedListAdapter(getContext(), medList, true, false);
+        boolean isFullLayoutSupported = ((MainActivity) getActivity()).isFullLayoutSupported();
+        MainListAdapter adapter = new MainListAdapter(getContext(), medList, isFullLayoutSupported,
+                true, false);
         mListView.setAdapter(adapter);
         mMedList = medList;
     }
@@ -163,8 +169,13 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
             mMedList = medList;
             mResultText.setText(R.string.search_results);
             mResultBar.setVisibility(View.VISIBLE);
-            MedListAdapter adapter = new MedListAdapter(getContext(), medList, true, false);
+            boolean isFullLayoutSupported = ((MainActivity) getActivity()).isFullLayoutSupported();
+            MainListAdapter adapter = new MainListAdapter(getContext(), medList, isFullLayoutSupported,
+                    true, false);
             mListView.setAdapter(adapter);
+            if (mListHeader != null) {
+                mListHeader.setVisibility(View.VISIBLE);
+            }
         }
         mDialog.dismiss();
         mDialog = null;
@@ -179,13 +190,20 @@ public class SearchFragment extends Fragment implements TextWatcher, View.OnFocu
             mResultText.setText(String.format(getString(R.string.suggestions_results),
                     mEditText.getText().toString()));
             mResultBar.setVisibility(View.VISIBLE);
-            MedListAdapter adapter = new MedListAdapter(getContext(), suggestedMed, false, false);
+            List<String> list = new ArrayList<>();
+            for (Medicine med : suggestedMed) {
+                list.add(med.getName());
+            }
+            StringListAdapter adapter = new StringListAdapter(getContext(), list, 0);
             mListView.setAdapter(adapter);
             mListView.setVisibility(View.VISIBLE);
             mNoResultsView.setVisibility(View.GONE);
         } else {
             mListView.setVisibility(View.GONE);
             mNoResultsView.setVisibility(View.VISIBLE);
+        }
+        if (mListHeader != null) {
+            mListHeader.setVisibility(View.GONE);
         }
         mDialog.dismiss();
         mDialog = null;

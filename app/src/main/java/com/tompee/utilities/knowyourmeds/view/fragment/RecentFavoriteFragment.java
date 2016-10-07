@@ -18,7 +18,7 @@ import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MainActivity;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
-import com.tompee.utilities.knowyourmeds.view.adapter.MedListAdapter;
+import com.tompee.utilities.knowyourmeds.view.adapter.MainListAdapter;
 import com.tompee.utilities.knowyourmeds.view.custom.SwipeListView;
 
 import java.util.Collections;
@@ -37,6 +37,8 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     private View mRecentNoItemsView;
     private View mRecentTrash;
     private View mFavoriteTrash;
+    private View mFavoriteHeader;
+    private View mRecentHeader;
 
     public static RecentFavoriteFragment newInstance() {
         return new RecentFavoriteFragment();
@@ -82,6 +84,8 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
         mRecentTrash.setOnClickListener(this);
         mFavoriteTrash = view.findViewById(R.id.image_favorite_trash);
         mFavoriteTrash.setOnClickListener(this);
+        mFavoriteHeader = view.findViewById(R.id.header_favorite);
+        mRecentHeader = view.findViewById(R.id.header_recent);
 
         View recentCard = view.findViewById(R.id.recent_card);
         recentCard.setVisibility(mSharedPreferences.getBoolean(SettingsFragment.TAG_RECENT_CB,
@@ -118,7 +122,9 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
         if (mDbHelper != null) {
             mFavoriteMedList = mDbHelper.getAllShortEntries(DatabaseHelper.FAVORITE_TABLE);
             if (mFavoriteMedList.size() > 0) {
-                MedListAdapter adapter = new MedListAdapter(getContext(), mFavoriteMedList, true, true);
+                boolean isFullLayoutSupported = ((MainActivity) getActivity()).isFullLayoutSupported();
+                MainListAdapter adapter = new MainListAdapter(getContext(), mFavoriteMedList,
+                        isFullLayoutSupported, true, true);
                 View view = mFavoriteListView.getChildAt(0);
                 int position = mFavoriteListView.getFirstVisiblePosition();
                 mFavoriteListView.setAdapter(adapter);
@@ -131,16 +137,24 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
                 mFavoriteListView.setVisibility(View.VISIBLE);
                 mFaveNoItemsView.setVisibility(View.GONE);
                 mFavoriteTrash.setVisibility(View.VISIBLE);
+                if (mFavoriteHeader != null) {
+                    mFavoriteHeader.setVisibility(View.VISIBLE);
+                }
             } else {
                 mFavoriteListView.setVisibility(View.GONE);
                 mFaveNoItemsView.setVisibility(View.VISIBLE);
                 mFavoriteTrash.setVisibility(View.GONE);
+                if (mFavoriteHeader != null) {
+                    mFavoriteHeader.setVisibility(View.GONE);
+                }
             }
 
             mRecentMedList = mDbHelper.getAllShortEntries(DatabaseHelper.RECENT_TABLE);
             if (mRecentMedList.size() > 0) {
                 Collections.reverse(mRecentMedList);
-                MedListAdapter adapter = new MedListAdapter(getContext(), mRecentMedList, true, true);
+                boolean isFullLayoutSupported = ((MainActivity) getActivity()).isFullLayoutSupported();
+                MainListAdapter adapter = new MainListAdapter(getContext(), mRecentMedList,
+                        isFullLayoutSupported, true, true);
                 View view = mRecentListView.getChildAt(0);
                 int position = mRecentListView.getFirstVisiblePosition();
                 mRecentListView.setAdapter(adapter);
@@ -153,10 +167,16 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
                 mRecentListView.setVisibility(View.VISIBLE);
                 mRecentNoItemsView.setVisibility(View.GONE);
                 mRecentTrash.setVisibility(View.VISIBLE);
+                if (mRecentHeader != null) {
+                    mRecentHeader.setVisibility(View.VISIBLE);
+                }
             } else {
                 mRecentListView.setVisibility(View.GONE);
                 mRecentNoItemsView.setVisibility(View.VISIBLE);
                 mRecentTrash.setVisibility(View.GONE);
+                if (mRecentHeader != null) {
+                    mRecentHeader.setVisibility(View.GONE);
+                }
             }
         }
     }

@@ -57,4 +57,6 @@
     <dimen name="disclaimer_margin">24dp</dimen>
     <dimen name="disclaimer_view_separator">8dp</dimen>
 
+    <dimen name="header_height">30dp</dimen>
+
 </resources>

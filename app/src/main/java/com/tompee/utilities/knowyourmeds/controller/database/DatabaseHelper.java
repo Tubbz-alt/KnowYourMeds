@@ -32,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ID = "rxcui";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_PRESC = "presc";
-    private static final String COLUMN_TTY = "isingredient";
+    private static final String COLUMN_TTY = "tty";
     private static final String COLUMN_URL = "url";
     private static final String COLUMN_INGREDIENTS = "ingredients";
     private static final String COLUMN_SOURCES = "sources";
@@ -57,14 +57,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COLUMN_SPL_SET + " text," + COLUMN_INTERACTION + " text" + " )";
     private static final String CREATE_FAVORITE_TABLE = "create table " + FAVORITE_TABLE +
             " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null collate nocase," +
-            COLUMN_PRESC + " integer" + " )";
+            COLUMN_PRESC + " integer," + COLUMN_TTY + " text" + " )";
     private static final String CREATE_RECENT_TABLE = "create table " + RECENT_TABLE +
             " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null collate nocase," +
-            COLUMN_PRESC + " integer" + " )";
+            COLUMN_PRESC + " integer," + COLUMN_TTY + " text" + " )";
     private static final String DROP_MAIN_TABLE = "DROP TABLE IF EXISTS " + MAIN_TABLE;
     private static final String DROP_FAVORITE_TABLE = "DROP TABLE IF EXISTS " + FAVORITE_TABLE;
     private static final String DROP_RECENT_TABLE = "DROP TABLE IF EXISTS " + RECENT_TABLE;
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "KnowYourMeds.db";
     private static DatabaseHelper mSingleton;
 
@@ -126,6 +126,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_ID, med.getRxnormId());
         values.put(COLUMN_NAME, med.getName());
         values.put(COLUMN_PRESC, med.isPrescribable() ? 1 : 0);
+        values.put(COLUMN_TTY, med.getTty());
         db = getWritableDatabase();
         db.insert(tableName, null, values);
         db.close();
@@ -215,7 +216,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<Medicine> medList = new ArrayList<>();
 
         SQLiteDatabase db = getWritableDatabase();
-        String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC};
+        String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC, COLUMN_TTY};
         Cursor cursor = db.query(tableName, columns, null, null, null, null, null);
 
         cursor.moveToFirst();
@@ -232,7 +233,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Medicine> getAllShortEntriesByName(String name) {
         List<Medicine> medList = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
-        String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC};
+        String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC, COLUMN_TTY};
         Cursor cursor = db.query(MAIN_TABLE, columns, COLUMN_NAME + "='" + name + "'",
                 null, null, null, null);
         cursor.moveToFirst();
@@ -268,8 +269,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         medicine.setRxnormId(cursor.getString(0));
         medicine.setName(cursor.getString(1));
         medicine.setIsPrescribable(cursor.getInt(2) == 1);
+        medicine.setTty(cursor.getString(3));
         if (!isShort) {
-            medicine.setTty(cursor.getString(3));
             medicine.setUrl(cursor.getString(4));
             medicine.setIngredients(jsonToList(COLUMN_INGREDIENTS, cursor.getString(5)));
             medicine.setSources(jsonToList(COLUMN_SOURCES, cursor.getString(6)));

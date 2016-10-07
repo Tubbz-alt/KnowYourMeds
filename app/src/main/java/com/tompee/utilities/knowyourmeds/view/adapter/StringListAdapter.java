@@ -20,13 +20,13 @@ public class StringListAdapter extends ArrayAdapter<String> implements
     private final int mIconResource;
 
     public StringListAdapter(Context context, List<String> stringList) {
-        super(context, R.layout.list_med, stringList);
+        super(context, R.layout.list_plain, stringList);
         mContext = context;
         mIconResource = 0;
     }
 
     public StringListAdapter(Context context, List<String> stringList, int icon) {
-        super(context, R.layout.list_med, stringList);
+        super(context, R.layout.list_plain, stringList);
         mContext = context;
         mIconResource = icon;
     }
@@ -37,7 +37,7 @@ public class StringListAdapter extends ArrayAdapter<String> implements
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.list_med, parent, false);
+            view = inflater.inflate(R.layout.list_plain, parent, false);
             holder = new ListSwipeHolder();
             holder.setFrontView(view.findViewById(R.id.front_view));
             view.setTag(holder);
@@ -46,10 +46,10 @@ public class StringListAdapter extends ArrayAdapter<String> implements
         ((SwipeListItemView) view).setEnableSwipeDetection(false);
         ((SwipeListItemView) view).setOnClickBackgroundColor(R.color.colorListBackground);
 
-        TextView name = (TextView) view.findViewById(R.id.med_name);
+        TextView name = (TextView) view.findViewById(R.id.name);
         name.setText(getItem(position));
 
-        ImageView image = (ImageView) view.findViewById(R.id.presc_icon);
+        ImageView image = (ImageView) view.findViewById(R.id.icon);
         if (mIconResource == 0) {
             image.setVisibility(View.GONE);
         } else {
