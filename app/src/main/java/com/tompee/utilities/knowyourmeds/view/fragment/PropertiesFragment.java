@@ -1,8 +1,10 @@
 package com.tompee.utilities.knowyourmeds.view.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,8 +87,29 @@ public class PropertiesFragment extends Fragment implements AdapterView.OnItemCl
         }
         ArrayList<String> ingredients = med.getIngredients();
         if (ingredients != null && !ingredients.isEmpty()) {
+            final ArrayList<String> inList = med.getIngredients();
             ListView listView = (ListView) view.findViewById(R.id.list_ingredients);
-            listView.setAdapter(new StringListAdapter(getContext(), med.getIngredients(),
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage(String.format(getString(R.string.search_item_message), inList.get(position)));
+                    builder.setNegativeButton(R.string.control_cancel, null);
+                    builder.setPositiveButton(R.string.control_search, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent(getContext(), MedDetailActivity.class);
+                            intent.putExtra(MedDetailActivity.TAG_NAME, inList.get(position));
+                            intent.putExtra(MedDetailActivity.TAG_ID, "");
+                            intent.putExtra(MedDetailActivity.TAG_ORIGIN, MedDetailActivity.FROM_SEARCH);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
+                    });
+                    builder.create().show();
+                }
+            });
+            listView.setAdapter(new StringListAdapter(getContext(), inList,
                     R.drawable.shape_tty_ingredients));
         } else {
             View inView = view.findViewById(R.id.ingredients);

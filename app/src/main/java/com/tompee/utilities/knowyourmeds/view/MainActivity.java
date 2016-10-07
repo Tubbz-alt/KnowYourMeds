@@ -25,7 +25,7 @@ import com.tompee.utilities.knowyourmeds.view.dialog.DisclaimerDialog;
 public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener,
         DisclaimerDialog.DisclaimerDialogListener {
     public static final String SHARED_PREF = "knowyourmedspref";
-    private static final String TAG_DISCLAIMER = "disclaimer";
+    public static final String TAG_DISCLAIMER = "disclaimer";
     private static final int[] mTabIconList = {R.drawable.ic_star_white, R.drawable.ic_search_white,
             R.drawable.ic_settings_white};
     private ViewPager mViewPager;

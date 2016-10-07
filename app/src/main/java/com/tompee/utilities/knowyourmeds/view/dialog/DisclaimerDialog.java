@@ -54,6 +54,7 @@ public class DisclaimerDialog extends DialogFragment {
 
     public interface DisclaimerDialogListener {
         void onUnderstand();
+
         void onCancelled();
     }
 }
