@@ -64,7 +64,8 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         requestNewInterstitial();
 
         mViewPager = (ViewPager) findViewById(R.id.pager_main);
-        mViewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
+        mViewPager.setAdapter(new MainViewPagerAdapter(this, getSupportFragmentManager(),
+                isFullLayoutSupported()));
         mViewPager.addOnPageChangeListener(this);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_main);
