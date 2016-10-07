@@ -46,6 +46,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:orientation="vertical">
 
                 <TextView
@@ -54,12 +55,13 @@
                     android:text="@string/license_app_title"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/dark_text"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:gravity="center_horizontal"
                     android:text="@string/license_app_title_message"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/dark_text" />

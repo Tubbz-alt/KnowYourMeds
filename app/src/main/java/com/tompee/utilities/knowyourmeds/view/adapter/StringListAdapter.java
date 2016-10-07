@@ -1,6 +1,7 @@
 package com.tompee.utilities.knowyourmeds.view.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,8 @@ public class StringListAdapter extends ArrayAdapter<String> implements
             holder = new ListSwipeHolder();
             holder.setFrontView(view.findViewById(R.id.front_view));
             view.setTag(holder);
+        } else {
+            holder = (ListSwipeHolder) view.getTag();
         }
 
         ((SwipeListItemView) view).setEnableSwipeDetection(false);
@@ -55,6 +58,7 @@ public class StringListAdapter extends ArrayAdapter<String> implements
         } else {
             image.setBackgroundResource(mIconResource);
         }
+
         return view;
     }
 

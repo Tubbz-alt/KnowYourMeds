@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -22,6 +23,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +37,7 @@ import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.task.GetMedDetailTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.adapter.DrawerAdapter;
+import com.tompee.utilities.knowyourmeds.view.adapter.StringListAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 import com.tompee.utilities.knowyourmeds.view.fragment.InteractionFragment;
@@ -43,11 +47,14 @@ import com.tompee.utilities.knowyourmeds.view.fragment.SourceFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.TtyFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.WebViewFragment;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.GetMedTaskListener,
-        RecyclerView.OnItemTouchListener, PauseableHandler.PauseableHandlerCallback {
+        RecyclerView.OnItemTouchListener, PauseableHandler.PauseableHandlerCallback,
+        AdapterView.OnItemClickListener {
     public static final String TAG_NAME = "name";
     public static final String TAG_ID = "id";
     public static final String TAG_ORIGIN = "origin";
@@ -84,7 +91,12 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_med_detail);
-        setToolbar(R.id.toolbar, true);
+        setToolbar(R.id.toolbar, false);
+
+        Intent intent = getIntent();
+        String name = intent.getStringExtra(TAG_NAME);
+        TextView title = (TextView) findViewById(R.id.toolbar_text);
+        title.setText(name);
 
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest.Builder builder = new AdRequest.Builder();
@@ -92,30 +104,29 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
             builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
         }
         mAdView.loadAd(builder.build());
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-
-        mGestureDetector = new GestureDetector(this, new GestureListener());
-        mRecyclerView.addOnItemTouchListener(this);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
-
         mPauseableHandler = new PauseableHandler(this);
+        mFragmentIndex = 0;
 
-        //Set drawer
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawer,
-                (Toolbar) findViewById(R.id.toolbar), R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-        mDrawer.addDrawerListener(drawerToggle);
-        drawerToggle.syncState();
+        if (isFullLayoutSupported()) {
 
-        Intent intent = getIntent();
-        String name = intent.getStringExtra(TAG_NAME);
-        TextView title = (TextView) findViewById(R.id.toolbar_text);
-        title.setText(name);
+        } else {
+            mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+            mRecyclerView.setHasFixedSize(true);
+
+            mGestureDetector = new GestureDetector(this, new GestureListener());
+            mRecyclerView.addOnItemTouchListener(this);
+
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+            mRecyclerView.setLayoutManager(layoutManager);
+
+            //Set drawer
+            mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawer,
+                    (Toolbar) findViewById(R.id.toolbar), R.string.navigation_drawer_open,
+                    R.string.navigation_drawer_close);
+            mDrawer.addDrawerListener(drawerToggle);
+            drawerToggle.syncState();
+        }
 
         /** Regardless of origin, search database first */
         DatabaseHelper db = DatabaseHelper.getInstance(this);
@@ -124,7 +135,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
         mMedicine = db.getEntry(getIntent().getStringExtra(TAG_ID));
         /** Check if offline mode is enabled */
-        if (sp.getBoolean(SettingsFragment.TAG_OFFLINE_MODE_CB, false)){
+        if (sp.getBoolean(SettingsFragment.TAG_OFFLINE_MODE_CB, false)) {
             if (mMedicine == null) {
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
                 dialogBuilder.setMessage(R.string.not_available_offline);
@@ -233,8 +244,19 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     }
 
     private void initializeDisplay() {
-        RecyclerView.Adapter adapter = new DrawerAdapter(mMedicine.getName(), OPTION_IDS);
-        mRecyclerView.setAdapter(adapter);
+        if (isFullLayoutSupported()) {
+            List<String> optionList = new ArrayList<>();
+            for (int id : OPTION_IDS) {
+                optionList.add(getString(id));
+            }
+            StringListAdapter adapter = new StringListAdapter(this, optionList, 0);
+            ListView optionListView = (ListView) findViewById(R.id.option_list_view);
+            optionListView.setOnItemClickListener(this);
+            optionListView.setAdapter(adapter);
+        } else {
+            RecyclerView.Adapter adapter = new DrawerAdapter(mMedicine.getName(), OPTION_IDS);
+            mRecyclerView.setAdapter(adapter);
+        }
         initializeFragments(mMedicine);
         sendMessageToReflectFragment();
     }
@@ -255,7 +277,11 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
     @Override
     public void onBackPressed() {
-        mDrawer.openDrawer(Gravity.LEFT);
+        if (!isFullLayoutSupported()) {
+            mDrawer.openDrawer(Gravity.LEFT);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void hideAllFragments() {
@@ -391,6 +417,12 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     @Override
     public void processMessage(Message message) {
         reflectCurrentFragment();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
+        mFragmentIndex = index;
+        sendMessageToReflectFragment();
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
