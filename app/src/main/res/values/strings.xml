@@ -2,6 +2,7 @@
     <!-- Activity titles -->
     <string name="app_name">Know Your Meds</string>
     <string name="title_about">About</string>
+    <string name="title_license">License</string>
 
     <!-- Admob -->
     <string name="admob_app_id">ca-app-pub-1411804566429951~5595893420</string>
@@ -54,6 +55,7 @@
     <string name="menu_refresh">Refresh</string>
     <string name="menu_about">About</string>
     <string name="menu_disclaimer">Disclaimer</string>
+    <string name="menu_license">License</string>
 
     <!-- Tab titles -->
     <string name="tab_properties">Properties</string>
@@ -124,4 +126,12 @@
     <string name="settings_cache_message">Cache contains all previously viewed items. Clearing
         this will affect the features of offline mode.</string>
 
+    <!-- License -->
+    <string name="license_app_title">Application Icon</string>
+    <string name="license_app_title_message">Medical graphic by Freepik from Flaticon\nThree
+        graphic by Freepik from Flaticon\nHealth Clinic by Freepik from Flaticon\nMedical graphic
+        by Madebyoliver from Flaticon\nHealthy graphic by Madebyoliver from Flaticon\nMedical
+        graphic by Vectors Market from Flaticon\nHealthy graphic by Darius Dan from Flaticon\n\nAll
+        icons are licensed under Creative Commons BY 3.0.\nMade with Logo Maker.
+    </string>
 </resources>
