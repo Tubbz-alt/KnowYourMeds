@@ -139,4 +139,13 @@
     <string name="header_name">Name</string>
     <string name="header_prescribable">Prescribable</string>
     <string name="header_tty">Term Type</string>
+
+    <!-- App rater -->
+    <string name="ids_title_rate">Rate this app</string>
+    <string name="ids_message_rate">Did you enjoy learning about your meds? If yes, would you
+        mind for a moment to rate this app? Thank you so much for your support!</string>
+    <string name="ids_lbl_remind">Remind me later</string>
+    <string name="ids_lbl_no_rate">No Thanks</string>
+    <string name="ids_lbl_yes_rate">Rate now</string>
+
 </resources>

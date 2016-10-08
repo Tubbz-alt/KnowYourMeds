@@ -1,11 +1,14 @@
 package com.tompee.utilities.knowyourmeds.view;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,6 +29,9 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         DisclaimerDialog.DisclaimerDialogListener {
     public static final String SHARED_PREF = "knowyourmedspref";
     public static final String TAG_DISCLAIMER = "disclaimer";
+    private static final String LAUNCH_COUNT = "launch_count";
+    private static final int MIN_LAUNCH_COUNT = 7;
+
     private static final int[] mTabIconList = {R.drawable.ic_star_white, R.drawable.ic_search_white,
             R.drawable.ic_settings_white};
     private ViewPager mViewPager;
@@ -42,6 +48,16 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         title.setText(R.string.app_name);
 
         mSharedPreferences = getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        int launchCount = mSharedPreferences.getInt(LAUNCH_COUNT, 0);
+        if (launchCount == MIN_LAUNCH_COUNT) {
+            editor.putInt(LAUNCH_COUNT, 0);
+            showAppRater();
+        } else {
+            editor.putInt(LAUNCH_COUNT, ++launchCount);
+        }
+        editor.apply();
+
         if (!mSharedPreferences.getBoolean(TAG_DISCLAIMER, false)) {
             showDisclaimer(true);
         }
@@ -74,6 +90,23 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             //noinspection ConstantConditions
             tabLayout.getTabAt(i).setIcon(mTabIconList[i]);
         }
+    }
+
+    private void showAppRater() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.ids_title_rate);
+        builder.setMessage(R.string.ids_message_rate);
+        builder.setNeutralButton(R.string.ids_lbl_remind, null);
+        builder.setNegativeButton(R.string.ids_lbl_no_rate, null);
+        builder.setPositiveButton(R.string.ids_lbl_yes_rate, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" +
+                        BuildConfig.APPLICATION_ID));
+                startActivity(intent);
+            }
+        });
+        builder.create().show();
     }
 
     private void requestNewInterstitial() {
