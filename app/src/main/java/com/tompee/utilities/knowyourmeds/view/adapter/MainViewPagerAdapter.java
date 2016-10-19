@@ -36,9 +36,9 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return mRecentFavoriteFragment;
-            case 1:
                 return mSearchFragment;
+            case 1:
+                return mRecentFavoriteFragment;
             case 2:
                 return mSettingsFragment;
         }
@@ -51,10 +51,10 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
         if (mIsFullLayoutSupported) {
             switch (position) {
                 case 0:
-                    name = mContext.getString(R.string.favorites);
+                    name = mContext.getString(R.string.explore);
                     break;
                 case 1:
-                    name = mContext.getString(R.string.explore);
+                    name = mContext.getString(R.string.favorites);
                     break;
                 case 2:
                     name = mContext.getString(R.string.settings);

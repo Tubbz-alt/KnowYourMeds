@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
@@ -21,6 +22,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.tompee.utilities.knowyourmeds.BuildConfig;
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.controller.Utilities;
 import com.tompee.utilities.knowyourmeds.view.adapter.MainViewPagerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.DisclaimerDialog;
@@ -32,7 +34,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     private static final String LAUNCH_COUNT = "launch_count";
     private static final int MIN_LAUNCH_COUNT = 7;
 
-    private static final int[] mTabIconList = {R.drawable.ic_star_white, R.drawable.ic_search_white,
+    private static final int[] mTabIconList = {R.drawable.ic_search_white, R.drawable.ic_star_white,
             R.drawable.ic_settings_white};
     private ViewPager mViewPager;
     private InterstitialAd mInterstitialAd;
@@ -46,6 +48,9 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         setToolbar(R.id.toolbar, false);
         TextView title = (TextView) findViewById(R.id.toolbar_text);
         title.setText(R.string.app_name);
+
+        ImageView background = (ImageView) findViewById(R.id.background);
+        background.setImageDrawable(Utilities.getDrawableFromAsset(this, "search_bg.jpg"));
 
         mSharedPreferences = getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -64,7 +69,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest.Builder builder = new AdRequest.Builder();
-        if (BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
         }
         mAdView.loadAd(builder.build());
@@ -111,7 +116,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
     private void requestNewInterstitial() {
         AdRequest.Builder builder = new AdRequest.Builder();
-        if (BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
         }
         mInterstitialAd.loadAd(builder.build());
