@@ -44,7 +44,9 @@
         android:layout_marginBottom="@dimen/search_margin"
         android:layout_marginLeft="@dimen/search_margin"
         android:layout_marginRight="@dimen/search_margin"
+        android:layout_marginTop="@dimen/search_margin"
         android:visibility="gone"
+        app:cardBackgroundColor="@color/cardAlpha"
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="5dp">
 
@@ -58,40 +60,54 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_result"
+                android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/search_vertical_padding"
-                android:text="@string/search_results"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/dark_text" />
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:textColor="@color/light_text" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
-                android:background="@color/dark_secondary_text" />
+                android:background="@color/light_text" />
 
-            <ListView
-                android:id="@+id/list_view_search"
+            <TextView
+                android:id="@+id/rx_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:textColor="@color/light_text" />
+
+            <TextView
+                android:id="@+id/tty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/search_vertical_padding"
-                android:divider="@android:color/transparent"
-                android:minHeight="@dimen/list_view_height" />
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:textColor="@color/light_text" />
 
-            <TextView
-                android:id="@+id/text_no_items"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:minHeight="@dimen/list_view_height"
-                android:text="@string/no_suggestions"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/dark_text"
-                android:visibility="gone" />
+            <!--<ListView-->
+            <!--android:id="@+id/list_view_search"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginBottom="@dimen/search_vertical_padding"-->
+            <!--android:divider="@android:color/transparent"-->
+            <!--android:minHeight="@dimen/list_view_height" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/text_no_items"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:gravity="center"-->
+            <!--android:minHeight="@dimen/list_view_height"-->
+            <!--android:text="@string/no_suggestions"-->
+            <!--android:textAppearance="?android:textAppearanceMedium"-->
+            <!--android:textColor="@color/dark_text"-->
+            <!--android:visibility="gone" />-->
         </LinearLayout>
     </android.support.v7.widget.CardView>
 

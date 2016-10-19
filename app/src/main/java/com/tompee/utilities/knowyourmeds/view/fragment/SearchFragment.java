@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.controller.Utilities;
+import com.tompee.utilities.knowyourmeds.controller.networkinterface.RxNavWrapper;
 import com.tompee.utilities.knowyourmeds.controller.task.SearchTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MainActivity;
@@ -26,15 +28,15 @@ import java.util.List;
 
 public class SearchFragment extends Fragment implements FloatingSearchView.OnSearchListener,
         SearchTask.SearchListener, AdapterView.OnItemClickListener {
-    private TextView mResultText;
     private View mResultBar;
+
+    private List<Medicine> mMedList;
+
     private View mNoResultsView;
     private ListView mListView;
-    private List<Medicine> mMedList;
     private SharedPreferences mSharedPreferences;
     private View mListHeader;
 
-    private FloatingSearchView mSearchView;
 
     private SearchTask mTask;
 
@@ -53,15 +55,14 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        mSearchView = (FloatingSearchView) view.findViewById(R.id.floating_search_view);
-        mSearchView.setOnSearchListener(this);
-
-        mListView = (ListView) view.findViewById(R.id.list_view_search);
-        mListView.setOnItemClickListener(this);
+        FloatingSearchView searchView = (FloatingSearchView) view.findViewById(R.id.floating_search_view);
+        searchView.setOnSearchListener(this);
         mResultBar = view.findViewById(R.id.result_bar);
-        mResultText = (TextView) view.findViewById(R.id.text_result);
-        mNoResultsView = view.findViewById(R.id.text_no_items);
-        mListHeader = view.findViewById(R.id.list_header);
+
+//        mListView = (ListView) view.findViewById(R.id.list_view_search);
+//        mListView.setOnItemClickListener(this);
+//        mNoResultsView = view.findViewById(R.id.text_no_items);
+//        mListHeader = view.findViewById(R.id.list_header);
         return view;
     }
 
@@ -96,15 +97,14 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
         mTask = null;
         if (medList.size() > 0) {
             mMedList = medList;
-            mResultText.setText(R.string.search_results);
+            TextView textView = (TextView) mResultBar.findViewById(R.id.header);
+            textView.setText(mMedList.get(0).getName());
             mResultBar.setVisibility(View.VISIBLE);
-            boolean isFullLayoutSupported = ((MainActivity) getActivity()).isFullLayoutSupported();
-            MainListAdapter adapter = new MainListAdapter(getContext(), medList, isFullLayoutSupported,
-                    true, false);
-            mListView.setAdapter(adapter);
-            if (mListHeader != null) {
-                mListHeader.setVisibility(View.VISIBLE);
-            }
+            textView = (TextView) mResultBar.findViewById(R.id.rx_type);
+            textView.setText(mMedList.get(0).isPrescribable() ? R.string.property_prescribable_yes :
+                    R.string.property_prescribable_no);
+            textView = (TextView) mResultBar.findViewById(R.id.tty);
+            textView.setText(Utilities.getTtyString(getContext(), mMedList.get(0).getTty()));
         }
     }
 
