@@ -35,7 +35,7 @@ import java.util.List;
 
 public class SearchFragment extends Fragment implements FloatingSearchView.OnSearchListener,
         SearchTask.SearchListener, AdapterView.OnItemClickListener, View.OnClickListener {
-    private static final int VERTICAL_POSITION_BOUNCE = 85;
+    private static final int VERTICAL_POSITION_BOUNCE = 82;
     private static final int ANIMATION_DURATION = 700;
 
     private ViewSwitcher mViewSwitcher;
