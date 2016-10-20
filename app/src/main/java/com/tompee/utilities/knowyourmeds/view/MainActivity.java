@@ -7,18 +7,17 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.tompee.utilities.knowyourmeds.BuildConfig;
 import com.tompee.utilities.knowyourmeds.R;
@@ -26,19 +25,17 @@ import com.tompee.utilities.knowyourmeds.controller.Utilities;
 import com.tompee.utilities.knowyourmeds.view.adapter.MainViewPagerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.DisclaimerDialog;
+import com.tompee.utilities.knowyourmeds.view.fragment.SearchFragment;
 
-public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener,
-        DisclaimerDialog.DisclaimerDialogListener {
+public class MainActivity extends BaseActivity implements DisclaimerDialog.DisclaimerDialogListener {
     public static final String SHARED_PREF = "knowyourmedspref";
     public static final String TAG_DISCLAIMER = "disclaimer";
     private static final String LAUNCH_COUNT = "launch_count";
     private static final int MIN_LAUNCH_COUNT = 7;
 
-    private static final int[] mTabIconList = {R.drawable.ic_search_white, R.drawable.ic_star_white,
-            R.drawable.ic_settings_white};
-    private ViewPager mViewPager;
     private InterstitialAd mInterstitialAd;
     private SharedPreferences mSharedPreferences;
+    private ViewPager mViewPager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,13 +64,6 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             showDisclaimer(true);
         }
 
-//        AdView mAdView = (AdView) findViewById(R.id.adView);
-//        AdRequest.Builder builder = new AdRequest.Builder();
-//        if (BuildConfig.DEBUG) {
-//            builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
-//        }
-//        mAdView.loadAd(builder.build());
-
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.admob_main_interstitial));
         mInterstitialAd.setAdListener(new AdListener() {
@@ -84,17 +74,14 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         });
         requestNewInterstitial();
 
-        mViewPager = (ViewPager) findViewById(R.id.pager_main);
-        mViewPager.setAdapter(new MainViewPagerAdapter(this, getSupportFragmentManager(),
-                isFullLayoutSupported()));
-        mViewPager.addOnPageChangeListener(this);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, SearchFragment.newInstance());
+        transaction.commit();
 
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mViewPager.setAdapter(new MainViewPagerAdapter(this, getSupportFragmentManager()));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_main);
         tabLayout.setupWithViewPager(mViewPager);
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            //noinspection ConstantConditions
-            tabLayout.getTabAt(i).setIcon(mTabIconList[i]);
-        }
     }
 
     private void showAppRater() {
@@ -124,20 +111,6 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
     public InterstitialAd getInterstitialAd() {
         return mInterstitialAd;
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-                .hideSoftInputFromWindow(mViewPager.getWindowToken(), 0);
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
     }
 
     @Override

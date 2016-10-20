@@ -10,25 +10,21 @@ import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.model.ListSwipeHolder;
+import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.custom.SwipeListItemView;
 
 import java.util.List;
 
-public class StringListAdapter extends ArrayAdapter<String> implements
-        SwipeListItemView.SwipeListItemViewListener {
+public class MedListAdapter extends ArrayAdapter<Medicine> implements SwipeListItemView.SwipeListItemViewListener {
     private final Context mContext;
-    private final int mIconResource;
+    private final boolean mWithIcon;
+    private final boolean mSwipeable;
 
-    public StringListAdapter(Context context, List<String> stringList) {
-        super(context, R.layout.list_plain, stringList);
+    public MedListAdapter(Context context, List<Medicine> medList, boolean withIcon, boolean swipeable) {
+        super(context, R.layout.list_main, medList);
         mContext = context;
-        mIconResource = 0;
-    }
-
-    public StringListAdapter(Context context, List<String> stringList, int icon) {
-        super(context, R.layout.list_plain, stringList);
-        mContext = context;
-        mIconResource = icon;
+        mWithIcon = withIcon;
+        mSwipeable = swipeable;
     }
 
     @Override
@@ -37,7 +33,7 @@ public class StringListAdapter extends ArrayAdapter<String> implements
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.list_plain, parent, false);
+            view = inflater.inflate(R.layout.list_main, parent, false);
             holder = new ListSwipeHolder();
             holder.setFrontView(view.findViewById(R.id.front_view));
             holder.setBackView(view.findViewById(R.id.back_view));
@@ -46,17 +42,21 @@ public class StringListAdapter extends ArrayAdapter<String> implements
             holder = (ListSwipeHolder) view.getTag();
         }
         holder.getBackView().setVisibility(View.GONE);
-        ((SwipeListItemView) view).setEnableSwipeDetection(false);
+        ((SwipeListItemView) view).setEnableSwipeDetection(mSwipeable);
         ((SwipeListItemView) view).setOnClickBackgroundColor(R.color.colorListBackground);
 
-        TextView name = (TextView) view.findViewById(R.id.name);
-        name.setText(getItem(position));
+        TextView name = (TextView) view.findViewById(R.id.med_name);
+        name.setText(getItem(position).getName());
+        ImageView image = (ImageView) view.findViewById(R.id.presc_icon);
 
-        ImageView image = (ImageView) view.findViewById(R.id.icon);
-        if (mIconResource == 0) {
-            image.setVisibility(View.GONE);
+        if (mWithIcon) {
+            if (getItem(position).isPrescribable()) {
+                image.setBackgroundResource(R.drawable.ic_rx_on);
+            } else {
+                image.setBackgroundResource(R.drawable.ic_rx_off);
+            }
         } else {
-            image.setBackgroundResource(mIconResource);
+            image.setVisibility(View.GONE);
         }
         return view;
     }

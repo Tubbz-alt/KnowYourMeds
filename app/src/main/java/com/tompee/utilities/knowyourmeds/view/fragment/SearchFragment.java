@@ -1,5 +1,6 @@
 package com.tompee.utilities.knowyourmeds.view.fragment;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,22 +26,24 @@ import com.tompee.utilities.knowyourmeds.controller.AnimationUtility;
 import com.tompee.utilities.knowyourmeds.controller.Utilities;
 import com.tompee.utilities.knowyourmeds.controller.task.SearchTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
+import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.StringListAdapter;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFragment extends Fragment implements FloatingSearchView.OnSearchListener,
-        SearchTask.SearchListener, AdapterView.OnItemClickListener {
+        SearchTask.SearchListener, AdapterView.OnItemClickListener, View.OnClickListener {
     private static final int VERTICAL_POSITION_BOUNCE = 85;
     private static final int ANIMATION_DURATION = 700;
 
     private ViewSwitcher mViewSwitcher;
     private FloatingActionButton mCheckout;
     private FloatingSearchView mSearchView;
+    private AVLoadingIndicatorView mSearchAnimation;
 
     private List<Medicine> mMedList;
-
     private SearchTask mTask;
 
     public static SearchFragment newInstance() {
@@ -57,30 +60,26 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
         mCheckout = (FloatingActionButton) view.findViewById(R.id.checkout);
         mCheckout.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.
                 getColor(getContext(), R.color.light_text)));
+        mCheckout.setOnClickListener(this);
+        mSearchAnimation = (AVLoadingIndicatorView) view.findViewById(R.id.search_load);
         return view;
     }
 
-    private void searchFromDatabase() {
-//        mResultBar.setVisibility(View.VISIBLE);
-//        mResultText.setText(R.string.search_results);
-//        DatabaseHelper db = DatabaseHelper.getInstance(getContext());
-//        List<Medicine> medList = db.getAllShortEntriesByName(mEditText.getText().toString());
-//        if (medList.isEmpty()) {
-//            mListView.setVisibility(View.GONE);
-//            mNoResultsView.setVisibility(View.VISIBLE);
-//            return;
-//        }
-//        mListView.setVisibility(View.VISIBLE);
-//        mNoResultsView.setVisibility(View.GONE);
-//        boolean isFullLayoutSupported = ((MainActivity) getActivity()).isFullLayoutSupported();
-//        MainListAdapter adapter = new MainListAdapter(getContext(), medList, isFullLayoutSupported,
-//                true, false);
-//        mListView.setAdapter(adapter);
-//        mMedList = medList;
-    }
-
     private void startSearch(String string) {
+        if (string.isEmpty()) {
+            SuperActivityToast.create(getActivity(), new Style(), Style.TYPE_BUTTON)
+                    .setProgressBarColor(Color.WHITE)
+                    .setText(getString(R.string.search_empty))
+                    .setDuration(Style.DURATION_LONG)
+                    .setFrame(Style.FRAME_LOLLIPOP)
+                    .setColor(ContextCompat.getColor(getContext(), R.color.cardAlpha))
+                    .setAnimations(Style.ANIMATIONS_POP).show();
+            return;
+        }
+        mViewSwitcher.setVisibility(View.INVISIBLE);
+        resetCheckoutButton();
         if (mTask == null) {
+            mSearchAnimation.show();
             mTask = new SearchTask(getContext(), this);
             mTask.execute(string);
         }
@@ -89,6 +88,7 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
     @Override
     public void onSearchSuccess(List<Medicine> medList) {
         mTask = null;
+        mSearchAnimation.hide();
         if (medList.size() > 0) {
             mMedList = medList;
             TextView textView = (TextView) mViewSwitcher.findViewById(R.id.header);
@@ -104,12 +104,21 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
             AnimationUtility.animateVerticalPosition(mCheckout, Utilities.
                             convertDPtoPixel(getContext(), VERTICAL_POSITION_BOUNCE),
                     ANIMATION_DURATION, new BounceInterpolator());
+        } else {
+            SuperActivityToast.create(getActivity(), new Style(), Style.TYPE_BUTTON)
+                    .setProgressBarColor(Color.WHITE)
+                    .setText(getString(R.string.no_suggestions, mSearchView.getQuery()))
+                    .setDuration(Style.DURATION_LONG)
+                    .setFrame(Style.FRAME_LOLLIPOP)
+                    .setColor(ContextCompat.getColor(getContext(), R.color.cardAlpha))
+                    .setAnimations(Style.ANIMATIONS_POP).show();
         }
     }
 
     @Override
     public void onSearchFailed(List<Medicine> suggestedMed) {
         mTask = null;
+        mSearchAnimation.hide();
         if (suggestedMed.size() > 0) {
             mMedList = suggestedMed;
             resetCheckoutButton();
@@ -139,6 +148,7 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
     @Override
     public void onConnectionError() {
         mTask = null;
+        mSearchAnimation.hide();
         Toast.makeText(getContext(), getString(R.string.toast_no_internet),
                 Toast.LENGTH_SHORT).show();
     }
@@ -148,7 +158,6 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
         String medName = mMedList.get(position).getName();
         mSearchView.setSearchText(medName);
         startSearch(medName);
-        mViewSwitcher.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -186,5 +195,15 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
             mViewSwitcher.showNext();
         }
         mViewSwitcher.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onClick(View view) {
+        Intent intent = new Intent(getContext(), MedDetailActivity.class);
+        intent.putExtra(MedDetailActivity.TAG_NAME, mMedList.get(0).getName());
+        intent.putExtra(MedDetailActivity.TAG_ID, mMedList.get(0).getRxnormId());
+        intent.putExtra(MedDetailActivity.TAG_ORIGIN, MedDetailActivity.FROM_SEARCH);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

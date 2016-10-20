@@ -1,11 +1,15 @@
 package com.tompee.utilities.knowyourmeds.controller.task;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.android.volley.NoConnectionError;
+import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.networkinterface.RxNavWrapper;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
+import com.tompee.utilities.knowyourmeds.view.MainActivity;
+import com.tompee.utilities.knowyourmeds.view.fragment.SettingsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,25 +19,35 @@ public class SearchTask extends AsyncTask<String, Void, Boolean> {
     private final SearchListener mListener;
     private List<Medicine> mMedList;
     private boolean mIsOffline;
+    private SharedPreferences mSharedPreferences;
+    private DatabaseHelper mDatabaseHelper;
 
     public SearchTask(Context context, SearchListener listener) {
         mWrapper = new RxNavWrapper(context);
         mListener = listener;
         mMedList = new ArrayList<>();
+        mSharedPreferences = context.getSharedPreferences(MainActivity.SHARED_PREF,
+                Context.MODE_PRIVATE);
+        mDatabaseHelper = DatabaseHelper.getInstance(context);
     }
 
     @Override
     protected Boolean doInBackground(String... args) {
-        try {
-            Medicine med = mWrapper.searchMed(args[0]);
-            if (med == null) {
-                mMedList = mWrapper.suggestedNames(args[0]);
-                return false;
+        if (!mSharedPreferences.getBoolean(SettingsFragment.TAG_OFFLINE_MODE_CB, false)) {
+            try {
+                Medicine med = mWrapper.searchMed(args[0]);
+                if (med == null) {
+                    mMedList = mWrapper.suggestedNames(args[0]);
+                    return false;
+                }
+                mMedList.add(med);
+                return true;
+            } catch (NoConnectionError noConnectionError) {
+                mIsOffline = true;
             }
-            mMedList.add(med);
+        } else {
+            mMedList = mDatabaseHelper.getAllShortEntriesByName(args[0]);
             return true;
-        } catch (NoConnectionError noConnectionError) {
-            mIsOffline = true;
         }
         return false;
     }

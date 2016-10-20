@@ -12,10 +12,12 @@
     <!-- Spinner dimensions-->
     <dimen name="spinner_dropdown_padding">16dp</dimen>
 
+    <!-- Dimensions -->
+    <dimen name="margin">12dp</dimen>
+
     <!-- Search dimensions -->
     <dimen name="search_height">60dp</dimen>
     <dimen name="search_edit_dimension">32dp</dimen>
-    <dimen name="search_margin">12dp</dimen>
     <dimen name="search_vertical_padding">12dp</dimen>
     <dimen name="search_horizontal_padding">12dp</dimen>
 

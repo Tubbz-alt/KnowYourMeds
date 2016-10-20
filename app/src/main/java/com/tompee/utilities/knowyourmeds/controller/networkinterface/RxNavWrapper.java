@@ -101,6 +101,7 @@ public class RxNavWrapper {
 
     public Medicine searchMed(String name) throws NoConnectionError {
         String url = String.format(URL_SEARCH_BY_STRING, RX_NORM_BASE_URL, name).replace(" ", "%20");
+        Log.d(TAG, url);
         Medicine med = new Medicine();
 
         /** Get ID */
