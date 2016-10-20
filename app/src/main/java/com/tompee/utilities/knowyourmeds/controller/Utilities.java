@@ -10,6 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Utilities {
+
+    public static int convertDPtoPixel(Context context, int dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
+
     public static Drawable getDrawableFromAsset(Context context, String filename) {
         Drawable drawable;
         try {

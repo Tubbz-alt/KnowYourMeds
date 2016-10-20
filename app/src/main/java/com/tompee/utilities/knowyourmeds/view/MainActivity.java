@@ -67,12 +67,12 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             showDisclaimer(true);
         }
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest.Builder builder = new AdRequest.Builder();
-        if (BuildConfig.DEBUG) {
-            builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
-        }
-        mAdView.loadAd(builder.build());
+//        AdView mAdView = (AdView) findViewById(R.id.adView);
+//        AdRequest.Builder builder = new AdRequest.Builder();
+//        if (BuildConfig.DEBUG) {
+//            builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
+//        }
+//        mAdView.loadAd(builder.build());
 
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.admob_main_interstitial));

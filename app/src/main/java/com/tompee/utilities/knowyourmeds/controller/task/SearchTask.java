@@ -53,7 +53,9 @@ public class SearchTask extends AsyncTask<String, Void, Boolean> {
 
     public interface SearchListener {
         void onSearchSuccess(List<Medicine> medList);
+
         void onSearchFailed(List<Medicine> suggestedMed);
+
         void onConnectionError();
     }
 }

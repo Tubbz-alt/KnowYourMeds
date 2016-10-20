@@ -4,7 +4,6 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
@@ -30,85 +29,141 @@
         app:floatingSearch_searchHint="@string/search_hint"
         app:floatingSearch_showSearchKey="true" />
 
-    <ProgressBar
-        android:id="@+id/progress_indicator"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/result_bar"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/search_margin"
-        android:layout_marginLeft="@dimen/search_margin"
-        android:layout_marginRight="@dimen/search_margin"
-        android:layout_marginTop="@dimen/search_margin"
-        android:visibility="gone"
-        app:cardBackgroundColor="@color/cardAlpha"
-        card_view:cardCornerRadius="5dp"
-        card_view:cardElevation="5dp">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
 
-        <LinearLayout
+        <ViewSwitcher
+            android:id="@+id/view_switcher"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/search_margin"
+                android:layout_marginLeft="@dimen/search_margin"
+                android:layout_marginRight="@dimen/search_margin"
+                android:layout_marginTop="@dimen/search_margin"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/cardAlpha"
+                card_view:cardCornerRadius="5dp"
+                card_view:cardElevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/search_horizontal_padding"
+                    android:layout_marginLeft="@dimen/search_horizontal_padding"
+                    android:layout_marginRight="@dimen/search_horizontal_padding"
+                    android:layout_marginStart="@dimen/search_horizontal_padding"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/search_vertical_padding"
+                        android:textAppearance="?android:attr/textAppearanceListItem"
+                        android:textColor="@color/light_text" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@color/light_text" />
+
+                    <TextView
+                        android:id="@+id/rx_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceListItem"
+                        android:textColor="@color/light_text" />
+
+                    <TextView
+                        android:id="@+id/tty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/search_vertical_padding"
+                        android:textAppearance="?android:attr/textAppearanceListItem"
+                        android:textColor="@color/light_text" />
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/search_margin"
+                android:layout_marginLeft="@dimen/search_margin"
+                android:layout_marginRight="@dimen/search_margin"
+                android:layout_marginTop="@dimen/search_margin"
+                app:cardBackgroundColor="@color/cardAlpha"
+                card_view:cardCornerRadius="5dp"
+                card_view:cardElevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/search_horizontal_padding"
+                    android:layout_marginLeft="@dimen/search_horizontal_padding"
+                    android:layout_marginRight="@dimen/search_horizontal_padding"
+                    android:layout_marginStart="@dimen/search_horizontal_padding"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/suggestion_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/search_vertical_padding"
+                        android:text="@string/suggestions_results"
+                        android:textAppearance="?android:attr/textAppearanceListItem"
+                        android:textColor="@color/light_text" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@color/light_text" />
+
+                    <ListView
+                        android:id="@+id/suggestion_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/search_vertical_padding"
+                        android:divider="@android:color/transparent"
+                        android:minHeight="@dimen/list_view_height" />
+
+                    <TextView
+                        android:id="@+id/text_no_items"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:minHeight="@dimen/list_view_height"
+                        android:text="@string/no_suggestions"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/dark_text"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </ViewSwitcher>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/checkout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/search_horizontal_padding"
-            android:layout_marginLeft="@dimen/search_horizontal_padding"
-            android:layout_marginRight="@dimen/search_horizontal_padding"
-            android:layout_marginStart="@dimen/search_horizontal_padding"
-            android:orientation="vertical">
+            android:layout_gravity="top|end"
+            android:layout_marginRight="32dp"
+            android:clickable="true"
+            android:visibility="invisible"
+            app:elevation="10dp" />
 
-            <TextView
-                android:id="@+id/header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/search_vertical_padding"
-                android:textAppearance="?android:attr/textAppearanceListItem"
-                android:textColor="@color/light_text" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:background="@color/light_text" />
-
-            <TextView
-                android:id="@+id/rx_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceListItem"
-                android:textColor="@color/light_text" />
-
-            <TextView
-                android:id="@+id/tty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/search_vertical_padding"
-                android:textAppearance="?android:attr/textAppearanceListItem"
-                android:textColor="@color/light_text" />
-
-            <!--<ListView-->
-            <!--android:id="@+id/list_view_search"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginBottom="@dimen/search_vertical_padding"-->
-            <!--android:divider="@android:color/transparent"-->
-            <!--android:minHeight="@dimen/list_view_height" />-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/text_no_items"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:gravity="center"-->
-            <!--android:minHeight="@dimen/list_view_height"-->
-            <!--android:text="@string/no_suggestions"-->
-            <!--android:textAppearance="?android:textAppearanceMedium"-->
-            <!--android:textColor="@color/dark_text"-->
-            <!--android:visibility="gone" />-->
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-
+    </FrameLayout>
 </LinearLayout>
