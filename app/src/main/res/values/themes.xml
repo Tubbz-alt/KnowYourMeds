@@ -18,5 +18,4 @@
         <item name="android:windowBackground">@drawable/launcher_bg</item>
         <item name="android:windowFullscreen">true</item>
     </style>
-
 </resources>

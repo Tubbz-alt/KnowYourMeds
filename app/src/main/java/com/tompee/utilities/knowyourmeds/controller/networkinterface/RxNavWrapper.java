@@ -283,7 +283,7 @@ public class RxNavWrapper {
                 throw (NoConnectionError) e.getCause();
             }
         }
-        med.setUrl(MEDLINE_QUERY_URL + med.getName());
+        med.setUrl(null);
     }
 
     public void getTtyValues(Medicine med) throws NoConnectionError {

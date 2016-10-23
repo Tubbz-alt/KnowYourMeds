@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
+import android.widget.TextView;
 
 public class TextDrawable extends Drawable {
     private static final int DEFAULT_COLOR = Color.WHITE;
@@ -18,6 +19,18 @@ public class TextDrawable extends Drawable {
     private final CharSequence mText;
     private final int mIntrinsicWidth;
     private final int mIntrinsicHeight;
+
+    public TextDrawable(Resources res, CharSequence text, int color) {
+        mText = text;
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaint.setColor(color);
+        mPaint.setTextAlign(Paint.Align.CENTER);
+        float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                DEFAULT_TEXTSIZE, res.getDisplayMetrics());
+        mPaint.setTextSize(textSize);
+        mIntrinsicWidth = (int) (mPaint.measureText(mText, 0, mText.length()) + .5);
+        mIntrinsicHeight = mPaint.getFontMetricsInt(null);
+    }
 
     public TextDrawable(Resources res, CharSequence text, boolean isBold) {
         mText = text;

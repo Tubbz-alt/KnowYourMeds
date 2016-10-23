@@ -4,6 +4,7 @@
     <color name="colorPrimaryAlpha">#50112444</color>
     <color name="cardAlpha">#D0112444</color>
     <color name="colorPrimaryDark">#112444</color>
+    <color name="colorPrimaryDarkAlpha">#E0112444</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorListBackground">#C5CAE9</color>
 
@@ -17,16 +18,18 @@
     <color name="dark_secondary_text_disabled">#CCCCCC</color>
 
     <color name="background">#FFFFFF</color>
-    <color name="progress_dialog_background">#503F51D7</color>
 
     <color name="list_icon">#66BB6A</color>
 
-    <color name="tty_brand">#1B96FE</color>
-    <color name="tty_ingredients">#920F88</color>
-    <color name="tty_scdc">#FF69B4</color>
-    <color name="tty_sbdc">#DC143C</color>
-    <color name="tty_sbd">#7CFC00</color>
-    <color name="tty_sbdg">#778899</color>
-    <color name="tty_scd">#FF8C00</color>
-    <color name="tty_scdg">#0000CD</color>
+    <color name="properties">#FFFF85</color>
+    <color name="brand">#FF9E3D</color>
+    <color name="sbdc">#7CFC00</color>
+    <color name="sbd">#B811FF</color>
+    <color name="sbdg">#778899</color>
+    <color name="scdc">#9B5900</color>
+    <color name="scd">#FF3D3D</color>
+    <color name="scdg">#C6CBEB</color>
+    <color name="info">#F6F6D9</color>
+    <color name="interaction">#85E285</color>
+    <color name="sources">#FFDEBD</color>
 </resources>

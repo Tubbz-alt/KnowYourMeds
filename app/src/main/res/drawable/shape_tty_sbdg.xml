@@ -4,6 +4,6 @@
     <corners android:radius="3dp" />
     <stroke
         android:width="2px"
-        android:color="@color/tty_sbdg" />
-    <solid android:color="@color/tty_sbdg" />
+        android:color="@color/sbdg" />
+    <solid android:color="@color/sbdg" />
 </shape>

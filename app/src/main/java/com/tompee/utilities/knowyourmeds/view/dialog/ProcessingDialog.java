@@ -3,11 +3,8 @@ package com.tompee.utilities.knowyourmeds.view.dialog;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
@@ -22,9 +19,8 @@ public class ProcessingDialog extends Dialog {
         TextView dialogText = (TextView) progressDialog.findViewById(R.id.progress_dialog_text);
         dialogText.setText(message);
 
-        getWindow().setBackgroundDrawableResource(R.color.progress_dialog_background);
+        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryAlpha);
         setContentView(progressDialog);
         setCancelable(false);
     }
-
 }

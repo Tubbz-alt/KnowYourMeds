@@ -1,11 +1,13 @@
 package com.tompee.utilities.knowyourmeds.view;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -35,6 +37,7 @@ import com.tompee.utilities.knowyourmeds.controller.task.GetMedDetailTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.adapter.DrawerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
+import com.tompee.utilities.knowyourmeds.view.dialog.MenuDialog;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 import com.tompee.utilities.knowyourmeds.view.fragment.InteractionFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.PropertiesFragment;
@@ -48,7 +51,7 @@ import java.util.Date;
 
 public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.GetMedTaskListener,
         RecyclerView.OnItemTouchListener, PauseableHandler.PauseableHandlerCallback,
-        AdapterView.OnItemClickListener {
+        AdapterView.OnItemClickListener, View.OnClickListener, MenuDialog.MenuDialogListener {
     public static final String TAG_NAME = "name";
     public static final String TAG_ID = "id";
     public static final String TAG_ORIGIN = "origin";
@@ -79,6 +82,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     private WebViewFragment mWebViewFragment;
     private SourceFragment mSourcesFragment;
     private PauseableHandler mPauseableHandler;
+    private FloatingActionButton mMenu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,6 +98,9 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
         ImageView imageView = (ImageView) findViewById(R.id.background);
         imageView.setImageDrawable(Utilities.getDrawableFromAsset(this, "search_bg.jpg"));
+
+        mMenu = (FloatingActionButton) findViewById(R.id.menu);
+        mMenu.setOnClickListener(this);
 
         mPauseableHandler = new PauseableHandler(this);
         mFragmentIndex = 0;
@@ -399,6 +406,17 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
         mFragmentIndex = index;
         sendMessageToReflectFragment();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Dialog dialog = new MenuDialog(this, mMedicine, this);
+        dialog.show();
+    }
+
+    @Override
+    public void onMenuClicked(String menuString) {
+
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
