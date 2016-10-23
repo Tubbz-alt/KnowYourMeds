@@ -22,13 +22,9 @@ public class ProcessingDialog extends Dialog {
         TextView dialogText = (TextView) progressDialog.findViewById(R.id.progress_dialog_text);
         dialogText.setText(message);
 
-        ProgressBar progressBar = (ProgressBar)progressDialog.findViewById(R.id.
-                progress_dialog_indicator);
-        progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(context,
-                R.color.background), PorterDuff.Mode.SRC_ATOP);
-
         getWindow().setBackgroundDrawableResource(R.color.progress_dialog_background);
         setContentView(progressDialog);
         setCancelable(false);
     }
+
 }

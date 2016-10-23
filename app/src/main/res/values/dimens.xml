@@ -30,7 +30,7 @@
     <!-- List view dimensions -->
     <dimen name="list_view_height">60dp</dimen>
     <dimen name="list_item_height">48dp</dimen>
-    <dimen name="list_item_icon_dimension">24dp</dimen>
+    <dimen name="list_item_icon_dimension">36dp</dimen>
     <dimen name="list_item_margin">8dp</dimen>
     <dimen name="list_header_vertical_margin">4dp</dimen>
     <dimen name="list_border_width">1dp</dimen>

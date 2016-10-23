@@ -1,6 +1,7 @@
 package com.tompee.utilities.knowyourmeds.view.adapter;
 
 import android.content.Context;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,21 +10,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.controller.Utilities;
 import com.tompee.utilities.knowyourmeds.model.ListSwipeHolder;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.custom.SwipeListItemView;
+import com.tompee.utilities.knowyourmeds.view.custom.TextDrawable;
 
 import java.util.List;
 
 public class MedListAdapter extends ArrayAdapter<Medicine> implements SwipeListItemView.SwipeListItemViewListener {
     private final Context mContext;
-    private final boolean mWithIcon;
     private final boolean mSwipeable;
 
-    public MedListAdapter(Context context, List<Medicine> medList, boolean withIcon, boolean swipeable) {
+    public MedListAdapter(Context context, List<Medicine> medList, boolean swipeable) {
         super(context, R.layout.list_main, medList);
         mContext = context;
-        mWithIcon = withIcon;
         mSwipeable = swipeable;
     }
 
@@ -45,19 +46,15 @@ public class MedListAdapter extends ArrayAdapter<Medicine> implements SwipeListI
         ((SwipeListItemView) view).setEnableSwipeDetection(mSwipeable);
         ((SwipeListItemView) view).setOnClickBackgroundColor(R.color.colorListBackground);
 
+        Medicine med = getItem(position);
         TextView name = (TextView) view.findViewById(R.id.med_name);
-        name.setText(getItem(position).getName());
-        ImageView image = (ImageView) view.findViewById(R.id.presc_icon);
+        name.setText(med.getName());
+        TextView tty = (TextView) view.findViewById(R.id.tty);
+        tty.setText(Utilities.getTtyString(getContext(), med.getTty()));
 
-        if (mWithIcon) {
-            if (getItem(position).isPrescribable()) {
-                image.setBackgroundResource(R.drawable.ic_rx_on);
-            } else {
-                image.setBackgroundResource(R.drawable.ic_rx_off);
-            }
-        } else {
-            image.setVisibility(View.GONE);
-        }
+        FloatingActionButton imageView = (FloatingActionButton) view.findViewById(R.id.list_icon);
+        imageView.setImageDrawable(new TextDrawable(getContext().getResources(),
+                med.getName().substring(0, 1), false));
         return view;
     }
 

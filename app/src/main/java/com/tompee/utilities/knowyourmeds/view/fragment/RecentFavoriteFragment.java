@@ -80,7 +80,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
         ImageView trash = (ImageView) rootView.findViewById(R.id.trash);
         trash.setOnClickListener(this);
         if (mMedicineList.size() > 0) {
-            MedListAdapter adapter = new MedListAdapter(getContext(), mMedicineList, true, true);
+            MedListAdapter adapter = new MedListAdapter(getContext(), mMedicineList, false);
             View view = listView.getChildAt(0);
             int position = listView.getFirstVisiblePosition();
             listView.setAdapter(adapter);

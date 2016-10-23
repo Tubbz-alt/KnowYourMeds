@@ -17,7 +17,9 @@
     <color name="dark_secondary_text_disabled">#CCCCCC</color>
 
     <color name="background">#FFFFFF</color>
-    <color name="progress_dialog_background">#C03F51D7</color>
+    <color name="progress_dialog_background">#503F51D7</color>
+
+    <color name="list_icon">#66BB6A</color>
 
     <color name="tty_brand">#1B96FE</color>
     <color name="tty_ingredients">#920F88</color>

@@ -9,7 +9,6 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -24,20 +23,17 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.tompee.utilities.knowyourmeds.BuildConfig;
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.PauseableHandler;
+import com.tompee.utilities.knowyourmeds.controller.Utilities;
 import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.task.GetMedDetailTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.adapter.DrawerAdapter;
-import com.tompee.utilities.knowyourmeds.view.adapter.StringListAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 import com.tompee.utilities.knowyourmeds.view.fragment.InteractionFragment;
@@ -47,10 +43,8 @@ import com.tompee.utilities.knowyourmeds.view.fragment.SourceFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.TtyFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.WebViewFragment;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.GetMedTaskListener,
         RecyclerView.OnItemTouchListener, PauseableHandler.PauseableHandlerCallback,
@@ -98,35 +92,28 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         TextView title = (TextView) findViewById(R.id.toolbar_text);
         title.setText(name);
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest.Builder builder = new AdRequest.Builder();
-        if (BuildConfig.DEBUG) {
-            builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
-        }
-        mAdView.loadAd(builder.build());
+        ImageView imageView = (ImageView) findViewById(R.id.background);
+        imageView.setImageDrawable(Utilities.getDrawableFromAsset(this, "search_bg.jpg"));
+
         mPauseableHandler = new PauseableHandler(this);
         mFragmentIndex = 0;
 
-        if (isFullLayoutSupported()) {
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView.setHasFixedSize(true);
 
-        } else {
-            mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-            mRecyclerView.setHasFixedSize(true);
+        mGestureDetector = new GestureDetector(this, new GestureListener());
+        mRecyclerView.addOnItemTouchListener(this);
 
-            mGestureDetector = new GestureDetector(this, new GestureListener());
-            mRecyclerView.addOnItemTouchListener(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
 
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-            mRecyclerView.setLayoutManager(layoutManager);
-
-            //Set drawer
-            mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawer,
-                    (Toolbar) findViewById(R.id.toolbar), R.string.navigation_drawer_open,
-                    R.string.navigation_drawer_close);
-            mDrawer.addDrawerListener(drawerToggle);
-            drawerToggle.syncState();
-        }
+        //Set drawer
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawer,
+                (Toolbar) findViewById(R.id.toolbar), R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        mDrawer.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
 
         /** Regardless of origin, search database first */
         DatabaseHelper db = DatabaseHelper.getInstance(this);
@@ -244,19 +231,8 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     }
 
     private void initializeDisplay() {
-        if (isFullLayoutSupported()) {
-            List<String> optionList = new ArrayList<>();
-            for (int id : OPTION_IDS) {
-                optionList.add(getString(id));
-            }
-            StringListAdapter adapter = new StringListAdapter(this, optionList, 0);
-            ListView optionListView = (ListView) findViewById(R.id.option_list_view);
-            optionListView.setOnItemClickListener(this);
-            optionListView.setAdapter(adapter);
-        } else {
-            RecyclerView.Adapter adapter = new DrawerAdapter(mMedicine.getName(), OPTION_IDS);
-            mRecyclerView.setAdapter(adapter);
-        }
+        RecyclerView.Adapter adapter = new DrawerAdapter(mMedicine.getName(), OPTION_IDS);
+        mRecyclerView.setAdapter(adapter);
         initializeFragments(mMedicine);
         sendMessageToReflectFragment();
     }

@@ -19,6 +19,8 @@ import android.widget.ViewSwitcher;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.github.johnpersano.supertoasts.library.Style;
 import com.github.johnpersano.supertoasts.library.SuperActivityToast;
 import com.tompee.utilities.knowyourmeds.R;
@@ -58,8 +60,6 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
         mSearchView.setOnSearchListener(this);
         mViewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);
         mCheckout = (FloatingActionButton) view.findViewById(R.id.checkout);
-        mCheckout.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.
-                getColor(getContext(), R.color.light_text)));
         mCheckout.setOnClickListener(this);
         mSearchAnimation = (AVLoadingIndicatorView) view.findViewById(R.id.search_load);
         return view;
@@ -67,13 +67,9 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
 
     private void startSearch(String string) {
         if (string.isEmpty()) {
-            SuperActivityToast.create(getActivity(), new Style(), Style.TYPE_BUTTON)
-                    .setProgressBarColor(Color.WHITE)
-                    .setText(getString(R.string.search_empty))
-                    .setDuration(Style.DURATION_LONG)
-                    .setFrame(Style.FRAME_LOLLIPOP)
-                    .setColor(ContextCompat.getColor(getContext(), R.color.cardAlpha))
-                    .setAnimations(Style.ANIMATIONS_POP).show();
+            YoYo.with(Techniques.Shake)
+                    .duration(ANIMATION_DURATION)
+                    .playOn(mSearchView);
             return;
         }
         mViewSwitcher.setVisibility(View.INVISIBLE);
