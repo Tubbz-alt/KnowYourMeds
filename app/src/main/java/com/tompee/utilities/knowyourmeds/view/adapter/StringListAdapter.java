@@ -1,34 +1,39 @@
 package com.tompee.utilities.knowyourmeds.view.adapter;
 
 import android.content.Context;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.model.ListSwipeHolder;
 import com.tompee.utilities.knowyourmeds.view.custom.SwipeListItemView;
+import com.tompee.utilities.knowyourmeds.view.custom.TextDrawable;
 
 import java.util.List;
 
 public class StringListAdapter extends ArrayAdapter<String> implements
         SwipeListItemView.SwipeListItemViewListener {
     private final Context mContext;
-    private final int mIconResource;
+    private final boolean mWithDrawable;
+    private final String mSubtext;
 
-    public StringListAdapter(Context context, List<String> stringList) {
+    public StringListAdapter(Context context, List<String> stringList, String subtext) {
         super(context, R.layout.list_plain, stringList);
         mContext = context;
-        mIconResource = 0;
+        mWithDrawable = false;
+        mSubtext = subtext;
     }
 
-    public StringListAdapter(Context context, List<String> stringList, int icon) {
+    public StringListAdapter(Context context, List<String> stringList, boolean withDrawable,
+                             String subtext) {
         super(context, R.layout.list_plain, stringList);
         mContext = context;
-        mIconResource = icon;
+        mWithDrawable = withDrawable;
+        mSubtext = subtext;
     }
 
     @Override
@@ -52,11 +57,19 @@ public class StringListAdapter extends ArrayAdapter<String> implements
         TextView name = (TextView) view.findViewById(R.id.name);
         name.setText(getItem(position));
 
-        ImageView image = (ImageView) view.findViewById(R.id.icon);
-        if (mIconResource == 0) {
+        FloatingActionButton image = (FloatingActionButton) view.findViewById(R.id.icon);
+        if (!mWithDrawable) {
             image.setVisibility(View.GONE);
         } else {
-            image.setBackgroundResource(mIconResource);
+            image.setImageDrawable(new TextDrawable(getContext().getResources(),
+                    getItem(position).substring(0, 1), false));
+        }
+
+        TextView subtext = (TextView) view.findViewById(R.id.subtext);
+        if (mSubtext == null) {
+            subtext.setVisibility(View.GONE);
+        } else {
+            subtext.setText(mSubtext);
         }
         return view;
     }

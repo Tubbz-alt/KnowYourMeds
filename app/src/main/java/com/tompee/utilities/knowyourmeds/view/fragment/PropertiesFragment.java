@@ -9,12 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
-import com.tompee.utilities.knowyourmeds.controller.networkinterface.RxNavWrapper;
+import com.tompee.utilities.knowyourmeds.controller.Utilities;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.SPLDetailActivity;
@@ -40,51 +39,14 @@ public class PropertiesFragment extends Fragment implements AdapterView.OnItemCl
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_properties, container, false);
         Medicine med = ((MedDetailActivity) getActivity()).getMedicine();
-        ImageView prescIcon = (ImageView) view.findViewById(R.id.presc_icon);
         TextView prescText = (TextView) view.findViewById(R.id.presc_text);
         if (med.isPrescribable()) {
-            prescIcon.setBackgroundResource(R.drawable.ic_rx_on);
             prescText.setText(R.string.property_prescribable_yes);
         } else {
-            prescIcon.setBackgroundResource(R.drawable.ic_rx_off);
             prescText.setText(R.string.property_prescribable_no);
         }
-        ImageView inIcon = (ImageView) view.findViewById(R.id.in_icon);
         TextView inText = (TextView) view.findViewById(R.id.in_text);
-        switch (med.getTty()) {
-            case RxNavWrapper.BRAND:
-                inIcon.setBackgroundResource(R.drawable.shape_tty_brand);
-                inText.setText(R.string.property_brands);
-                break;
-            case RxNavWrapper.INGREDIENT:
-                inIcon.setBackgroundResource(R.drawable.shape_tty_ingredients);
-                inText.setText(R.string.property_ingredient);
-                break;
-            case RxNavWrapper.SCDC:
-                inIcon.setBackgroundResource(R.drawable.shape_tty_scdc);
-                inText.setText(R.string.tab_scdc);
-                break;
-            case RxNavWrapper.SBDC:
-                inIcon.setBackgroundResource(R.drawable.shape_tty_sbdc);
-                inText.setText(R.string.tab_sbdc);
-                break;
-            case RxNavWrapper.SBD:
-                inIcon.setBackgroundResource(R.drawable.shape_tty_sbd);
-                inText.setText(R.string.tab_sbd);
-                break;
-            case RxNavWrapper.SBDG:
-                inIcon.setBackgroundResource(R.drawable.shape_tty_sbdg);
-                inText.setText(R.string.tab_sbdg);
-                break;
-            case RxNavWrapper.SCD:
-                inIcon.setBackgroundResource(R.drawable.shape_tty_scd);
-                inText.setText(R.string.tab_scd);
-                break;
-            case RxNavWrapper.SCDG:
-                inIcon.setBackgroundResource(R.drawable.shape_tty_scdg);
-                inText.setText(R.string.tab_scdg);
-                break;
-        }
+        inText.setText(Utilities.getTtyString(getContext(), med.getTty()));
         ArrayList<String> ingredients = med.getIngredients();
         if (ingredients != null && !ingredients.isEmpty()) {
             final ArrayList<String> inList = med.getIngredients();
@@ -109,8 +71,8 @@ public class PropertiesFragment extends Fragment implements AdapterView.OnItemCl
                     builder.create().show();
                 }
             });
-            listView.setAdapter(new StringListAdapter(getContext(), inList,
-                    R.drawable.shape_tty_ingredients));
+            listView.setAdapter(new StringListAdapter(getContext(), inList, true,
+                    getString(R.string.property_ingredient)));
         } else {
             View inView = view.findViewById(R.id.ingredients);
             inView.setVisibility(View.GONE);
@@ -122,7 +84,7 @@ public class PropertiesFragment extends Fragment implements AdapterView.OnItemCl
         } else {
             ListView listView = (ListView) view.findViewById(R.id.list_spls);
             listView.setAdapter(new StringListAdapter(getContext(),
-                    new ArrayList<>(mSplMap.values()), 0));
+                    new ArrayList<>(mSplMap.values()), true, null));
             listView.setOnItemClickListener(this);
             TextView count = (TextView) view.findViewById(R.id.count);
             count.setText(String.valueOf(mSplMap.size()));

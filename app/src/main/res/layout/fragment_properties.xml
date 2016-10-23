@@ -1,198 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/med_detail_margin"
-        card_view:cardCornerRadius="5dp"
-        card_view:cardElevation="5dp">
+        android:background="@color/colorPrimaryAlpha"
+        android:orientation="vertical"
+        android:padding="@dimen/med_detail_margin">
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/search_horizontal_padding"
-            android:layout_marginLeft="@dimen/search_horizontal_padding"
-            android:layout_marginRight="@dimen/search_horizontal_padding"
-            android:layout_marginStart="@dimen/search_horizontal_padding"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/search_vertical_padding"
+            android:text="@string/tab_properties"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/light_text" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/search_vertical_padding"
-                android:text="@string/tab_properties"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/dark_text" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/light_text" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:background="@color/dark_secondary_text" />
+        <TextView
+            android:id="@+id/presc_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text="@string/property_prescribable_no"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/light_text" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/med_detail_height"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+        <TextView
+            android:id="@+id/in_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text="@string/property_prescribable_no"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/light_text" />
+    </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/presc_icon"
-                    android:layout_width="@dimen/list_item_icon_dimension"
-                    android:layout_height="@dimen/list_item_icon_dimension"
-                    android:background="@drawable/ic_rx_off"
-                    android:contentDescription="@string/default_content_description" />
-
-                <TextView
-                    android:id="@+id/presc_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/list_item_margin"
-                    android:layout_marginStart="@dimen/list_item_margin"
-                    android:ellipsize="end"
-                    android:text="@string/property_prescribable_no"
-                    android:textAppearance="?android:textAppearanceListItem"
-                    android:textColor="@color/dark_text" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/med_detail_height"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/in_icon"
-                    android:layout_width="@dimen/list_item_icon_dimension"
-                    android:layout_height="@dimen/list_item_icon_dimension"
-                    android:background="@drawable/ic_rx_off"
-                    android:contentDescription="@string/default_content_description" />
-
-                <TextView
-                    android:id="@+id/in_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/list_item_margin"
-                    android:layout_marginStart="@dimen/list_item_margin"
-                    android:ellipsize="end"
-                    android:text="@string/property_prescribable_no"
-                    android:textAppearance="?android:textAppearanceListItem"
-                    android:textColor="@color/dark_text" />
-            </LinearLayout>
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:id="@+id/ingredients"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/med_detail_margin"
-        android:layout_marginLeft="@dimen/med_detail_margin"
-        android:layout_marginRight="@dimen/med_detail_margin"
-        card_view:cardCornerRadius="5dp"
-        card_view:cardElevation="5dp">
+        android:layout_marginTop="@dimen/search_horizontal_padding"
+        android:background="@color/colorPrimaryAlpha"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/search_horizontal_padding"
+        android:paddingRight="@dimen/search_horizontal_padding">
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/search_horizontal_padding"
-            android:layout_marginLeft="@dimen/search_horizontal_padding"
-            android:layout_marginRight="@dimen/search_horizontal_padding"
-            android:layout_marginStart="@dimen/search_horizontal_padding"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/search_vertical_padding"
+            android:text="@string/property_ingredient"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/light_text" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/search_vertical_padding"
-                android:text="@string/property_ingredient"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/dark_text" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/light_text" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:background="@color/dark_secondary_text" />
+        <ListView
+            android:id="@+id/list_ingredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/search_vertical_padding"
+            android:divider="@android:color/transparent" />
+    </LinearLayout>
 
-            <ListView
-                android:id="@+id/list_ingredients"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/search_vertical_padding"
-                android:divider="@android:color/transparent" />
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:id="@+id/spls"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/med_detail_margin"
-        android:layout_marginLeft="@dimen/med_detail_margin"
-        android:layout_marginRight="@dimen/med_detail_margin"
-        android:layout_weight="1"
-        card_view:cardCornerRadius="5dp"
-        card_view:cardElevation="5dp">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/search_horizontal_padding"
+        android:background="@color/colorPrimaryAlpha"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/search_horizontal_padding"
+        android:paddingRight="@dimen/search_horizontal_padding">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/search_horizontal_padding"
-            android:layout_marginLeft="@dimen/search_horizontal_padding"
-            android:layout_marginRight="@dimen/search_horizontal_padding"
-            android:layout_marginStart="@dimen/search_horizontal_padding"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/search_vertical_padding"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/search_vertical_padding"
-                android:orientation="horizontal">
+                android:layout_weight="0.7"
+                android:text="@string/property_spl"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/light_text" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
-                    android:text="@string/property_spl"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/dark_text" />
-
-                <TextView
-                    android:id="@+id/count"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_weight="0.3"
-                    android:gravity="end"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/dark_text" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:background="@color/dark_secondary_text" />
-
-            <ListView
-                android:id="@+id/list_spls"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/count"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/search_vertical_padding"
-                android:minHeight="@dimen/list_view_height" />
+                android:layout_gravity="end"
+                android:layout_weight="0.3"
+                android:gravity="end"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/light_text" />
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/light_text" />
+
+        <ListView
+            android:id="@+id/list_spls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/search_vertical_padding"
+            android:minHeight="@dimen/list_view_height" />
+    </LinearLayout>
 
 </LinearLayout>

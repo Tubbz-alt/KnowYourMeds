@@ -35,7 +35,7 @@ public class SourceFragment extends Fragment {
             emptySource.setVisibility(View.VISIBLE);
         } else {
             ListView listView = (ListView) view.findViewById(R.id.list_sources);
-            listView.setAdapter(new StringListAdapter(getContext(), sources));
+            listView.setAdapter(new StringListAdapter(getContext(), sources, ""));
             emptySource.setVisibility(View.GONE);
         }
         return view;

@@ -126,7 +126,7 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
             for (Medicine med : suggestedMed) {
                 list.add(med.getName());
             }
-            StringListAdapter adapter = new StringListAdapter(getContext(), list, 0);
+            StringListAdapter adapter = new StringListAdapter(getContext(), list, false, "");
             ListView listView = (ListView) mViewSwitcher.findViewById(R.id.suggestion_list);
             listView.setOnItemClickListener(this);
             listView.setAdapter(adapter);

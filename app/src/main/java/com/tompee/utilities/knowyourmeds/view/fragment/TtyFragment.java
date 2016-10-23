@@ -48,7 +48,7 @@ public class TtyFragment extends Fragment implements AdapterView.OnItemClickList
         } else {
             Collections.sort(mList);
             ListView listView = (ListView) view.findViewById(R.id.list);
-            listView.setAdapter(new StringListAdapter(getContext(), mList));
+            listView.setAdapter(new StringListAdapter(getContext(), mList, ""));
             listView.setOnItemClickListener(this);
             emptySource.setVisibility(View.GONE);
             TextView countView = (TextView) view.findViewById(R.id.count);

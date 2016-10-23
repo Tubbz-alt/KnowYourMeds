@@ -71,7 +71,7 @@ public class InteractionFragment extends Fragment implements AdapterView.OnItemS
         }
         mKey = new ArrayList<>(mInteractionMap.keySet()).get(i - 1);
         StringListAdapter adapter = new StringListAdapter(getContext(),
-                new ArrayList<>(mInteractionMap.get(mKey).keySet()));
+                new ArrayList<>(mInteractionMap.get(mKey).keySet()), "");
         mListView.setAdapter(adapter);
     }
 
