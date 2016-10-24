@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/search_vertical_padding"
+            android:layout_marginTop="@dimen/margin"
             android:text="@string/tab_properties"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light_text" />
@@ -49,16 +49,16 @@
         android:id="@+id/ingredients"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/search_horizontal_padding"
+        android:layout_marginTop="@dimen/margin"
         android:background="@color/colorPrimaryAlpha"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/search_horizontal_padding"
-        android:paddingRight="@dimen/search_horizontal_padding">
+        android:paddingLeft="@dimen/margin"
+        android:paddingRight="@dimen/margin">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/search_vertical_padding"
+            android:layout_marginTop="@dimen/margin"
             android:text="@string/property_ingredient"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light_text" />
@@ -74,7 +74,7 @@
             android:id="@+id/list_ingredients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/search_vertical_padding"
+            android:layout_marginBottom="@dimen/margin"
             android:divider="@android:color/transparent" />
     </LinearLayout>
 
@@ -82,16 +82,16 @@
         android:id="@+id/spls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/search_horizontal_padding"
+        android:layout_marginTop="@dimen/margin"
         android:background="@color/colorPrimaryAlpha"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/search_horizontal_padding"
-        android:paddingRight="@dimen/search_horizontal_padding">
+        android:paddingLeft="@dimen/margin"
+        android:paddingRight="@dimen/margin">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/search_vertical_padding"
+            android:layout_marginTop="@dimen/margin"
             android:orientation="horizontal">
 
             <TextView
@@ -124,7 +124,7 @@
             android:id="@+id/list_spls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/search_vertical_padding"
+            android:layout_marginBottom="@dimen/margin"
             android:minHeight="@dimen/list_view_height" />
     </LinearLayout>
 

@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -18,7 +17,6 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.nineoldandroids.animation.Animator;
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
-import com.tompee.utilities.knowyourmeds.view.custom.TextDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +24,8 @@ import java.util.List;
 public class MenuDialog extends Dialog implements View.OnClickListener,
         DialogInterface.OnShowListener, Animator.AnimatorListener {
     private final MenuDialogListener mListener;
-    private List<View> mMenuList;
-    private FloatingActionButton mExit;
+    private final List<View> mMenuList;
+    private final FloatingActionButton mExit;
 
     public MenuDialog(Context context, Medicine medicine, MenuDialogListener listener) {
         super(context, android.R.style.Theme_Wallpaper_NoTitleBar);
@@ -36,8 +34,6 @@ public class MenuDialog extends Dialog implements View.OnClickListener,
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_menu, null);
         mExit = (FloatingActionButton) view.findViewById(R.id.exit);
         mExit.setOnClickListener(this);
-        mExit.setImageDrawable(new TextDrawable(getContext().getResources(), "x",
-                ContextCompat.getColor(getContext(), R.color.dark_text)));
         getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDarkAlpha);
         setContentView(view);
         setCancelable(false);
@@ -91,7 +87,6 @@ public class MenuDialog extends Dialog implements View.OnClickListener,
         button.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.
                 getColor(getContext(), colorId)));
         button.setOnClickListener(this);
-        menuView.setTag(resourceId);
         return menuView;
     }
 
@@ -101,12 +96,14 @@ public class MenuDialog extends Dialog implements View.OnClickListener,
             dismiss();
             return;
         }
+        int position = 0;
         for (View view : mMenuList) {
             if (view.findViewById(R.id.button).equals(v)) {
-                mListener.onMenuClicked(getContext().getString((int) view.getTag()));
+                mListener.onMenuClicked(position);
                 dismiss();
                 break;
             }
+            position++;
         }
     }
 
@@ -147,6 +144,6 @@ public class MenuDialog extends Dialog implements View.OnClickListener,
     }
 
     public interface MenuDialogListener {
-        void onMenuClicked(String menuString);
+        void onMenuClicked(int position);
     }
 }

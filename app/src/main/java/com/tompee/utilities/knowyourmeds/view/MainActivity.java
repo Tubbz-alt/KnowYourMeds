@@ -35,7 +35,6 @@ public class MainActivity extends BaseActivity implements DisclaimerDialog.Discl
 
     private InterstitialAd mInterstitialAd;
     private SharedPreferences mSharedPreferences;
-    private ViewPager mViewPager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,10 +77,10 @@ public class MainActivity extends BaseActivity implements DisclaimerDialog.Discl
         transaction.replace(R.id.container, SearchFragment.newInstance());
         transaction.commit();
 
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mViewPager.setAdapter(new MainViewPagerAdapter(this, getSupportFragmentManager()));
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        viewPager.setAdapter(new MainViewPagerAdapter(this, getSupportFragmentManager()));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_main);
-        tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     private void showAppRater() {

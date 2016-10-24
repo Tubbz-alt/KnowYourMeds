@@ -1,17 +1,12 @@
 package com.tompee.utilities.knowyourmeds.view.base;
 
 import android.content.pm.ActivityInfo;
-import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.Surface;
 
 public class BaseActivity extends FragmentActivity {
     private static final int MIN_WIDTH = 600;
@@ -20,9 +15,7 @@ public class BaseActivity extends FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!isFullLayoutSupported()) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mDelegate = AppCompatDelegate.create(this, null);
         mDelegate.onCreate(savedInstanceState);
     }
@@ -64,24 +57,24 @@ public class BaseActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public boolean isFullLayoutSupported() {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            display.getRealSize(size);
-        } else {
-            display.getSize(size);
-        }
-        size.y = (int) (size.y / displayMetrics.density);
-        size.x = (int) (size.x / displayMetrics.density);
-        int rotation = display.getRotation();
-        if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
-            int temp = size.x;
-            //noinspection SuspiciousNameCombination
-            size.x = size.y;
-            size.y = temp;
-        }
-        return size.x >= MIN_WIDTH;
-    }
+//    public boolean isFullLayoutSupported() {
+//        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+//        Display display = getWindowManager().getDefaultDisplay();
+//        Point size = new Point();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            display.getRealSize(size);
+//        } else {
+//            display.getSize(size);
+//        }
+//        size.y = (int) (size.y / displayMetrics.density);
+//        size.x = (int) (size.x / displayMetrics.density);
+//        int rotation = display.getRotation();
+//        if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
+//            int temp = size.x;
+//            //noinspection SuspiciousNameCombination
+//            size.x = size.y;
+//            size.y = temp;
+//        }
+//        return size.x >= MIN_WIDTH;
+//    }
 }

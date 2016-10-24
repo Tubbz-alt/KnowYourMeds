@@ -33,6 +33,7 @@ public class Utilities {
             case RxNavWrapper.BRAND:
                 tty = context.getString(R.string.property_brands);
                 break;
+            case RxNavWrapper.MIN:
             case RxNavWrapper.INGREDIENT:
                 tty = context.getString(R.string.property_ingredient);
                 break;
@@ -53,6 +54,9 @@ public class Utilities {
                 break;
             case RxNavWrapper.SCDG:
                 tty = context.getString(R.string.tab_scdg);
+                break;
+            case RxNavWrapper.PIN:
+                tty = context.getString(R.string.tab_pin);
                 break;
         }
         return tty;

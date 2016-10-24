@@ -10,7 +10,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
-import android.widget.TextView;
 
 public class TextDrawable extends Drawable {
     private static final int DEFAULT_COLOR = Color.WHITE;

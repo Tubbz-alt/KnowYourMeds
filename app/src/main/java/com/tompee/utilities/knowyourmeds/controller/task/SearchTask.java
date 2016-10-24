@@ -17,10 +17,10 @@ import java.util.List;
 public class SearchTask extends AsyncTask<String, Void, Boolean> {
     private final RxNavWrapper mWrapper;
     private final SearchListener mListener;
+    private final SharedPreferences mSharedPreferences;
+    private final DatabaseHelper mDatabaseHelper;
     private List<Medicine> mMedList;
     private boolean mIsOffline;
-    private SharedPreferences mSharedPreferences;
-    private DatabaseHelper mDatabaseHelper;
 
     public SearchTask(Context context, SearchListener listener) {
         mWrapper = new RxNavWrapper(context);

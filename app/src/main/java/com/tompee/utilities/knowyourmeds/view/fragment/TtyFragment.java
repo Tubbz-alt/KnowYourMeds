@@ -22,7 +22,7 @@ import java.util.Collections;
 public class TtyFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final String KEY_LIST = "key_list";
     private static final String KEY_TAB_NAME = "key_tab_name";
-    ArrayList<String> mList;
+    private ArrayList<String> mList;
 
     public static TtyFragment newInstance(ArrayList<String> infoList, String tabName) {
         TtyFragment fragment = new TtyFragment();

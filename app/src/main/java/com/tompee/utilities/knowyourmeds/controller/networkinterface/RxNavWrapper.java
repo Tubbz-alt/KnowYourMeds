@@ -30,6 +30,8 @@ public class RxNavWrapper {
     public static final String SBDG = "SBDG";
     public static final String SCD = "SCD";
     public static final String SCDG = "SCDG";
+    public static final String PIN = "PIN";
+    public static final String MIN = "MIN";
 
     private static final String TAG = "RxNavWrapper";
     private static final String RX_NORM_BASE_URL = "https://rxnav.nlm.nih.gov/REST";

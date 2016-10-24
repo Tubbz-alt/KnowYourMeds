@@ -15,18 +15,6 @@
     <!-- Dimensions -->
     <dimen name="margin">12dp</dimen>
 
-    <!-- Search dimensions -->
-    <dimen name="search_height">60dp</dimen>
-    <dimen name="search_edit_dimension">32dp</dimen>
-    <dimen name="search_vertical_padding">12dp</dimen>
-    <dimen name="search_horizontal_padding">12dp</dimen>
-
-    <!-- Progress dialog dimensions -->
-    <dimen name="dialog_progress_margin_top">100dp</dimen>
-    <dimen name="dialog_progress_height">49dp</dimen>
-    <dimen name="dialog_progress_width">49dp</dimen>
-    <dimen name="dialog_progress_margin_bottom">40dp</dimen>
-
     <!-- List view dimensions -->
     <dimen name="list_view_height">60dp</dimen>
     <dimen name="list_item_height">48dp</dimen>
@@ -38,18 +26,10 @@
 
     <!-- Med detail dimensions -->
     <dimen name="med_detail_margin">16dp</dimen>
-    <dimen name="med_detail_height">46dp</dimen>
 
     <!-- Progress bar dimensions -->
     <dimen name="progressbar_height">3dp</dimen>
     <dimen name="progressbar_radius">0dp</dimen>
-
-    <!-- Recycler view dimensions -->
-    <dimen name="recycler_view_width">270dp</dimen>
-    <dimen name="recycler_view_header_height">180dp</dimen>
-    <dimen name="recycler_view_item_height">52dp</dimen>
-    <dimen name="recycler_view_item_vertical_padding">8dp</dimen>
-    <dimen name="recycler_view_item_horizontal_padding">16dp</dimen>
 
     <!-- About -->
     <dimen name="about_image_dimension">60dp</dimen>
@@ -58,7 +38,5 @@
     <!-- Disclaimer -->
     <dimen name="disclaimer_margin">24dp</dimen>
     <dimen name="disclaimer_view_separator">8dp</dimen>
-
-    <dimen name="header_height">30dp</dimen>
 
 </resources>

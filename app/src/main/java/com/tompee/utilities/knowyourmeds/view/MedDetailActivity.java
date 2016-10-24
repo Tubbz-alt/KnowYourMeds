@@ -11,20 +11,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +26,6 @@ import com.tompee.utilities.knowyourmeds.controller.Utilities;
 import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.task.GetMedDetailTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
-import com.tompee.utilities.knowyourmeds.view.adapter.DrawerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 import com.tompee.utilities.knowyourmeds.view.dialog.MenuDialog;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
@@ -46,50 +36,33 @@ import com.tompee.utilities.knowyourmeds.view.fragment.SourceFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.TtyFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.WebViewFragment;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.GetMedTaskListener,
-        RecyclerView.OnItemTouchListener, PauseableHandler.PauseableHandlerCallback,
-        AdapterView.OnItemClickListener, View.OnClickListener, MenuDialog.MenuDialogListener {
+        PauseableHandler.PauseableHandlerCallback, View.OnClickListener, MenuDialog.MenuDialogListener {
     public static final String TAG_NAME = "name";
     public static final String TAG_ID = "id";
     public static final String TAG_ORIGIN = "origin";
     public static final int FROM_SEARCH = 0;
     public static final int FROM_RECENTS = 1;
     public static final int FROM_FAVORITES = 2;
+    private static final String POSITION = "position";
     private static final int CACHE_EXPIRY = 12;
-    private static final int[] OPTION_IDS = {R.string.tab_properties, R.string.tab_brands,
-            R.string.tab_sbdc, R.string.tab_sbd, R.string.tab_sbdg, R.string.tab_scdc,
-            R.string.tab_scd, R.string.tab_scdg, R.string.tab_info, R.string.tab_interaction,
-            R.string.tab_sources, R.string.tab_exit};
-    private RecyclerView mRecyclerView;
-    private GestureDetector mGestureDetector;
-    private DrawerLayout mDrawer;
-    private int mFragmentIndex = 0;
     private GetMedDetailTask mGetMedDetailTask;
     private ProcessingDialog mDialog;
     private Medicine mMedicine;
-    private PropertiesFragment mPropertiesFragment;
-    private TtyFragment mBrandFragment;
-    private TtyFragment mSbdcFragment;
-    private TtyFragment mScdcFragment;
-    private TtyFragment mSbdgFragment;
-    private TtyFragment mScdFragment;
-    private TtyFragment mScdgFragment;
-    private TtyFragment mSbdFragment;
-    private InteractionFragment mInteractionFragment;
-    private WebViewFragment mWebViewFragment;
-    private SourceFragment mSourcesFragment;
+    private List<Fragment> mFragmentList;
     private PauseableHandler mPauseableHandler;
-    private FloatingActionButton mMenu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_med_detail);
-        setToolbar(R.id.toolbar, false);
+        setToolbar(R.id.toolbar, true);
 
         Intent intent = getIntent();
         String name = intent.getStringExtra(TAG_NAME);
@@ -99,28 +72,11 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         ImageView imageView = (ImageView) findViewById(R.id.background);
         imageView.setImageDrawable(Utilities.getDrawableFromAsset(this, "search_bg.jpg"));
 
-        mMenu = (FloatingActionButton) findViewById(R.id.menu);
-        mMenu.setOnClickListener(this);
+        FloatingActionButton menu = (FloatingActionButton) findViewById(R.id.menu);
+        menu.setOnClickListener(this);
 
         mPauseableHandler = new PauseableHandler(this);
-        mFragmentIndex = 0;
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-
-        mGestureDetector = new GestureDetector(this, new GestureListener());
-        mRecyclerView.addOnItemTouchListener(this);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
-
-        //Set drawer
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawer,
-                (Toolbar) findViewById(R.id.toolbar), R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-        mDrawer.addDrawerListener(drawerToggle);
-        drawerToggle.syncState();
+        mFragmentList = new ArrayList<>();
 
         /** Regardless of origin, search database first */
         DatabaseHelper db = DatabaseHelper.getInstance(this);
@@ -238,70 +194,62 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     }
 
     private void initializeDisplay() {
-        RecyclerView.Adapter adapter = new DrawerAdapter(mMedicine.getName(), OPTION_IDS);
-        mRecyclerView.setAdapter(adapter);
         initializeFragments(mMedicine);
-        sendMessageToReflectFragment();
+        sendMessageToReflectFragment(0);
     }
 
     private void initializeFragments(Medicine med) {
-        mPropertiesFragment = PropertiesFragment.getInstance();
-        mBrandFragment = TtyFragment.newInstance(med.getBrands(), getString(R.string.tab_brands));
-        mScdcFragment = TtyFragment.newInstance(med.getScdc(), getString(R.string.tab_scdc));
-        mSbdcFragment = TtyFragment.newInstance(med.getSbdc(), getString(R.string.tab_sbdc));
-        mSbdgFragment = TtyFragment.newInstance(med.getSbdg(), getString(R.string.tab_sbdg));
-        mScdFragment = TtyFragment.newInstance(med.getScd(), getString(R.string.tab_scd));
-        mScdgFragment = TtyFragment.newInstance(med.getScdg(), getString(R.string.tab_scdg));
-        mSbdFragment = TtyFragment.newInstance(med.getSbd(), getString(R.string.tab_sbd));
-        mWebViewFragment = WebViewFragment.newInstance(med.getUrl());
-        mSourcesFragment = SourceFragment.getInstance();
-        mInteractionFragment = InteractionFragment.newInstance();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (!isFullLayoutSupported()) {
-            mDrawer.openDrawer(Gravity.LEFT);
-        } else {
-            super.onBackPressed();
+        Fragment fragment = PropertiesFragment.getInstance();
+        mFragmentList.add(fragment);
+        if (med.getBrands() != null && !med.getBrands().isEmpty()) {
+            fragment = TtyFragment.newInstance(med.getBrands(), getString(R.string.tab_brands));
+            mFragmentList.add(fragment);
+        }
+        if (med.getScdc() != null && !med.getScdc().isEmpty()) {
+            fragment = TtyFragment.newInstance(med.getScdc(), getString(R.string.tab_scdc));
+            mFragmentList.add(fragment);
+        }
+        if (med.getSbdc() != null && !med.getSbdc().isEmpty()) {
+            fragment = TtyFragment.newInstance(med.getSbdc(), getString(R.string.tab_sbdc));
+            mFragmentList.add(fragment);
+        }
+        if (med.getSbdg() != null && !med.getSbdg().isEmpty()) {
+            fragment = TtyFragment.newInstance(med.getSbdg(), getString(R.string.tab_sbdg));
+            mFragmentList.add(fragment);
+        }
+        if (med.getScd() != null && !med.getScd().isEmpty()) {
+            fragment = TtyFragment.newInstance(med.getScd(), getString(R.string.tab_scd));
+            mFragmentList.add(fragment);
+        }
+        if (med.getScdg() != null && !med.getScdg().isEmpty()) {
+            fragment = TtyFragment.newInstance(med.getScdg(), getString(R.string.tab_scdg));
+            mFragmentList.add(fragment);
+        }
+        if (med.getSbd() != null && !med.getSbd().isEmpty()) {
+            fragment = TtyFragment.newInstance(med.getSbd(), getString(R.string.tab_sbd));
+            mFragmentList.add(fragment);
+        }
+        if (med.getUrl() != null) {
+            fragment = WebViewFragment.newInstance(med.getUrl());
+            mFragmentList.add(fragment);
+        }
+        if (med.getSources() != null && !med.getSources().isEmpty()) {
+            fragment = SourceFragment.getInstance();
+            mFragmentList.add(fragment);
+        }
+        if (med.getInteractions() != null && !med.getInteractions().isEmpty()) {
+            fragment = InteractionFragment.newInstance();
+            mFragmentList.add(fragment);
         }
     }
 
     private void hideAllFragments() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if (mPropertiesFragment.isAdded()) {
-            transaction.hide(mPropertiesFragment);
-        }
-        if (mBrandFragment.isAdded()) {
-            transaction.hide(mBrandFragment);
-        }
-        if (mSbdcFragment.isAdded()) {
-            transaction.hide(mSbdcFragment);
-        }
-        if (mScdcFragment.isAdded()) {
-            transaction.hide(mScdcFragment);
-        }
-        if (mSbdgFragment.isAdded()) {
-            transaction.hide(mSbdgFragment);
-        }
-        if (mWebViewFragment.isAdded()) {
-            transaction.hide(mWebViewFragment);
-        }
-        if (mSourcesFragment.isAdded()) {
-            transaction.hide(mSourcesFragment);
-        }
-        if (mScdFragment.isAdded()) {
-            transaction.hide(mScdFragment);
-        }
-        if (mScdgFragment.isAdded()) {
-            transaction.hide(mScdgFragment);
-        }
-        if (mSbdFragment.isAdded()) {
-            transaction.hide(mSbdFragment);
-        }
-        if (mInteractionFragment.isAdded()) {
-            transaction.hide(mInteractionFragment);
+        for (Fragment fragment : mFragmentList) {
+            if (fragment.isAdded()) {
+                transaction.hide(fragment);
+            }
         }
         transaction.commit();
         fragmentManager.executePendingTransactions();
@@ -319,77 +267,18 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         fragmentManager.executePendingTransactions();
     }
 
-    private void sendMessageToReflectFragment() {
+    private void sendMessageToReflectFragment(int position) {
         Message newMessage = Message.obtain(mPauseableHandler, 0);
+        Bundle bundle = new Bundle();
+        bundle.putInt(POSITION, position);
+        newMessage.setData(bundle);
         mPauseableHandler.sendMessage(newMessage);
     }
 
-    private void reflectCurrentFragment() {
-        if (OPTION_IDS[mFragmentIndex] == R.string.tab_exit) {
-            finish();
-            return;
-        }
+    private void reflectCurrentFragment(int index) {
         hideAllFragments();
-        Fragment fragment = null;
-        switch (OPTION_IDS[mFragmentIndex]) {
-            case R.string.tab_properties:
-                fragment = mPropertiesFragment;
-                break;
-            case R.string.tab_brands:
-                fragment = mBrandFragment;
-                break;
-            case R.string.tab_sbdc:
-                fragment = mSbdcFragment;
-                break;
-            case R.string.tab_scdc:
-                fragment = mScdcFragment;
-                break;
-            case R.string.tab_sbdg:
-                fragment = mSbdgFragment;
-                break;
-            case R.string.tab_info:
-                fragment = mWebViewFragment;
-                break;
-            case R.string.tab_sources:
-                fragment = mSourcesFragment;
-                break;
-            case R.string.tab_scd:
-                fragment = mScdFragment;
-                break;
-            case R.string.tab_scdg:
-                fragment = mScdgFragment;
-                break;
-            case R.string.tab_sbd:
-                fragment = mSbdFragment;
-                break;
-            case R.string.tab_interaction:
-                fragment = mInteractionFragment;
-                break;
-        }
+        Fragment fragment = mFragmentList.get(index);
         showFragment(fragment);
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
-        View child = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
-        if (child != null && mGestureDetector.onTouchEvent(motionEvent)) {
-            int index = recyclerView.getChildLayoutPosition(child) - 1;
-            if (index >= 0) {
-                mDrawer.closeDrawers();
-                mFragmentIndex = index;
-                sendMessageToReflectFragment();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-    }
-
-    @Override
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
     }
 
     @Override
@@ -399,13 +288,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
     @Override
     public void processMessage(Message message) {
-        reflectCurrentFragment();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
-        mFragmentIndex = index;
-        sendMessageToReflectFragment();
+        reflectCurrentFragment(message.getData().getInt(POSITION));
     }
 
     @Override
@@ -415,14 +298,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     }
 
     @Override
-    public void onMenuClicked(String menuString) {
-
-    }
-
-    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            return true;
-        }
+    public void onMenuClicked(int position) {
+        sendMessageToReflectFragment(position);
     }
 }

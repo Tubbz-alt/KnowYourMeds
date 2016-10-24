@@ -91,6 +91,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
             }
             trash.setVisibility(View.VISIBLE);
         } else {
+            listView.setAdapter(null);
             trash.setVisibility(View.INVISIBLE);
         }
     }
@@ -99,14 +100,25 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
     public void onClick(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.control_delete);
-        builder.setMessage(R.string.delete_recent_message);
-        builder.setPositiveButton(R.string.control_delete, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                mDbHelper.deleteAll(DatabaseHelper.RECENT_TABLE);
-                updateLists(mRootView, getArguments().getBoolean(IS_RECENT));
-            }
-        });
+        if (getArguments().getBoolean(IS_RECENT)) {
+            builder.setMessage(R.string.delete_recent_message);
+            builder.setPositiveButton(R.string.control_delete, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mDbHelper.deleteAll(DatabaseHelper.RECENT_TABLE);
+                    updateLists(mRootView, true);
+                }
+            });
+        } else {
+            builder.setMessage(R.string.delete_favorite_message);
+            builder.setPositiveButton(R.string.control_delete, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mDbHelper.deleteAll(DatabaseHelper.FAVORITE_TABLE);
+                    updateLists(mRootView, false);
+                }
+            });
+        }
         builder.setNegativeButton(R.string.control_cancel, null);
         builder.create().show();
     }

@@ -15,16 +15,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/search_horizontal_padding"
-            android:layout_marginLeft="@dimen/search_horizontal_padding"
-            android:layout_marginRight="@dimen/search_horizontal_padding"
-            android:layout_marginStart="@dimen/search_horizontal_padding"
+            android:layout_marginEnd="@dimen/margin"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/search_vertical_padding"
+                android:layout_marginTop="@dimen/margin"
                 android:orientation="horizontal">
 
                 <TextView
@@ -57,7 +57,7 @@
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/search_vertical_padding"
+                android:layout_marginBottom="@dimen/margin"
                 android:minHeight="@dimen/list_view_height" />
 
             <TextView
@@ -65,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/search_vertical_padding"
+                android:layout_marginBottom="@dimen/margin"
                 android:gravity="center"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:textColor="@color/dark_text"

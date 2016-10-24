@@ -18,9 +18,9 @@ public class AnimationUtility {
         animateVerticalPosition(view, pxHeight, duration, interpolator, 0, null);
     }
 
-    public static void animateVerticalPosition(View view, int pxHeight, int duration,
-                                               Interpolator interpolator, int delay,
-                                               Animator.AnimatorListener listener) {
+    private static void animateVerticalPosition(View view, int pxHeight, int duration,
+                                                Interpolator interpolator, int delay,
+                                                Animator.AnimatorListener listener) {
         ObjectAnimator moveAnim = ObjectAnimator.ofFloat(view, VERTICAL_POSITION_PROPERTY,
                 pxHeight);
         moveAnim.setDuration(duration);
