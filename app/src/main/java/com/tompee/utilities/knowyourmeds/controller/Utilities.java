@@ -6,8 +6,10 @@ import android.graphics.drawable.Drawable;
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.networkinterface.RxNavWrapper;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class Utilities {
 
@@ -26,8 +28,24 @@ public class Utilities {
         }
         return drawable;
     }
-    
-    
+
+    public static String getStringFromAsset(Context context, String filename) {
+        StringBuilder buffer = new StringBuilder();
+        InputStream inputStream;
+        try {
+            inputStream = context.getAssets().open(filename);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            String str;
+            while ((str = bufferedReader.readLine()) != null) {
+                buffer.append(str);
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return buffer.toString();
+    }
+
     public static String getTtyString(Context context, String tty) {
         switch (tty) {
             case RxNavWrapper.BRAND:
