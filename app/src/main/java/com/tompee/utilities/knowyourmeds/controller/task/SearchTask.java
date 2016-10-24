@@ -9,7 +9,7 @@ import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
 import com.tompee.utilities.knowyourmeds.controller.networkinterface.RxNavWrapper;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MainActivity;
-import com.tompee.utilities.knowyourmeds.view.fragment.SettingsFragment;
+import com.tompee.utilities.knowyourmeds.view.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class SearchTask extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(String... args) {
-        if (!mSharedPreferences.getBoolean(SettingsFragment.TAG_OFFLINE_MODE_CB, false)) {
+        if (!mSharedPreferences.getBoolean(SettingsActivity.TAG_OFFLINE_MODE_CB, false)) {
             try {
                 Medicine med = mWrapper.searchMed(args[0]);
                 if (med == null) {

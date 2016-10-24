@@ -28,7 +28,6 @@
     <string name="not_available_offline">Entry is not available in offline mode</string>
     <string name="delete_recent_message">Are you sure you want to delete the recent list?</string>
     <string name="delete_favorite_message">Are you sure you want to delete the favorite list?</string>
-    <string name="add_to_favorites">%1$s was added to favorites.</string>
     <string name="toast_no_internet">No Internet Connection</string>
     <string name="search_item_message">Do you want to search for %1$s?</string>
 

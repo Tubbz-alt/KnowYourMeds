@@ -32,7 +32,6 @@ import com.tompee.utilities.knowyourmeds.view.dialog.MenuDialog;
 import com.tompee.utilities.knowyourmeds.view.dialog.ProcessingDialog;
 import com.tompee.utilities.knowyourmeds.view.fragment.InteractionFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.PropertiesFragment;
-import com.tompee.utilities.knowyourmeds.view.fragment.SettingsFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.SourceFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.TtyFragment;
 import com.tompee.utilities.knowyourmeds.view.fragment.WebViewFragment;
@@ -86,7 +85,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
 
         mMedicine = db.getEntry(getIntent().getStringExtra(TAG_ID));
         /** Check if offline mode is enabled */
-        if (sp.getBoolean(SettingsFragment.TAG_OFFLINE_MODE_CB, false)) {
+        if (sp.getBoolean(SettingsActivity.TAG_OFFLINE_MODE_CB, false)) {
             if (mMedicine == null) {
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
                 dialogBuilder.setMessage(R.string.not_available_offline);

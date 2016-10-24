@@ -39,8 +39,6 @@ public class RxNavWrapper {
     private static final String MEDLINE_BASE_URL = "https://apps.nlm.nih.gov/medlineplus/services/" +
             "mpconnect_service.cfm?knowledgeResponseType=application/json&mainSearchCriteria.v.cs=" +
             "2.16.840.1.113883.6.88&mainSearchCriteria.v.c=%s";
-    private static final String MEDLINE_QUERY_URL = "https://vsearch.nlm.nih.gov/vivisimo/cgi-bin/" +
-            "query-meta?v%3Aproject=medlineplus&v%3Asources=medlineplus-bundle&query=";
     private static final String DAILY_MED_BASE_URL = "https://dailymed.nlm.nih.gov/dailymed/services/v2";
     /* Constants */
     private static final String YES = "Y";

@@ -123,6 +123,11 @@ public class MainActivity extends BaseActivity implements DisclaimerDialog.Discl
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.menu_settings:
+                intent = new Intent(this, SettingsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return true;
             case R.id.menu_about:
                 intent = new Intent(this, HelpActivity.class);
                 intent.putExtra(HelpActivity.TAG_MODE, HelpActivity.ABOUT);

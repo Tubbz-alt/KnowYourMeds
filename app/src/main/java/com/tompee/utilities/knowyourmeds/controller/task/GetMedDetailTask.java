@@ -8,7 +8,7 @@ import com.android.volley.NoConnectionError;
 import com.tompee.utilities.knowyourmeds.controller.networkinterface.RxNavWrapper;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MainActivity;
-import com.tompee.utilities.knowyourmeds.view.fragment.SettingsFragment;
+import com.tompee.utilities.knowyourmeds.view.SettingsActivity;
 
 import java.util.Calendar;
 
@@ -23,7 +23,7 @@ public class GetMedDetailTask extends AsyncTask<String, Void, Medicine> {
         mListener = listener;
         SharedPreferences sharedPreferences = context.getSharedPreferences(MainActivity.SHARED_PREF,
                 Context.MODE_PRIVATE);
-        mIsSplEnabled = sharedPreferences.getBoolean(SettingsFragment.TAG_SPL_CB, true);
+        mIsSplEnabled = sharedPreferences.getBoolean(SettingsActivity.TAG_SPL_CB, true);
     }
 
     @Override
