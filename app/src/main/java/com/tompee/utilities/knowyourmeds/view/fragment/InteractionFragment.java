@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
@@ -37,26 +36,13 @@ public class InteractionFragment extends Fragment implements AdapterView.OnItemS
         mInteractionMap = ((MedDetailActivity) getActivity()).getMedicine().getInteractions();
         AppCompatSpinner spinner = (AppCompatSpinner) view.findViewById(R.id.spinner);
         ArrayAdapter<String> adapter;
-        if (mInteractionMap != null && !mInteractionMap.isEmpty()) {
-            List<String> dropDownList = new ArrayList<>();
-            dropDownList.add(getString(R.string.control_select));
-            dropDownList.addAll(mInteractionMap.keySet());
+        List<String> dropDownList = new ArrayList<>();
+        dropDownList.add(getString(R.string.control_select));
+        dropDownList.addAll(mInteractionMap.keySet());
 
-            adapter = new ArrayAdapter<>(getContext(), android.R.layout.
-                    simple_spinner_item, dropDownList);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setOnItemSelectedListener(this);
-        } else {
-            List<String> dropDownList = new ArrayList<>();
-            dropDownList.add(getString(R.string.tab_interaction));
-            adapter = new ArrayAdapter<>(getContext(), android.R.layout.
-                    simple_spinner_item, dropDownList);
-            spinner.setEnabled(false);
-            TextView tv = (TextView) view.findViewById(R.id.tv_no_items);
-            tv.setText(String.format(getString(R.string.tty_no_items),
-                    getString(R.string.tab_interaction)));
-            tv.setVisibility(View.VISIBLE);
-        }
+        adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, dropDownList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setOnItemSelectedListener(this);
         spinner.setAdapter(adapter);
         mListView = (ListView) view.findViewById(R.id.list);
         mListView.setOnItemClickListener(this);
@@ -71,7 +57,7 @@ public class InteractionFragment extends Fragment implements AdapterView.OnItemS
         }
         mKey = new ArrayList<>(mInteractionMap.keySet()).get(i - 1);
         StringListAdapter adapter = new StringListAdapter(getContext(),
-                new ArrayList<>(mInteractionMap.get(mKey).keySet()), "");
+                new ArrayList<>(mInteractionMap.get(mKey).keySet()), true, mKey);
         mListView.setAdapter(adapter);
     }
 

@@ -1,5 +1,6 @@
 package com.tompee.utilities.knowyourmeds.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,7 +22,7 @@ import android.widget.ProgressBar;
 import com.tompee.utilities.knowyourmeds.R;
 
 public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    public static final String URL = "url";
+    private static final String URL = "url";
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private WebView mWebview;
@@ -42,6 +43,7 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
         mUrl = getArguments().getString(URL);
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

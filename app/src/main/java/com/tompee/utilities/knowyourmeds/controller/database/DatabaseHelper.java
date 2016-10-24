@@ -50,7 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_MAIN_TABLE = "create table " + MAIN_TABLE +
             " (" + COLUMN_ID + " text not null," + COLUMN_NAME + " text not null collate nocase," +
             COLUMN_PRESC + " integer," + COLUMN_TTY + " text, " +
-            COLUMN_URL + " text not null," + COLUMN_INGREDIENTS + " text," +
+            COLUMN_URL + " text," + COLUMN_INGREDIENTS + " text," +
             COLUMN_SOURCES + " text," + COLUMN_BRANDS + " text," + COLUMN_SCDC + " text," +
             COLUMN_SBDC + " text," + COLUMN_SBDG + " text, " + COLUMN_SCD + " text," +
             COLUMN_DATE + " text not null," + COLUMN_SCDG + " text," + COLUMN_SBD + " text," +
@@ -64,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DROP_MAIN_TABLE = "DROP TABLE IF EXISTS " + MAIN_TABLE;
     private static final String DROP_FAVORITE_TABLE = "DROP TABLE IF EXISTS " + FAVORITE_TABLE;
     private static final String DROP_RECENT_TABLE = "DROP TABLE IF EXISTS " + RECENT_TABLE;
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "KnowYourMeds.db";
     private static DatabaseHelper mSingleton;
 
@@ -95,6 +95,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void createEntry(String tableName, Medicine med) {
+        Log.d("tompee", "" + convertToJsonString(COLUMN_SPL_SET, med.getSplSetId()).length());
+
         /** Add info to main table first */
         deleteEntry(MAIN_TABLE, med);
         ContentValues values = new ContentValues();
@@ -113,7 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_DATE, convertToDateString(med.getDate()));
         values.put(COLUMN_SCDG, convertToJsonString(COLUMN_SCDG, med.getScdg()));
         values.put(COLUMN_SBD, convertToJsonString(COLUMN_SBD, med.getSbd()));
-        values.put(COLUMN_SPL_SET, convertToJsonString(COLUMN_SBD, med.getSplSetId()));
+        values.put(COLUMN_SPL_SET, convertToJsonString(COLUMN_SPL_SET, med.getSplSetId()));
         values.put(COLUMN_INTERACTION, convertRecursiveMapToJsonString(COLUMN_INTERACTION,
                 med.getInteractions()));
         SQLiteDatabase db = getWritableDatabase();
@@ -149,7 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_DATE, convertToDateString(med.getDate()));
         values.put(COLUMN_SCDG, convertToJsonString(COLUMN_SCDG, med.getScdg()));
         values.put(COLUMN_SBD, convertToJsonString(COLUMN_SBD, med.getSbd()));
-        values.put(COLUMN_SPL_SET, convertToJsonString(COLUMN_SBD, med.getSplSetId()));
+        values.put(COLUMN_SPL_SET, convertToJsonString(COLUMN_SPL_SET, med.getSplSetId()));
         values.put(COLUMN_INTERACTION, convertRecursiveMapToJsonString(COLUMN_INTERACTION,
                 med.getInteractions()));
         SQLiteDatabase db = getWritableDatabase();
@@ -230,6 +232,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return medList;
     }
 
+    public Medicine getShortEntry(String tableName, String id) {
+        SQLiteDatabase db = getWritableDatabase();
+        String[] columns = {COLUMN_ID, COLUMN_NAME, COLUMN_PRESC, COLUMN_TTY};
+        Cursor cursor = db.query(tableName, columns, COLUMN_ID + "='" + id + "'", null, null, null, null);
+        cursor.moveToFirst();
+        if (cursor.getCount() == 0) {
+            return null;
+        }
+        Medicine med = cursorToEntry(cursor, true);
+        cursor.close();
+        db.close();
+        return med;
+    }
+
     public List<Medicine> getAllShortEntriesByName(String name) {
         List<Medicine> medList = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
@@ -282,7 +298,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             medicine.setDate(convertFromDateString(cursor.getString(12)));
             medicine.setScdg(jsonToList(COLUMN_SCDG, cursor.getString(13)));
             medicine.setSbd(jsonToList(COLUMN_SBD, cursor.getString(14)));
-            medicine.setSplSetId(jsonToMap(COLUMN_SBD, cursor.getString(15)));
+            medicine.setSplSetId(jsonToMap(COLUMN_SPL_SET, cursor.getString(15)));
             medicine.setInteractions(jsonToRecursiveMap(COLUMN_INTERACTION, cursor.getString(16)));
         }
         return medicine;

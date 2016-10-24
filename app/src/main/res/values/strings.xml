@@ -23,7 +23,6 @@
     <string name="fetch_details">Gathering all available information.\nThis may take a while
         depending on the genericity of the item&#8230;\n\nIf search is taking too much time,
         consider disabling Marketed Drug Search in Settings</string>
-    <string name="tty_no_items">No %1$s available</string>
 
     <!-- Dialog messages -->
     <string name="not_available_offline">Entry is not available in offline mode</string>
@@ -64,6 +63,7 @@
     <string name="tab_sbd">Branded Drug or Pack</string>
     <string name="tab_interaction">Interactions</string>
     <string name="tab_pin">Precise Ingredient</string>
+    <string name="tab_spl">Structured Product Label</string>
 
     <!-- Properties -->
     <string name="property_prescribable_yes">Prescribable</string>

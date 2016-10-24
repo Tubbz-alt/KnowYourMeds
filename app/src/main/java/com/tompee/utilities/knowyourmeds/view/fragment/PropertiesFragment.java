@@ -84,7 +84,7 @@ public class PropertiesFragment extends Fragment implements AdapterView.OnItemCl
         } else {
             ListView listView = (ListView) view.findViewById(R.id.list_spls);
             listView.setAdapter(new StringListAdapter(getContext(),
-                    new ArrayList<>(mSplMap.values()), true, null));
+                    new ArrayList<>(mSplMap.values()), true, getString(R.string.tab_spl)));
             listView.setOnItemClickListener(this);
             TextView count = (TextView) view.findViewById(R.id.count);
             count.setText(String.valueOf(mSplMap.size()));

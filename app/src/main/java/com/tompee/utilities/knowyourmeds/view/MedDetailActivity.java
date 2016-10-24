@@ -24,6 +24,7 @@ import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.PauseableHandler;
 import com.tompee.utilities.knowyourmeds.controller.Utilities;
 import com.tompee.utilities.knowyourmeds.controller.database.DatabaseHelper;
+import com.tompee.utilities.knowyourmeds.controller.networkinterface.RxNavWrapper;
 import com.tompee.utilities.knowyourmeds.controller.task.GetMedDetailTask;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
@@ -132,6 +133,17 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_med_detail, menu);
+        MenuItem favorite = menu.findItem(R.id.menu_favorite);
+        if (mMedicine != null) {
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
+            Medicine med = dbHelper.getShortEntry(DatabaseHelper.FAVORITE_TABLE,
+                    mMedicine.getRxnormId());
+            if (med != null) {
+                favorite.setIcon(R.drawable.ic_star_white);
+            } else {
+                favorite.setIcon(R.drawable.ic_star_border_white);
+            }
+        }
         return true;
     }
 
@@ -139,13 +151,13 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_favorite) {
             DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
-            dbHelper.createEntry(DatabaseHelper.FAVORITE_TABLE, mMedicine);
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(String.format(getString(R.string.add_to_favorites),
-                    mMedicine.getName()));
-            builder.setPositiveButton(R.string.control_ok, null);
-            builder.create().show();
+            if (dbHelper.getShortEntry(DatabaseHelper.FAVORITE_TABLE, mMedicine.getRxnormId()) != null) {
+                dbHelper.deleteEntry(DatabaseHelper.FAVORITE_TABLE, mMedicine);
+            } else {
+                dbHelper.createEntry(DatabaseHelper.FAVORITE_TABLE, mMedicine);
+            }
         }
+        invalidateOptionsMenu();
         return super.onOptionsItemSelected(item);
     }
 
@@ -182,6 +194,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         mGetMedDetailTask = null;
         mDialog.dismiss();
         mDialog = null;
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -202,43 +215,49 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         Fragment fragment = PropertiesFragment.getInstance();
         mFragmentList.add(fragment);
         if (med.getBrands() != null && !med.getBrands().isEmpty()) {
-            fragment = TtyFragment.newInstance(med.getBrands(), getString(R.string.tab_brands));
-            mFragmentList.add(fragment);
-        }
-        if (med.getScdc() != null && !med.getScdc().isEmpty()) {
-            fragment = TtyFragment.newInstance(med.getScdc(), getString(R.string.tab_scdc));
+            fragment = TtyFragment.newInstance(med.getBrands(), getString(R.string.tab_brands), RxNavWrapper.BRAND);
             mFragmentList.add(fragment);
         }
         if (med.getSbdc() != null && !med.getSbdc().isEmpty()) {
-            fragment = TtyFragment.newInstance(med.getSbdc(), getString(R.string.tab_sbdc));
-            mFragmentList.add(fragment);
-        }
-        if (med.getSbdg() != null && !med.getSbdg().isEmpty()) {
-            fragment = TtyFragment.newInstance(med.getSbdg(), getString(R.string.tab_sbdg));
-            mFragmentList.add(fragment);
-        }
-        if (med.getScd() != null && !med.getScd().isEmpty()) {
-            fragment = TtyFragment.newInstance(med.getScd(), getString(R.string.tab_scd));
-            mFragmentList.add(fragment);
-        }
-        if (med.getScdg() != null && !med.getScdg().isEmpty()) {
-            fragment = TtyFragment.newInstance(med.getScdg(), getString(R.string.tab_scdg));
+            fragment = TtyFragment.newInstance(med.getSbdc(), getString(R.string.tab_sbdc),
+                    RxNavWrapper.SBDC);
             mFragmentList.add(fragment);
         }
         if (med.getSbd() != null && !med.getSbd().isEmpty()) {
-            fragment = TtyFragment.newInstance(med.getSbd(), getString(R.string.tab_sbd));
+            fragment = TtyFragment.newInstance(med.getSbd(), getString(R.string.tab_sbd),
+                    RxNavWrapper.SBD);
+            mFragmentList.add(fragment);
+        }
+        if (med.getSbdg() != null && !med.getSbdg().isEmpty()) {
+            fragment = TtyFragment.newInstance(med.getSbdg(), getString(R.string.tab_sbdg),
+                    RxNavWrapper.SBDG);
+            mFragmentList.add(fragment);
+        }
+        if (med.getScdc() != null && !med.getScdc().isEmpty()) {
+            fragment = TtyFragment.newInstance(med.getScdc(), getString(R.string.tab_scdc),
+                    RxNavWrapper.SCDC);
+            mFragmentList.add(fragment);
+        }
+        if (med.getScd() != null && !med.getScd().isEmpty()) {
+            fragment = TtyFragment.newInstance(med.getScd(), getString(R.string.tab_scd),
+                    RxNavWrapper.SCD);
+            mFragmentList.add(fragment);
+        }
+        if (med.getScdg() != null && !med.getScdg().isEmpty()) {
+            fragment = TtyFragment.newInstance(med.getScdg(), getString(R.string.tab_scdg),
+                    RxNavWrapper.SCDG);
             mFragmentList.add(fragment);
         }
         if (med.getUrl() != null) {
             fragment = WebViewFragment.newInstance(med.getUrl());
             mFragmentList.add(fragment);
         }
-        if (med.getSources() != null && !med.getSources().isEmpty()) {
-            fragment = SourceFragment.getInstance();
-            mFragmentList.add(fragment);
-        }
         if (med.getInteractions() != null && !med.getInteractions().isEmpty()) {
             fragment = InteractionFragment.newInstance();
+            mFragmentList.add(fragment);
+        }
+        if (med.getSources() != null && !med.getSources().isEmpty()) {
+            fragment = SourceFragment.getInstance();
             mFragmentList.add(fragment);
         }
     }

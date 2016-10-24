@@ -1,5 +1,6 @@
 package com.tompee.utilities.knowyourmeds.view;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -12,6 +13,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,6 +21,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.tompee.utilities.knowyourmeds.BuildConfig;
 import com.tompee.utilities.knowyourmeds.R;
+import com.tompee.utilities.knowyourmeds.controller.Utilities;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
 
 public class SPLDetailActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -29,12 +32,16 @@ public class SPLDetailActivity extends BaseActivity implements SwipeRefreshLayou
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spl_detail);
         setToolbar(R.id.toolbar, true);
+
+        ImageView imageView = (ImageView) findViewById(R.id.background);
+        imageView.setImageDrawable(Utilities.getDrawableFromAsset(this, "search_bg.jpg"));
 
         TextView title = (TextView) findViewById(R.id.toolbar_text);
         title.setText(getIntent().getStringExtra(NAME));
@@ -60,7 +67,7 @@ public class SPLDetailActivity extends BaseActivity implements SwipeRefreshLayou
 
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest.Builder builder = new AdRequest.Builder();
-        if (BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
         }
         mAdView.loadAd(builder.build());
