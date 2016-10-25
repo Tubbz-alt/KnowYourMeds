@@ -109,7 +109,6 @@
         even without internet connection.\n\nIn offline mode, Search feature will lookup on cached
         list only.\n\nNote: Data in offline mode maybe outdated and some features may not
         be available.</string>
-    <string name="settings_show_recent">Show recent searches</string>
     <string name="settings_spl_support_title">Marketed Drug Search</string>
     recent searches even without internet connection.\n\nIn offline mode, Search feature will
     <string name="settings_spl_support_message">Enabling Marketed Drug search may take considerable
@@ -117,14 +116,6 @@
     <string name="settings_cache_title">Clear cache</string>
     <string name="settings_cache_message">Cache contains all previously viewed items. Clearing
         this will affect the features of offline mode.</string>
-
-    <!-- License -->
-    <string name="license_app_title_message">Medical graphic by Freepik from Flaticon\nThree
-        graphic by Freepik from Flaticon\nHealth Clinic by Freepik from Flaticon\nMedical graphic
-        by Madebyoliver from Flaticon\nHealthy graphic by Madebyoliver from Flaticon\nMedical
-        graphic by Vectors Market from Flaticon\nHealthy graphic by Darius Dan from Flaticon\n\nAll
-        icons are licensed under Creative Commons BY 3.0.\nMade with Logo Maker.
-    </string>
 
     <!-- App rater -->
     <string name="ids_title_rate">Rate this app</string>
