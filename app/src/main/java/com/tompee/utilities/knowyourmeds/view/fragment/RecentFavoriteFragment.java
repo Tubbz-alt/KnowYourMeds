@@ -19,6 +19,7 @@ import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.MedListAdapter;
 
+import java.util.Collections;
 import java.util.List;
 
 public class RecentFavoriteFragment extends Fragment implements View.OnClickListener,
@@ -80,6 +81,7 @@ public class RecentFavoriteFragment extends Fragment implements View.OnClickList
         ImageView trash = (ImageView) rootView.findViewById(R.id.trash);
         trash.setOnClickListener(this);
         if (mMedicineList.size() > 0) {
+            Collections.reverse(mMedicineList);
             MedListAdapter adapter = new MedListAdapter(getContext(), mMedicineList, false);
             View view = listView.getChildAt(0);
             int position = listView.getFirstVisiblePosition();
