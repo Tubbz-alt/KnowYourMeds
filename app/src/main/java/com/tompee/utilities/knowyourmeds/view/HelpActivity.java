@@ -4,6 +4,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -50,6 +52,7 @@ public class HelpActivity extends BaseActivity {
             } else {
                 content.setText(Html.fromHtml(Utilities.getStringFromAsset(this, "opensource.html")));
             }
+            content.setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 }

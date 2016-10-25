@@ -19,6 +19,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.tompee.utilities.knowyourmeds.BuildConfig;
 import com.tompee.utilities.knowyourmeds.R;
 
 public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -48,6 +51,13 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_webview, container, false);
+        AdView adView = (AdView) view.findViewById(R.id.adView);
+        AdRequest.Builder builder = new AdRequest.Builder();
+        if (BuildConfig.DEBUG) {
+            builder.addTestDevice("3AD737A018BB67E7108FD1836E34DD1C");
+        }
+        adView.loadAd(builder.build());
+
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.container);
         mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(),
                 R.color.colorPrimary));
