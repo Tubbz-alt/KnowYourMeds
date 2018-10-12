@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface DailyMedApi {
-    @GET("spls.json")
+    @GET("marketDrugList.json")
     fun getSpl(@Query("rxcui") id: String,
                @Query("page") page: Int): Single<SplModel>
 }

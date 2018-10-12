@@ -8,6 +8,7 @@ import android.view.View
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseFragment
 import com.tompee.utilities.knowyourmeds.feature.detail.DetailActivity
+import com.tompee.utilities.knowyourmeds.model.Type
 import kotlinx.android.synthetic.main.fragment_properties.*
 import javax.inject.Inject
 
@@ -53,17 +54,15 @@ class PropertyFragment : BaseFragment(), PropertyView {
         }
     }
 
-    override fun setTtyText(ttyString: String) {
-        ttyText.text = ttyString
+    override fun setType(type: Type) {
+        ttyText.text = type.name(context!!)
     }
 
     override fun setIngredientAdapter(adapter: ListAdapter?) {
         if (adapter != null) {
             ingredientList.setHasFixedSize(true)
             ingredientList.layoutManager = LinearLayoutManager(activity)
-            val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-            divider.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.list_divider)!!)
-            ingredientList.addItemDecoration(divider)
+            ingredientList.addItemDecoration(DividerDecorator(20))
             ingredientList.adapter = adapter
         } else {
             ingredients.visibility = View.GONE

@@ -47,7 +47,7 @@ class DetailPresenter(detailInteractor: DetailInteractor,
                 Single.just("")
                         .doOnSuccess { view.showProcessingDialog() }
                         .flatMap {
-                            interactor.getMedicine()
+                            interactor.getMedicineInfo()
                                     .subscribeOn(scheduler.io)
                         }
                         .observeOn(scheduler.main)

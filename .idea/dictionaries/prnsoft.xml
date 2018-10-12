@@ -4,8 +4,11 @@
       <w>medline</w>
       <w>meds</w>
       <w>prescribable</w>
+      <w>rxcui</w>
       <w>sbdc</w>
+      <w>sbdg</w>
       <w>scdc</w>
+      <w>scdg</w>
     </words>
   </dictionary>
 </component>

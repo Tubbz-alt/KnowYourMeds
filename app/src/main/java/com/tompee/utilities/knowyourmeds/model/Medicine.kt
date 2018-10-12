@@ -10,7 +10,7 @@ data class Medicine2(
         var date: Date? = null,
         var url: String = "",
         var sources: List<String?> = listOf(),
-        var spls: MutableMap<String, String> = mutableMapOf(),
+        var marketDrugList: MutableMap<String, String> = mutableMapOf(),
         var brands: List<String> = listOf(),
         var ingredients: List<String> = listOf(),
         var scdc: List<String> = listOf(),

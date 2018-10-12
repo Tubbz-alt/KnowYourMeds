@@ -12,6 +12,7 @@ import com.tompee.utilities.knowyourmeds.feature.search.search.SearchBarPresente
 import com.tompee.utilities.knowyourmeds.interactor.SearchInteractor
 import com.tompee.utilities.knowyourmeds.model.MedicineContainer
 import com.tompee.utilities.knowyourmeds.model.SchedulerPool
+import com.tompee.utilities.knowyourmeds.repo.MedicineRepo
 import dagger.Module
 import dagger.Provides
 
@@ -34,8 +35,9 @@ class SearchModule(private val fragmentManager: FragmentManager) {
     @SearchScope
     fun provideSearchInteractor(preferences: Preferences,
                                 medApi: MedApi,
+                                medicineRepo: MedicineRepo,
                                 medicineContainer: MedicineContainer):
-            SearchInteractor = SearchInteractor(preferences, medApi, medicineContainer)
+            SearchInteractor = SearchInteractor(preferences, medApi, medicineRepo, medicineContainer)
 
     @Provides
     @SearchScope

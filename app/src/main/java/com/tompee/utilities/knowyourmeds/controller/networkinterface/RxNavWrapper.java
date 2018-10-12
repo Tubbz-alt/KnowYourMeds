@@ -56,7 +56,7 @@ public class RxNavWrapper {
     private static final String URL_INTERACTION = "%s/interaction.json?rxcui=%s";
 
     /* Daily med REST functions */
-    private static final String URL_SPL = "%s/spls.json?rxcui=%s&page=%d";
+    private static final String URL_SPL = "%s/marketDrugList.json?rxcui=%s&page=%d";
 
     /* RXNorm Properties */
     private static final String PROPERTIES_RX_NORM = "RxNorm%20Name";

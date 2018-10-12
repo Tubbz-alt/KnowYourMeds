@@ -1,6 +1,5 @@
 package com.tompee.utilities.knowyourmeds.di.module
 
-import android.content.Context
 import com.tompee.utilities.knowyourmeds.di.scope.DetailScope
 import com.tompee.utilities.knowyourmeds.feature.detail.DetailPresenter
 import com.tompee.utilities.knowyourmeds.feature.detail.menu.MenuPresenter
@@ -27,7 +26,7 @@ class DetailPresenterModule {
                                @Named("sbdg") brandedDoseFormGroupFragment: TypeFragment,
                                @Named("scdc") clinicalDrugComponentFragment: TypeFragment,
                                @Named("scd") clinicalDrugPackFragment: TypeFragment,
-                               @Named("scdg") clinicalDoseFormGroupFragment : TypeFragment): DetailPresenter =
+                               @Named("scdg") clinicalDoseFormGroupFragment: TypeFragment): DetailPresenter =
             DetailPresenter(detailInteractor, schedulerPool,
                     propertyFragment,
                     brandFragment,
@@ -41,9 +40,8 @@ class DetailPresenterModule {
     @DetailScope
     @Provides
     fun providePropertyPresenter(detailInteractor: DetailInteractor,
-                                 schedulerPool: SchedulerPool,
-                                 context: Context): PropertyPresenter =
-            PropertyPresenter(detailInteractor, schedulerPool, context)
+                                 schedulerPool: SchedulerPool): PropertyPresenter =
+            PropertyPresenter(detailInteractor, schedulerPool)
 
     @DetailScope
     @Provides

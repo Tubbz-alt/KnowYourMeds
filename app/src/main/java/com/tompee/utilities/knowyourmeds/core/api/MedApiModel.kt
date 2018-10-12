@@ -9,13 +9,13 @@ data class RxNormModel(var idGroup: IdGroup? = null)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class IdGroup(
-        var name: String? = null,
-        var rxnormId: List<String>? = null
+        var name: String = "",
+        var rxnormId: List<String> = listOf()
 )
 
 //endregion
 
-//region getPropertyName
+//region getName
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class PropertyGroup(
         var propConceptGroup: PropConceptGroup? = null
@@ -23,14 +23,14 @@ data class PropertyGroup(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class PropConceptGroup(
-        var propConcept: List<PropConcept>? = null
+        var propConcept: List<PropConcept> = listOf()
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class PropConcept(
-        var propCategory: String? = null,
-        var propName: String? = null,
-        var propValue: String? = null
+        var propCategory: String = "",
+        var propName: String = "",
+        var propValue: String = ""
 )
 //endregion
 
@@ -49,7 +49,7 @@ data class SuggestionGroup(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Suggestion(
-        var suggestion: List<String>? = null
+        var suggestion: List<String> = listOf()
 )
 //endregion
 
@@ -61,31 +61,32 @@ data class MedlineUrlModel(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Feed(
-        var entry: List<Entry>? = null
+        var entry: List<Entry> = listOf()
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Entry(
-        var link: List<Link>? = null
+        var link: List<Link> = listOf()
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Link(
-        var href: String? = null
+        var href: String = ""
 )
 //endregion
 
 //region getSpl
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class SplModel(
-        var data: List<Data>? = null,
+        var data: List<Data> = listOf(),
         var metadata: Metadata? = null
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Data(
-        var setid: String? = null,
-        var title: String? = null
+        var setid: String = "",
+        var title: String = "",
+        var published_date: String
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -103,13 +104,13 @@ data class TtyGroup(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class RelatedGroup(
-        var conceptGroup: List<ConceptGroup>? = null
+        var conceptGroup: List<ConceptGroup> = listOf()
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class ConceptGroup(
         var tty: String = "",
-        var conceptProperties: List<ConceptProperties>? = null
+        var conceptProperties: List<ConceptProperties> = listOf()
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -123,23 +124,23 @@ data class ConceptProperties(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class InteractionModel(
-        var interactionTypeGroup: List<InteractionTypeGroup>? = null
+        var interactionTypeGroup: List<InteractionTypeGroup> = listOf()
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class InteractionTypeGroup(
-        var interactionType: List<InteractionType>? = null
+        var interactionType: List<InteractionType> = listOf()
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class InteractionType(
-        var interactionPair: List<InteractionPair>? = null
+        var interactionPair: List<InteractionPair> = listOf()
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class InteractionPair(
-        var interactionConcept: List<InteractionConcept>? = null,
-        var description: String? = null
+        var interactionConcept: List<InteractionConcept> = listOf(),
+        var description: String = ""
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
