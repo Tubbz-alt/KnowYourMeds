@@ -40,7 +40,7 @@ public class TtyFragment extends Fragment implements AdapterView.OnItemClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tty, container, false);
-        TextView tabName = (TextView) view.findViewById(R.id.tab_name);
+        TextView tabName = (TextView) view.findViewById(R.id.tabName);
         tabName.setText(getArguments().getString(KEY_TAB_NAME));
         mList = getArguments().getStringArrayList(KEY_LIST);
         assert mList != null;

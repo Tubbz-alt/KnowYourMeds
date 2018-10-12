@@ -39,13 +39,13 @@ public class PropertiesFragment extends Fragment implements AdapterView.OnItemCl
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_properties, container, false);
         Medicine med = ((MedDetailActivity) getActivity()).getMedicine();
-        TextView prescText = (TextView) view.findViewById(R.id.presc_text);
+        TextView prescText = (TextView) view.findViewById(R.id.prescribableText);
         if (med.isPrescribable()) {
             prescText.setText(R.string.property_prescribable_yes);
         } else {
             prescText.setText(R.string.property_prescribable_no);
         }
-        TextView inText = (TextView) view.findViewById(R.id.in_text);
+        TextView inText = (TextView) view.findViewById(R.id.ttyText);
         inText.setText(Utilities.getTtyString(getContext(), med.getTty()));
         ArrayList<String> ingredients = med.getIngredients();
         if (ingredients != null && !ingredients.isEmpty()) {

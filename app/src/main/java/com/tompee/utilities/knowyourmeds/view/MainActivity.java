@@ -10,9 +10,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,10 +21,9 @@ import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.Utilities;
 import com.tompee.utilities.knowyourmeds.view.adapter.MainViewPagerAdapter;
 import com.tompee.utilities.knowyourmeds.view.base.BaseActivity;
-import com.tompee.utilities.knowyourmeds.view.dialog.DisclaimerDialog;
 import com.tompee.utilities.knowyourmeds.view.fragment.SearchFragment;
 
-public class MainActivity extends BaseActivity implements DisclaimerDialog.DisclaimerDialogListener {
+public class MainActivity extends BaseActivity {
     public static final String SHARED_PREF = "knowyourmedspref";
     public static final String TAG_DISCLAIMER = "disclaimer";
     private static final String LAUNCH_COUNT = "launch_count";
@@ -41,7 +37,7 @@ public class MainActivity extends BaseActivity implements DisclaimerDialog.Discl
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setToolbar(R.id.toolbar, false);
+        setToolbar(R.id.toolbarInclude, false);
         TextView title = (TextView) findViewById(R.id.toolbar_text);
         title.setText(R.string.app_name);
 
@@ -77,9 +73,9 @@ public class MainActivity extends BaseActivity implements DisclaimerDialog.Discl
         transaction.replace(R.id.container, SearchFragment.newInstance());
         transaction.commit();
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(new MainViewPagerAdapter(this, getSupportFragmentManager()));
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_main);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
     }
 
@@ -112,55 +108,20 @@ public class MainActivity extends BaseActivity implements DisclaimerDialog.Discl
         return mInterstitialAd;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()) {
-            case R.id.menu_settings:
-                intent = new Intent(this, SettingsActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                return true;
-            case R.id.menu_about:
-                intent = new Intent(this, HelpActivity.class);
-                intent.putExtra(HelpActivity.TAG_MODE, HelpActivity.ABOUT);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                return true;
-            case R.id.menu_license:
-                intent = new Intent(this, HelpActivity.class);
-                intent.putExtra(HelpActivity.TAG_MODE, HelpActivity.LICENSE);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                return true;
-            case R.id.menu_disclaimer:
-                showDisclaimer(false);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void showDisclaimer(boolean firstTime) {
-        DisclaimerDialog dialog = DisclaimerDialog.newInstance(firstTime);
-        dialog.show(getSupportFragmentManager(), "disclaimer");
+//        DisclaimerDialog dialog = DisclaimerDialog.newInstance(firstTime);
+//        dialog.show(getSupportFragmentManager(), "disclaimer");
     }
 
-    @Override
-    public void onUnderstand() {
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putBoolean(TAG_DISCLAIMER, true);
-        editor.apply();
-    }
-
-    @Override
-    public void onCancelled() {
-        finish();
-    }
+//    @Override
+//    public void onUnderstand() {
+//        SharedPreferences.Editor editor = mSharedPreferences.edit();
+//        editor.putBoolean(TAG_DISCLAIMER, true);
+//        editor.apply();
+//    }
+//
+//    @Override
+//    public void onCancelled() {
+//        finish();
+//    }
 }

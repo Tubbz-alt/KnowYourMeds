@@ -23,9 +23,9 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.github.johnpersano.supertoasts.library.Style;
 import com.github.johnpersano.supertoasts.library.SuperActivityToast;
 import com.tompee.utilities.knowyourmeds.R;
-import com.tompee.utilities.knowyourmeds.controller.AnimationUtility;
 import com.tompee.utilities.knowyourmeds.controller.Utilities;
 import com.tompee.utilities.knowyourmeds.controller.task.SearchTask;
+import com.tompee.utilities.knowyourmeds.core.helper.AnimationHelper;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.StringListAdapter;
@@ -55,12 +55,12 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        mSearchView = (FloatingSearchView) view.findViewById(R.id.floating_search_view);
+        mSearchView = (FloatingSearchView) view.findViewById(R.id.searchView);
         mSearchView.setOnSearchListener(this);
-        mViewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);
+        mViewSwitcher = (ViewSwitcher) view.findViewById(R.id.viewSwitcher);
         mCheckout = (FloatingActionButton) view.findViewById(R.id.checkout);
         mCheckout.setOnClickListener(this);
-        mSearchAnimation = (AVLoadingIndicatorView) view.findViewById(R.id.search_load);
+        mSearchAnimation = (AVLoadingIndicatorView) view.findViewById(R.id.searchProgress);
         return view;
     }
 
@@ -88,7 +88,7 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
             mMedList = medList;
             TextView textView = (TextView) mViewSwitcher.findViewById(R.id.header);
             textView.setText(mMedList.get(0).getName());
-            textView = (TextView) mViewSwitcher.findViewById(R.id.rx_type);
+            textView = (TextView) mViewSwitcher.findViewById(R.id.type);
             textView.setText(mMedList.get(0).isPrescribable() ? R.string.property_prescribable_yes :
                     R.string.property_prescribable_no);
             textView = (TextView) mViewSwitcher.findViewById(R.id.tty);
@@ -96,9 +96,6 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
 
             showViewSwitcher(true);
             mCheckout.setVisibility(View.VISIBLE);
-            AnimationUtility.animateVerticalPosition(mCheckout, Utilities.
-                            convertDPtoPixel(getContext(), VERTICAL_POSITION_BOUNCE),
-                    ANIMATION_DURATION, new BounceInterpolator());
         } else {
             SuperActivityToast.create(getActivity(), new Style(), Style.TYPE_BUTTON)
                     .setProgressBarColor(Color.WHITE)
@@ -118,7 +115,7 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
             mMedList = suggestedMed;
             resetCheckoutButton();
             showViewSwitcher(false);
-            TextView suggestionText = (TextView) mViewSwitcher.findViewById(R.id.suggestion_header);
+            TextView suggestionText = (TextView) mViewSwitcher.findViewById(R.id.suggestionHeader);
             suggestionText.setText(String.format(getString(R.string.suggestions_results),
                     mSearchView.getQuery()));
             List<String> list = new ArrayList<>();
@@ -126,7 +123,7 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
                 list.add(med.getName());
             }
             StringListAdapter adapter = new StringListAdapter(getContext(), list, false, "");
-            ListView listView = (ListView) mViewSwitcher.findViewById(R.id.suggestion_list);
+            ListView listView = (ListView) mViewSwitcher.findViewById(R.id.suggestionList);
             listView.setOnItemClickListener(this);
             listView.setAdapter(adapter);
         } else {
@@ -178,8 +175,6 @@ public class SearchFragment extends Fragment implements FloatingSearchView.OnSea
             mCheckout.setVisibility(View.INVISIBLE);
         }
         if (mCheckout != null) {
-            AnimationUtility.animateVerticalPosition(mCheckout, -Utilities.
-                    convertDPtoPixel(getContext(), VERTICAL_POSITION_BOUNCE), 0);
         }
     }
 

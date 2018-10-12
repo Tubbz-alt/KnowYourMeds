@@ -17,8 +17,11 @@
         android:title="@string/menu_about"
         app:showAsAction="never" />
     <item
+        android:id="@+id/menu_policy"
+        android:title="@string/menu_policy"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/menu_license"
         android:title="@string/menu_license"
         app:showAsAction="never" />
-
 </menu>

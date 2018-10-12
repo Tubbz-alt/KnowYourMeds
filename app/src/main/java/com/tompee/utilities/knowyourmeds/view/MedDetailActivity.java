@@ -62,7 +62,7 @@ public class MedDetailActivity extends BaseActivity implements GetMedDetailTask.
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_med_detail);
-        setToolbar(R.id.toolbar, true);
+        setToolbar(R.id.toolbarInclude, true);
 
         Intent intent = getIntent();
         String name = intent.getStringExtra(TAG_NAME);

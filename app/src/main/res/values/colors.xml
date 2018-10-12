@@ -10,6 +10,7 @@
     <color name="launcher_color">#3F51B5</color>
 
     <color name="light_text">#FFFFFF</color>
+    <color name="divider">#80FFFFFF</color>
     <color name="light_text_disable">#B2FFFFFF</color>
 
     <color name="dark_text">#000000</color>

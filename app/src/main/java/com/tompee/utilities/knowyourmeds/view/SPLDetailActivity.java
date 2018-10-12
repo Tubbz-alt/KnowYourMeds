@@ -38,7 +38,7 @@ public class SPLDetailActivity extends BaseActivity implements SwipeRefreshLayou
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spl_detail);
-        setToolbar(R.id.toolbar, true);
+        setToolbar(R.id.toolbarInclude, true);
 
         ImageView imageView = (ImageView) findViewById(R.id.background);
         imageView.setImageDrawable(Utilities.getDrawableFromAsset(this, "search_bg.jpg"));

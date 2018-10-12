@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.model.ListSwipeHolder;
-import com.tompee.utilities.knowyourmeds.view.custom.SwipeListItemView;
+import com.tompee.utilities.knowyourmeds.feature.search.persist.SwipeListItemView;
 import com.tompee.utilities.knowyourmeds.view.custom.TextDrawable;
 
 import java.util.List;
