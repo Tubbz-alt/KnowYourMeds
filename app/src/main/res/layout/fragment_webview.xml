@@ -23,7 +23,7 @@
             android:layout_height="match_parent">
 
             <WebView
-                android:id="@+id/webview"
+                android:id="@+id/webView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/activity_vertical_margin" />
@@ -39,7 +39,7 @@
             android:indeterminate="false"
             android:maxHeight="@dimen/progressbar_height"
             android:minHeight="@dimen/progressbar_height"
-            android:progressDrawable="@drawable/layerlist_progress" />
+            android:progressDrawable="@drawable/layer_list_progress" />
 
     </FrameLayout>
 </RelativeLayout>

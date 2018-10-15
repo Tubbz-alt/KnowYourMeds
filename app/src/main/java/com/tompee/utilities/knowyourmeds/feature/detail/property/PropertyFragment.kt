@@ -1,5 +1,6 @@
 package com.tompee.utilities.knowyourmeds.feature.detail.property
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
@@ -8,6 +9,8 @@ import android.view.View
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseFragment
 import com.tompee.utilities.knowyourmeds.feature.detail.DetailActivity
+import com.tompee.utilities.knowyourmeds.feature.spl.MarketDrugActivity
+import com.tompee.utilities.knowyourmeds.model.MarketDrug
 import com.tompee.utilities.knowyourmeds.model.Type
 import kotlinx.android.synthetic.main.fragment_properties.*
 import javax.inject.Inject
@@ -82,5 +85,14 @@ class PropertyFragment : BaseFragment(), PropertyView {
             spls.visibility = View.GONE
         }
     }
+
+    override fun moveToMarketDrugActivity(marketDrug: MarketDrug) {
+        val intent = Intent(context, MarketDrugActivity::class.java)
+        intent.putExtra(MarketDrugActivity.TAG_SET_ID, marketDrug.setId)
+        intent.putExtra(MarketDrugActivity.TAG_NAME, marketDrug.name)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
+    }
+
     //endregion
 }

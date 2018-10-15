@@ -63,7 +63,7 @@ public class WebViewFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 R.color.colorPrimary));
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progressbar);
-        mWebview = (WebView) view.findViewById(R.id.webview);
+        mWebview = (WebView) view.findViewById(R.id.webView);
         mWebview.setWebViewClient(new GenericWebClient());
         mWebview.setWebChromeClient(new GenericWebChromeClient());
         mWebview.clearCache(true);

@@ -8,7 +8,12 @@ import android.widget.TextView
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.model.MarketDrug
 
-class MarketDrugAdapter(private val list: List<MarketDrug>) : RecyclerView.Adapter<MarketDrugAdapter.Holder>() {
+class MarketDrugAdapter(private val list: List<MarketDrug>,
+                        private val listener: ItemClickListener) : RecyclerView.Adapter<MarketDrugAdapter.Holder>() {
+
+    interface ItemClickListener {
+        fun onItemClick(marketDrug: MarketDrug)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater.from(parent.context).inflate(R.layout.list_market_drug, parent, false))
@@ -17,7 +22,7 @@ class MarketDrugAdapter(private val list: List<MarketDrug>) : RecyclerView.Adapt
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(list[position], listener)
     }
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
@@ -25,10 +30,14 @@ class MarketDrugAdapter(private val list: List<MarketDrug>) : RecyclerView.Adapt
         private val setId = view.findViewById<TextView>(R.id.setId)
         private val date = view.findViewById<TextView>(R.id.date)
 
-        fun bind(drug: MarketDrug) {
+        fun bind(drug: MarketDrug, listener: ItemClickListener) {
             name.text = drug.name
             setId.text = drug.setId
             date.text = drug.publishedDate
+
+            itemView.setOnClickListener {
+                listener.onItemClick(drug)
+            }
         }
     }
 }

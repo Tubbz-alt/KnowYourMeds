@@ -16,7 +16,6 @@ import com.tompee.utilities.knowyourmeds.R;
 import com.tompee.utilities.knowyourmeds.controller.Utilities;
 import com.tompee.utilities.knowyourmeds.model.Medicine;
 import com.tompee.utilities.knowyourmeds.view.MedDetailActivity;
-import com.tompee.utilities.knowyourmeds.view.SPLDetailActivity;
 import com.tompee.utilities.knowyourmeds.view.adapter.StringListAdapter;
 
 import java.util.ArrayList;
@@ -95,12 +94,12 @@ public class PropertiesFragment extends Fragment implements AdapterView.OnItemCl
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (mSplMap != null) {
-            Intent intent = new Intent(getContext(), SPLDetailActivity.class);
-            String setId = new ArrayList<>(mSplMap.keySet()).get(i);
-            intent.putExtra(SPLDetailActivity.NAME, mSplMap.get(setId));
-            intent.putExtra(SPLDetailActivity.URL, DAILY_MED_BASE_URL + setId);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+//            Intent intent = new Intent(getContext(), SPLDetailActivity.class);
+//            String setId = new ArrayList<>(mSplMap.keySet()).get(i);
+//            intent.putExtra(SPLDetailActivity.NAME, mSplMap.get(setId));
+//            intent.putExtra(SPLDetailActivity.URL, DAILY_MED_BASE_URL + setId);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
         }
     }
 }
