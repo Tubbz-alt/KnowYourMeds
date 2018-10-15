@@ -2,6 +2,7 @@ package com.tompee.utilities.knowyourmeds.di.module
 
 import android.content.Context
 import com.tompee.utilities.knowyourmeds.di.scope.DetailScope
+import com.tompee.utilities.knowyourmeds.feature.detail.page.PageFragment
 import com.tompee.utilities.knowyourmeds.feature.detail.property.PropertyFragment
 import com.tompee.utilities.knowyourmeds.feature.detail.type.TypeFragment
 import com.tompee.utilities.knowyourmeds.interactor.DetailInteractor
@@ -71,5 +72,9 @@ class DetailModule {
     @Named("scdg")
     fun provideClinicalDoseFormGroupFragment(context: Context): TypeFragment =
             TypeFragment.newInstance(ClinicalDoseFormGroup.name(context), ClinicalDoseFormGroup.tag)
+
+    @DetailScope
+    @Provides
+    fun providePageFragment() : PageFragment = PageFragment.getInstance()
 
 }

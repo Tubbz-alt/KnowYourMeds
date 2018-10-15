@@ -1,6 +1,7 @@
 package com.tompee.utilities.knowyourmeds.feature.detail
 
 import com.tompee.utilities.knowyourmeds.base.BasePresenter
+import com.tompee.utilities.knowyourmeds.feature.detail.page.PageFragment
 import com.tompee.utilities.knowyourmeds.feature.detail.property.PropertyFragment
 import com.tompee.utilities.knowyourmeds.feature.detail.type.TypeFragment
 import com.tompee.utilities.knowyourmeds.interactor.DetailInteractor
@@ -11,6 +12,7 @@ import com.tompee.utilities.knowyourmeds.model.BrandedDrugPack
 import com.tompee.utilities.knowyourmeds.model.ClinicalDoseFormGroup
 import com.tompee.utilities.knowyourmeds.model.ClinicalDrugComponent
 import com.tompee.utilities.knowyourmeds.model.ClinicalDrugPack
+import com.tompee.utilities.knowyourmeds.model.Page
 import com.tompee.utilities.knowyourmeds.model.Property
 import com.tompee.utilities.knowyourmeds.model.SchedulerPool
 import io.reactivex.Single
@@ -24,7 +26,8 @@ class DetailPresenter(detailInteractor: DetailInteractor,
                       private val brandedDoseFormGroupFragment: TypeFragment,
                       private val clinicalDrugComponentFragment: TypeFragment,
                       private val clinicalDrugPackFragment: TypeFragment,
-                      private val clinicalDoseFormGroupFragment: TypeFragment) :
+                      private val clinicalDoseFormGroupFragment: TypeFragment,
+                      private val pageFragment: PageFragment) :
         BasePresenter<DetailView, DetailInteractor>(detailInteractor, schedulerPool) {
 
     override fun onAttachView() {
@@ -69,6 +72,7 @@ class DetailPresenter(detailInteractor: DetailInteractor,
                         ClinicalDrugComponent -> clinicalDrugComponentFragment
                         ClinicalDrugPack -> clinicalDrugPackFragment
                         ClinicalDoseFormGroup -> clinicalDoseFormGroupFragment
+                        Page -> pageFragment
                         else -> propertyFragment
                     })
                 }

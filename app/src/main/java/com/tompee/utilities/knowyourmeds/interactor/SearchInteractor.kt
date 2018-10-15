@@ -33,5 +33,4 @@ class SearchInteractor(private val preferences: Preferences,
                             .onErrorResumeNext(Single.just(listOf()))
                             .doOnSuccess { medicineContainer.medicine = null }
             )
-
 }

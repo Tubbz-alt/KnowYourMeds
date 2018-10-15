@@ -17,4 +17,7 @@ class DetailInteractor(private val medicineRepo: MedicineRepo,
     fun getStockMedicine(): Single<Medicine2> {
         return Single.just(medicineContainer.medicine)
     }
+
+    fun searchMedicine(name: String): Single<Medicine2> = medicineRepo.searchMedicine(name)
+            .doOnSuccess { medicineContainer.medicine = it }
 }

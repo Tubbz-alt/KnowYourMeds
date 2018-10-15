@@ -7,7 +7,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tompee.utilities.knowyourmeds.R
 
-class ListAdapter(private val list: List<String>) : RecyclerView.Adapter<ListAdapter.Holder>() {
+class ListAdapter(private val list: List<String>,
+                  private val listener: ItemClickListener) : RecyclerView.Adapter<ListAdapter.Holder>() {
+
+    interface ItemClickListener {
+        fun onItemClick(item: String)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater.from(parent.context).inflate(R.layout.list_text, parent, false))
     }
@@ -15,14 +21,17 @@ class ListAdapter(private val list: List<String>) : RecyclerView.Adapter<ListAda
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(list[position], listener)
     }
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         private val listText = view.findViewById<TextView>(R.id.listText)
 
-        fun bind(string: String) {
+        fun bind(string: String, listener: ItemClickListener) {
             listText.text = string
+            itemView.setOnClickListener {
+                listener.onItemClick(string)
+            }
         }
     }
 }

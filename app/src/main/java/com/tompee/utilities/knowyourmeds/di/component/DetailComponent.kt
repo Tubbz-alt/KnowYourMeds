@@ -5,6 +5,7 @@ import com.tompee.utilities.knowyourmeds.di.module.DetailPresenterModule
 import com.tompee.utilities.knowyourmeds.di.scope.DetailScope
 import com.tompee.utilities.knowyourmeds.feature.detail.DetailActivity
 import com.tompee.utilities.knowyourmeds.feature.detail.menu.MenuDialog
+import com.tompee.utilities.knowyourmeds.feature.detail.page.PageFragment
 import com.tompee.utilities.knowyourmeds.feature.detail.property.PropertyFragment
 import com.tompee.utilities.knowyourmeds.feature.detail.type.TypeFragment
 import dagger.Component
@@ -17,4 +18,5 @@ interface DetailComponent {
     fun inject(propertyFragment: PropertyFragment)
     fun inject(menuDialog: MenuDialog)
     fun inject(typeFragment: TypeFragment)
+    fun inject(pageFragment: PageFragment)
 }

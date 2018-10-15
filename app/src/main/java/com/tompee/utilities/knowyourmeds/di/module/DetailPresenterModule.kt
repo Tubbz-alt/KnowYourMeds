@@ -3,6 +3,8 @@ package com.tompee.utilities.knowyourmeds.di.module
 import com.tompee.utilities.knowyourmeds.di.scope.DetailScope
 import com.tompee.utilities.knowyourmeds.feature.detail.DetailPresenter
 import com.tompee.utilities.knowyourmeds.feature.detail.menu.MenuPresenter
+import com.tompee.utilities.knowyourmeds.feature.detail.page.PageFragment
+import com.tompee.utilities.knowyourmeds.feature.detail.page.PagePresenter
 import com.tompee.utilities.knowyourmeds.feature.detail.property.PropertyFragment
 import com.tompee.utilities.knowyourmeds.feature.detail.property.PropertyPresenter
 import com.tompee.utilities.knowyourmeds.feature.detail.type.TypeFragment
@@ -26,7 +28,8 @@ class DetailPresenterModule {
                                @Named("sbdg") brandedDoseFormGroupFragment: TypeFragment,
                                @Named("scdc") clinicalDrugComponentFragment: TypeFragment,
                                @Named("scd") clinicalDrugPackFragment: TypeFragment,
-                               @Named("scdg") clinicalDoseFormGroupFragment: TypeFragment): DetailPresenter =
+                               @Named("scdg") clinicalDoseFormGroupFragment: TypeFragment,
+                               pageFragment: PageFragment): DetailPresenter =
             DetailPresenter(detailInteractor, schedulerPool,
                     propertyFragment,
                     brandFragment,
@@ -35,7 +38,8 @@ class DetailPresenterModule {
                     brandedDoseFormGroupFragment,
                     clinicalDrugComponentFragment,
                     clinicalDrugPackFragment,
-                    clinicalDoseFormGroupFragment)
+                    clinicalDoseFormGroupFragment,
+                    pageFragment)
 
     @DetailScope
     @Provides
@@ -54,4 +58,10 @@ class DetailPresenterModule {
     fun provideTypePresenter(detailInteractor: DetailInteractor,
                              schedulerPool: SchedulerPool): TypePresenter =
             TypePresenter(detailInteractor, schedulerPool)
+
+    @DetailScope
+    @Provides
+    fun providePagePresenter(detailInteractor: DetailInteractor,
+                             schedulerPool: SchedulerPool): PagePresenter =
+            PagePresenter(detailInteractor, schedulerPool)
 }

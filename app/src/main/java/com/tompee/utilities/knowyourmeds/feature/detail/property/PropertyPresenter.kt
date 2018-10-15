@@ -9,9 +9,14 @@ class PropertyPresenter(detailInteractor: DetailInteractor,
                         schedulerPool: SchedulerPool) :
         BasePresenter<PropertyView, DetailInteractor>(detailInteractor, schedulerPool) {
 
-    private val listener = object : MarketDrugAdapter.ItemClickListener {
+    private val marketListener = object : MarketDrugAdapter.ItemClickListener {
         override fun onItemClick(marketDrug: MarketDrug) {
             view.moveToMarketDrugActivity(marketDrug)
+        }
+    }
+
+    private val ingredientListener = object : ListAdapter.ItemClickListener {
+        override fun onItemClick(item: String) {
         }
     }
 
@@ -20,8 +25,8 @@ class PropertyPresenter(detailInteractor: DetailInteractor,
                 .observeOn(scheduler.main)
                 .doOnSuccess { view.setIsPrescribable(it.isPrescribable) }
                 .doOnSuccess { view.setType(it.tty!!) }
-                .doOnSuccess { view.setIngredientAdapter(if (it.ingredients.isNotEmpty()) ListAdapter(it.ingredients) else null) }
-                .doOnSuccess { view.setSplAdapter(if (it.ingredients.isNotEmpty()) MarketDrugAdapter(it.marketDrugList, listener) else null) }
+                .doOnSuccess { view.setIngredientAdapter(if (it.ingredients.isNotEmpty()) ListAdapter(it.ingredients, ingredientListener) else null) }
+                .doOnSuccess { view.setSplAdapter(if (it.ingredients.isNotEmpty()) MarketDrugAdapter(it.marketDrugList, marketListener) else null) }
                 .subscribeOn(scheduler.computation)
                 .subscribe()
     }
