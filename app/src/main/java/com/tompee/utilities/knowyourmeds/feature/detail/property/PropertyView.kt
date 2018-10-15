@@ -7,5 +7,5 @@ interface PropertyView : BaseView {
     fun setIsPrescribable(isPrescribable: Boolean)
     fun setType(type: Type)
     fun setIngredientAdapter(adapter: ListAdapter?)
-    fun setSplAdapter(adapter: ListAdapter?)
+    fun setSplAdapter(adapter: MarketDrugAdapter?)
 }

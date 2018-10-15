@@ -66,6 +66,11 @@
     <string name="tab_pin">Precise Ingredient</string>
     <string name="tab_spl">Structured Product Label</string>
 
+    <!-- Labels -->
+    <string name="label_set_id">Set ID: </string>
+    <string name="label_date">Date published: </string>
+    <string name="label_more">More information…</string>
+
     <!-- Properties -->
     <string name="property_prescribable_yes">Prescribable</string>
     <string name="property_prescribable_no">Not prescribable</string>

@@ -2,7 +2,10 @@ package com.tompee.utilities.knowyourmeds.di.module
 
 import android.content.Context
 import com.tompee.utilities.knowyourmeds.KnowYourMedsApplication
+import com.tompee.utilities.knowyourmeds.core.api.DailyMedApi
 import com.tompee.utilities.knowyourmeds.core.api.MedApi
+import com.tompee.utilities.knowyourmeds.core.api.MedlineApi
+import com.tompee.utilities.knowyourmeds.core.preferences.Preferences
 import com.tompee.utilities.knowyourmeds.model.MedicineContainer
 import com.tompee.utilities.knowyourmeds.model.SchedulerPool
 import com.tompee.utilities.knowyourmeds.repo.MedicineRepo
@@ -39,5 +42,9 @@ class AppModule(private val application: KnowYourMedsApplication) {
 
     @Provides
     @Singleton
-    fun provideMedicineRepoImpl(medApi: MedApi): MedicineRepoImpl = MedicineRepoImpl(medApi)
+    fun provideMedicineRepoImpl(medApi: MedApi,
+                                medlineApi: MedlineApi,
+                                dailyMedApi: DailyMedApi,
+                                preferences: Preferences): MedicineRepoImpl =
+            MedicineRepoImpl(medApi, medlineApi, dailyMedApi, preferences)
 }

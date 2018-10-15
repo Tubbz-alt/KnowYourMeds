@@ -1,6 +1,7 @@
 package com.tompee.utilities.knowyourmeds.repo.impl
 
 import com.tompee.utilities.knowyourmeds.core.api.DailyMedApi
+import com.tompee.utilities.knowyourmeds.core.api.Data
 import com.tompee.utilities.knowyourmeds.core.api.MedApi
 import com.tompee.utilities.knowyourmeds.core.api.MedlineApi
 import com.tompee.utilities.knowyourmeds.core.preferences.Preferences
@@ -12,6 +13,7 @@ import com.tompee.utilities.knowyourmeds.model.ClinicalDoseFormGroup
 import com.tompee.utilities.knowyourmeds.model.ClinicalDrugComponent
 import com.tompee.utilities.knowyourmeds.model.ClinicalDrugPack
 import com.tompee.utilities.knowyourmeds.model.Ingredient
+import com.tompee.utilities.knowyourmeds.model.MarketDrug
 import com.tompee.utilities.knowyourmeds.model.Medicine2
 import com.tompee.utilities.knowyourmeds.model.Type
 import com.tompee.utilities.knowyourmeds.repo.MedicineRepo
@@ -85,6 +87,7 @@ class MedicineRepoImpl(private val medApi: MedApi,
                 medlineApi.getMedlineUrl(medicine.normId)
                         .doOnSuccess { medicine.url = it?.feed?.entry!![0].link[0].href }
                         .map { medicine }
+                        .onErrorResumeNext(Single.just(medicine))
             }
         }
 
@@ -99,33 +102,38 @@ class MedicineRepoImpl(private val medApi: MedApi,
                         }
                         .doOnSuccess { medicine.sources = it }
                         .map { medicine }
+                        .onErrorResumeNext(Single.just(medicine))
             }
         }
 
         fun Single<Medicine2>.getSpl(): Single<Medicine2> {
+            fun iterateData(data: List<Data>, medicine: Medicine2): Single<List<Data>> {
+                return Observable.fromIterable(data)
+                        .doOnNext {
+                            val marketDrug = MarketDrug(it.title, it.setid, it.spl_version, it.published_date)
+                            medicine.marketDrugList.add(marketDrug)
+                        }
+                        .toList()
+            }
+
             return if (preferences.isSplEnabled()) {
                 this.flatMap { medicine ->
                     dailyMedApi.getSpl(medicine.normId, 1)
+                            .doOnSuccess { medicine.marketDrugList = mutableListOf() }
                             .flatMap { splModel ->
-                                Observable.fromIterable(splModel.data)
-                                        .doOnNext { medicine.marketDrugList[it.setid] = it.title }
-                                        .toList()
+                                iterateData(splModel.data, medicine)
                                         .map { splModel.metadata!! }
                             }
                             .flatMap { metadata ->
                                 Observable.range(metadata.current_page + 1, metadata.total_pages - 1)
                                         .doOnNext { page ->
                                             dailyMedApi.getSpl(medicine.normId, page)
-                                                    .flatMap { splModel ->
-                                                        Observable.fromIterable(splModel.data)
-                                                                .doOnNext { medicine.marketDrugList[it.setid] = it.title }
-                                                                .toList()
-                                                                .map { splModel.metadata!! }
-                                                    }
+                                                    .flatMap { splModel -> iterateData(splModel.data, medicine) }
                                         }
                                         .toList()
                             }
                             .map { medicine }
+                            .onErrorResumeNext(Single.just(medicine))
                 }
             } else {
                 this
@@ -153,6 +161,7 @@ class MedicineRepoImpl(private val medApi: MedApi,
                                     .toList()
                         }
                         .map { medicine }
+                        .onErrorResumeNext(Single.just(medicine))
             }
         }
 

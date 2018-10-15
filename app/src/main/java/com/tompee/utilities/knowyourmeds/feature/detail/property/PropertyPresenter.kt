@@ -14,7 +14,7 @@ class PropertyPresenter(detailInteractor: DetailInteractor,
                 .doOnSuccess { view.setIsPrescribable(it.isPrescribable) }
                 .doOnSuccess { view.setType(it.tty!!) }
                 .doOnSuccess { view.setIngredientAdapter(if (it.ingredients.isNotEmpty()) ListAdapter(it.ingredients) else null) }
-                .doOnSuccess { view.setSplAdapter(if (it.ingredients.isNotEmpty()) ListAdapter(it.marketDrugList.values.toList()) else null) }
+                .doOnSuccess { view.setSplAdapter(if (it.ingredients.isNotEmpty()) MarketDrugAdapter(it.marketDrugList) else null) }
                 .subscribeOn(scheduler.computation)
                 .subscribe()
     }

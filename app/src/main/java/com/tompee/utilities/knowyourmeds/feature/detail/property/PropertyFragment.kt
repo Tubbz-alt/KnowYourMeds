@@ -69,10 +69,11 @@ class PropertyFragment : BaseFragment(), PropertyView {
         }
     }
 
-    override fun setSplAdapter(adapter: ListAdapter?) {
+    override fun setSplAdapter(adapter: MarketDrugAdapter?) {
         if (adapter != null) {
             splList.setHasFixedSize(true)
             splList.layoutManager = LinearLayoutManager(context)
+            splCount.text = adapter.itemCount.toString()
             val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
             divider.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.list_divider)!!)
             splList.addItemDecoration(divider)

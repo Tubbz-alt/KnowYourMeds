@@ -86,7 +86,8 @@ data class SplModel(
 data class Data(
         var setid: String = "",
         var title: String = "",
-        var published_date: String
+        var published_date: String = "",
+        var spl_version: Int = 0
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
