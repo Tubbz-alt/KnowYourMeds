@@ -1,18 +1,11 @@
 package com.tompee.utilities.knowyourmeds.base
 
-import android.os.Bundle
-import android.support.annotation.LayoutRes
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
+import dagger.android.HasFragmentInjector
+import dagger.android.support.DaggerAppCompatActivity
 
-abstract class BaseActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(layoutId())
-        setupComponent()
-    }
+abstract class BaseActivity : DaggerAppCompatActivity(), HasFragmentInjector {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> {
@@ -27,9 +20,4 @@ abstract class BaseActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(homeButtonEnable)
     }
-
-    abstract fun setupComponent()
-
-    @LayoutRes
-    abstract fun layoutId(): Int
 }

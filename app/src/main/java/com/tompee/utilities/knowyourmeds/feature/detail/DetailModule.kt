@@ -1,10 +1,16 @@
-package com.tompee.utilities.knowyourmeds.di.module
+package com.tompee.utilities.knowyourmeds.feature.detail
 
 import android.content.Context
 import com.tompee.utilities.knowyourmeds.di.scope.DetailScope
+import com.tompee.utilities.knowyourmeds.feature.detail.menu.MenuDialog
+import com.tompee.utilities.knowyourmeds.feature.detail.menu.MenuDialogListener
+import com.tompee.utilities.knowyourmeds.feature.detail.menu.MenuPresenter
 import com.tompee.utilities.knowyourmeds.feature.detail.page.PageFragment
+import com.tompee.utilities.knowyourmeds.feature.detail.page.PageModule
 import com.tompee.utilities.knowyourmeds.feature.detail.property.PropertyFragment
+import com.tompee.utilities.knowyourmeds.feature.detail.property.PropertyModule
 import com.tompee.utilities.knowyourmeds.feature.detail.type.TypeFragment
+import com.tompee.utilities.knowyourmeds.feature.detail.type.TypeModule
 import com.tompee.utilities.knowyourmeds.interactor.DetailInteractor
 import com.tompee.utilities.knowyourmeds.model.Brand
 import com.tompee.utilities.knowyourmeds.model.BrandedDoseFormGroup
@@ -14,13 +20,27 @@ import com.tompee.utilities.knowyourmeds.model.ClinicalDoseFormGroup
 import com.tompee.utilities.knowyourmeds.model.ClinicalDrugComponent
 import com.tompee.utilities.knowyourmeds.model.ClinicalDrugPack
 import com.tompee.utilities.knowyourmeds.model.MedicineContainer
+import com.tompee.utilities.knowyourmeds.model.SchedulerPool
 import com.tompee.utilities.knowyourmeds.repo.MedicineRepo
 import dagger.Module
 import dagger.Provides
+import dagger.android.ContributesAndroidInjector
 import javax.inject.Named
 
-@Module
+@Module(includes = [DetailModule.Bindings::class])
 class DetailModule {
+    @Module
+    interface Bindings {
+        @ContributesAndroidInjector(modules = [PropertyModule::class])
+        fun bindPropertyFragment(): PropertyFragment
+
+        @ContributesAndroidInjector(modules = [TypeModule::class])
+        fun bindTypeFragment(): TypeFragment
+
+        @ContributesAndroidInjector(modules = [PageModule::class])
+        fun bindPageFragment(): PageFragment
+    }
+
     @DetailScope
     @Provides
     fun provideDetailInteractor(medicineRepo: MedicineRepo,
@@ -75,6 +95,41 @@ class DetailModule {
 
     @DetailScope
     @Provides
-    fun providePageFragment() : PageFragment = PageFragment.getInstance()
+    fun providePageFragment(): PageFragment = PageFragment.getInstance()
 
+    @DetailScope
+    @Provides
+    fun provideDetailPresenter(detailInteractor: DetailInteractor,
+                               schedulerPool: SchedulerPool,
+                               propertyFragment: PropertyFragment,
+                               @Named("brand") brandFragment: TypeFragment,
+                               @Named("sbdc") brandedDrugComponentFragment: TypeFragment,
+                               @Named("sbd") brandedDrugPackFragment: TypeFragment,
+                               @Named("sbdg") brandedDoseFormGroupFragment: TypeFragment,
+                               @Named("scdc") clinicalDrugComponentFragment: TypeFragment,
+                               @Named("scd") clinicalDrugPackFragment: TypeFragment,
+                               @Named("scdg") clinicalDoseFormGroupFragment: TypeFragment,
+                               pageFragment: PageFragment): DetailPresenter =
+            DetailPresenter(detailInteractor, schedulerPool,
+                    propertyFragment,
+                    brandFragment,
+                    brandedDrugComponentFragment,
+                    brandedDrugPackFragment,
+                    brandedDoseFormGroupFragment,
+                    clinicalDrugComponentFragment,
+                    clinicalDrugPackFragment,
+                    clinicalDoseFormGroupFragment,
+                    pageFragment)
+
+    @DetailScope
+    @Provides
+    fun provideMenuPresenter(detailInteractor: DetailInteractor,
+                             schedulerPool: SchedulerPool): MenuPresenter =
+            MenuPresenter(detailInteractor, schedulerPool)
+
+    @DetailScope
+    @Provides
+    fun provideMenuDialog(activity: DetailActivity,
+                          menuPresenter: MenuPresenter): MenuDialog =
+            MenuDialog(activity, activity as MenuDialogListener, menuPresenter)
 }

@@ -44,10 +44,4 @@ class DisclaimerDialog : BaseDialogFragment() {
         super.onResume()
         dialog.setCancelable(false)
     }
-
-    //region BaseDialogFragment
-
-    override fun setupComponent() {
-    }
-    //endregion
 }

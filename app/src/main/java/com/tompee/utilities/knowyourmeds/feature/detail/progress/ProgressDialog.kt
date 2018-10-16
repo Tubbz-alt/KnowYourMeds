@@ -1,24 +1,21 @@
 package com.tompee.utilities.knowyourmeds.feature.detail.progress
 
-import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.TextView
+import android.os.Bundle
 import com.tompee.utilities.knowyourmeds.R
+import com.tompee.utilities.knowyourmeds.base.BaseDialog
+import kotlinx.android.synthetic.main.dialog_progress.*
 
-class ProgressDialog(context: Context, message: String) :
-        Dialog(context, android.R.style.Theme_Wallpaper_NoTitleBar) {
+class ProgressDialog(context: Context,
+                     private val message: String) :
+        BaseDialog(context) {
 
-    init {
-        @SuppressLint("InflateParams")
-        val progressDialog = LayoutInflater.from(context).inflate(R.layout.dialog_progress, null)
-        val dialogText = progressDialog.findViewById<View>(R.id.progress_dialog_text) as TextView
-        dialogText.text = message
-
-        window!!.setBackgroundDrawableResource(R.color.colorPrimaryAlpha)
-        setContentView(progressDialog)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        window?.setBackgroundDrawableResource(R.color.colorPrimaryAlpha)
+        super.onCreate(savedInstanceState)
         setCancelable(false)
+        progress_dialog_text.text = message
     }
+
+    override fun layoutId(): Int = R.layout.dialog_progress
 }

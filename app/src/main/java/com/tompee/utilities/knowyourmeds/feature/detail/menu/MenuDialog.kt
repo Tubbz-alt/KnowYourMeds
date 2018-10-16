@@ -2,7 +2,6 @@ package com.tompee.utilities.knowyourmeds.feature.detail.menu
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -16,18 +15,13 @@ import com.jakewharton.rxbinding2.view.RxView
 import com.nineoldandroids.animation.Animator
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseDialog
-import com.tompee.utilities.knowyourmeds.di.component.DetailComponent
 import com.tompee.utilities.knowyourmeds.model.Type
 import kotlinx.android.synthetic.main.dialog_menu.*
-import javax.inject.Inject
 
 class MenuDialog(context: Context,
-                 private val component: DetailComponent,
-                 private val listener: MenuDialogListener) :
-        BaseDialog(context), MenuView, DialogInterface.OnShowListener, View.OnClickListener, Animator.AnimatorListener {
-
-    @Inject
-    lateinit var menuPresenter: MenuPresenter
+                 private val listener: MenuDialogListener,
+                 private val menuPresenter: MenuPresenter) :
+        BaseDialog(context), MenuView, View.OnClickListener, Animator.AnimatorListener {
 
     private val menuList = mutableListOf<View>()
 
@@ -37,7 +31,11 @@ class MenuDialog(context: Context,
         window?.setBackgroundDrawableResource(R.color.colorPrimaryDarkAlpha)
         super.onCreate(savedInstanceState)
         setCancelable(false)
-        setOnShowListener(this)
+        setOnShowListener {
+            animateViewEntry()
+            YoYo.with(Techniques.RotateInDownLeft).playOn(exit)
+        }
+        setOnDismissListener { resetAnimation() }
         RxView.clicks(exit).subscribe { dismiss() }
         menuPresenter.attachView(this)
     }
@@ -45,21 +43,6 @@ class MenuDialog(context: Context,
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         menuPresenter.detachView()
-    }
-    //endregion
-
-    //region BaseDialog
-    override fun setupComponent() {
-        component.inject(this)
-    }
-
-    override fun layoutId(): Int = R.layout.dialog_menu
-    //endregion
-
-    //region OnShowListener
-    override fun onShow(dialog: DialogInterface?) {
-        animateViewEntry()
-        YoYo.with(Techniques.RotateInDownLeft).playOn(exit)
     }
 
     private fun animateViewEntry() {
@@ -72,7 +55,19 @@ class MenuDialog(context: Context,
         }
     }
 
+    private fun resetAnimation() {
+        for (view in menuList) {
+            if (view.visibility == View.VISIBLE) {
+                view.visibility = View.INVISIBLE
+            }
+        }
+    }
     //endregion
+
+    //region BaseDialog
+    override fun layoutId(): Int = R.layout.dialog_menu
+    //endregion
+
 
     //region AnimatorListener
     override fun onAnimationRepeat(animation: Animator?) {
@@ -97,6 +92,7 @@ class MenuDialog(context: Context,
             if (menu.findViewById<View>(R.id.button) === view) {
                 listener.onMenuClicked(menu.tag as Type)
                 dismiss()
+                resetAnimation()
                 break
             }
             position++

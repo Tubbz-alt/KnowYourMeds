@@ -1,4 +1,4 @@
-package com.tompee.utilities.knowyourmeds.di.module
+package com.tompee.utilities.knowyourmeds.di
 
 import android.content.Context
 import com.tompee.utilities.knowyourmeds.Constants
@@ -20,72 +20,70 @@ import javax.inject.Singleton
 @Module
 class CoreModule {
 
+    //region api
     @Provides
     @Singleton
-    fun providePreferences(sharedPreferences: SharedPreferences): Preferences = sharedPreferences
-
-    @Provides
-    @Singleton
-    fun provideSharedPreferences(context: Context): SharedPreferences = SharedPreferences(context)
-
-    @Provides
-    @Singleton
-    fun provideApi(): MedApi {
+    fun provideHttpClient(): OkHttpClient {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
 
-        val httpClient = OkHttpClient.Builder()
+        return OkHttpClient.Builder()
                 .addInterceptor(logging)
                 .build()
-
-        val retrofit = Retrofit.Builder()
-                .addConverterFactory(JacksonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(Constants.MED_BASE_URL)
-                .client(httpClient)
-                .build()
-        return retrofit.create(MedApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideMedlineApi(): MedlineApi {
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-
-        val httpClient = OkHttpClient.Builder()
-                .addInterceptor(logging)
-                .build()
-
-        val retrofit = Retrofit.Builder()
-                .addConverterFactory(JacksonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(Constants.MEDLINE_BASE_URL)
-                .client(httpClient)
-                .build()
-        return retrofit.create(MedlineApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideDailyMedApi(): DailyMedApi {
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-
-        val httpClient = OkHttpClient.Builder()
-                .addInterceptor(logging)
-                .build()
-
+    fun provideDailyMedApi(client: OkHttpClient): DailyMedApi {
         val retrofit = Retrofit.Builder()
                 .addConverterFactory(JacksonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(Constants.DAILY_MED_BASE_URL)
-                .client(httpClient)
+                .client(client)
                 .build()
         return retrofit.create(DailyMedApi::class.java)
     }
 
     @Provides
     @Singleton
+    fun provideMedApi(client: OkHttpClient): MedApi {
+        val retrofit = Retrofit.Builder()
+                .addConverterFactory(JacksonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .baseUrl(Constants.MED_BASE_URL)
+                .client(client)
+                .build()
+        return retrofit.create(MedApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMedlineApi(client: OkHttpClient): MedlineApi {
+        val retrofit = Retrofit.Builder()
+                .addConverterFactory(JacksonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .baseUrl(Constants.MEDLINE_BASE_URL)
+                .client(client)
+                .build()
+        return retrofit.create(MedlineApi::class.java)
+    }
+
+
+    //endregion
+
+    //region asset
+    @Provides
+    @Singleton
     fun provideAssetManager(context: Context): AssetManager = AssetManager(context)
+    //endregion
+
+    //region preferences
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(context: Context): SharedPreferences = SharedPreferences(context)
+
+    @Provides
+    @Singleton
+    fun providePreferences(sharedPreferences: SharedPreferences): Preferences = sharedPreferences
+    //endregion
 }

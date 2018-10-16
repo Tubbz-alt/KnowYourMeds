@@ -30,10 +30,6 @@ class RecentFavoriteFragment : BaseFragment() {
     //endregion
 
     //region BaseFragment
-
-    override fun setupComponent() {
-    }
-
     override fun layoutId(): Int = R.layout.fragment_recent_favorite
     //endregion
 }

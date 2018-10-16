@@ -1,31 +1,32 @@
 package com.tompee.utilities.knowyourmeds
 
+import android.app.Activity
 import android.content.Context
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import com.google.android.gms.ads.MobileAds
-import com.tompee.utilities.knowyourmeds.di.component.AppComponent
-import com.tompee.utilities.knowyourmeds.di.component.DaggerAppComponent
-import com.tompee.utilities.knowyourmeds.di.module.AppModule
+import com.tompee.utilities.knowyourmeds.core.preferences.Preferences
+import com.tompee.utilities.knowyourmeds.di.DaggerAppComponent
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
+import javax.inject.Inject
 
-class KnowYourMedsApplication : MultiDexApplication() {
+class KnowYourMedsApplication : MultiDexApplication(), HasActivityInjector {
 
-    companion object {
-        operator fun get(context: Context): KnowYourMedsApplication {
-            return context.applicationContext as KnowYourMedsApplication
-        }
-    }
+    @Inject
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
 
-    lateinit var component: AppComponent
+    @Inject
+    lateinit var preferences: Preferences
 
     override fun onCreate() {
         super.onCreate()
         MobileAds.initialize(applicationContext, getString(R.string.admob_app_id))
 
-        component = DaggerAppComponent.builder()
-                .appModule(AppModule(this))
+        DaggerAppComponent.builder()
+                .application(this)
                 .build()
-        val preferences = component.preferences()
+                .inject(this)
         if (preferences.getBuildVersion() < BuildConfig.VERSION_CODE) {
             preferences.showDisclaimerNext()
         }
@@ -36,4 +37,6 @@ class KnowYourMedsApplication : MultiDexApplication() {
         super.attachBaseContext(base)
         MultiDex.install(this)
     }
+
+    override fun activityInjector() = dispatchingAndroidInjector
 }

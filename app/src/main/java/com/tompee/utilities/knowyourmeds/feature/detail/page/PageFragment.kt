@@ -1,6 +1,7 @@
 package com.tompee.utilities.knowyourmeds.feature.detail.page
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -17,7 +18,7 @@ import com.google.android.gms.ads.AdRequest
 import com.tompee.utilities.knowyourmeds.BuildConfig
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseFragment
-import com.tompee.utilities.knowyourmeds.feature.detail.DetailActivity
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_webview.*
 import javax.inject.Inject
 
@@ -59,6 +60,11 @@ class PageFragment : BaseFragment(), PageView, SwipeRefreshLayout.OnRefreshListe
         pagePresenter.attachView(this)
     }
 
+    override fun onAttach(context: Context?) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.menu_webview, menu)
@@ -80,31 +86,26 @@ class PageFragment : BaseFragment(), PageView, SwipeRefreshLayout.OnRefreshListe
     private inner class GenericWebClient : WebViewClient() {
         override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            progressbar.progress = 0
-            progressbar.visibility = View.VISIBLE
+            progressbar?.progress = 0
+            progressbar?.visibility = View.VISIBLE
         }
 
         override fun onPageFinished(view: WebView, url: String) {
             super.onPageFinished(view, url)
-            progressbar.visibility = View.INVISIBLE
-            container.isRefreshing = false
+            progressbar?.visibility = View.INVISIBLE
+            container?.isRefreshing = false
         }
     }
 
     private inner class GenericWebChromeClient : WebChromeClient() {
         override fun onProgressChanged(view: WebView, progress: Int) {
-            progressbar.progress = progress
+            progressbar?.progress = progress
         }
     }
 
     //endregion
 
     //region BaseFragment
-    override fun setupComponent() {
-        DetailActivity[activity!!].detailComponent
-                .inject(this)
-    }
-
     override fun layoutId(): Int = R.layout.fragment_webview
     //endregion
 

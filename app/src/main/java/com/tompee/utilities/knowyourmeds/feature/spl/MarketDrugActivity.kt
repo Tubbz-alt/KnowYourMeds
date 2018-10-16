@@ -15,11 +15,10 @@ import android.webkit.WebViewClient
 import com.google.android.gms.ads.AdRequest
 import com.tompee.utilities.knowyourmeds.BuildConfig
 import com.tompee.utilities.knowyourmeds.Constants.DAILY_MED_PAGE_URL
-import com.tompee.utilities.knowyourmeds.KnowYourMedsApplication
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseActivity
 import com.tompee.utilities.knowyourmeds.core.asset.AssetManager
-import com.tompee.utilities.knowyourmeds.di.component.DaggerMarketDrugComponent
+import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_spl_detail.*
 import kotlinx.android.synthetic.main.toolbar.*
 import javax.inject.Inject
@@ -38,7 +37,9 @@ class MarketDrugActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_spl_detail)
         background.setImageDrawable(assetManager.getDrawableFromAsset("search_bg.jpg"))
         setToolbar(toolbar, true)
         container.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorPrimary))
@@ -122,16 +123,5 @@ class MarketDrugActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener 
     override fun onRefresh() {
         refresh()
     }
-    //endregion
-
-    //region BaseActivity
-    override fun setupComponent() {
-        DaggerMarketDrugComponent.builder()
-                .appComponent(KnowYourMedsApplication[this].component)
-                .build()
-                .inject(this)
-    }
-
-    override fun layoutId(): Int = R.layout.activity_spl_detail
     //endregion
 }

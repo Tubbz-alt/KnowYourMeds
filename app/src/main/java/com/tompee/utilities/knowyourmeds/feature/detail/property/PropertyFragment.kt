@@ -1,5 +1,6 @@
 package com.tompee.utilities.knowyourmeds.feature.detail.property
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -8,10 +9,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseFragment
-import com.tompee.utilities.knowyourmeds.feature.detail.DetailActivity
 import com.tompee.utilities.knowyourmeds.feature.spl.MarketDrugActivity
 import com.tompee.utilities.knowyourmeds.model.MarketDrug
 import com.tompee.utilities.knowyourmeds.model.Type
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_properties.*
 import javax.inject.Inject
 
@@ -31,6 +32,11 @@ class PropertyFragment : BaseFragment(), PropertyView {
         propertyPresenter.attachView(this)
     }
 
+    override fun onAttach(context: Context?) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         propertyPresenter.detachView()
@@ -39,11 +45,6 @@ class PropertyFragment : BaseFragment(), PropertyView {
     //endregion
 
     //region BaseFragment
-    override fun setupComponent() {
-        DetailActivity[activity!!].detailComponent
-                .inject(this)
-    }
-
     override fun layoutId(): Int = R.layout.fragment_properties
     //endregion
 

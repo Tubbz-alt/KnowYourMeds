@@ -1,5 +1,6 @@
 package com.tompee.utilities.knowyourmeds.feature.detail.type
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
@@ -7,8 +8,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseFragment
-import com.tompee.utilities.knowyourmeds.feature.detail.DetailActivity
 import com.tompee.utilities.knowyourmeds.model.Type
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_tty.*
 import javax.inject.Inject
 
@@ -39,6 +40,11 @@ class TypeFragment : BaseFragment(), TypeView {
         typePresenter.attachView(this)
     }
 
+    override fun onAttach(context: Context?) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         typePresenter.detachView()
@@ -46,10 +52,6 @@ class TypeFragment : BaseFragment(), TypeView {
     //endregion
 
     //region BaseFragment
-    override fun setupComponent() {
-        DetailActivity[activity!!].detailComponent.inject(this)
-    }
-
     override fun layoutId(): Int = R.layout.fragment_tty
     //endregion
 

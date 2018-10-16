@@ -6,11 +6,10 @@ import android.support.v4.content.ContextCompat
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import com.tompee.utilities.knowyourmeds.BuildConfig
-import com.tompee.utilities.knowyourmeds.KnowYourMedsApplication
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseActivity
 import com.tompee.utilities.knowyourmeds.core.asset.AssetManager
-import com.tompee.utilities.knowyourmeds.di.component.DaggerHelpComponent
+import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_about.*
 import kotlinx.android.synthetic.main.activity_license.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -32,10 +31,12 @@ class HelpActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        val mode = intent.getIntExtra(TAG_MODE, ABOUT)
+        setContentView(if (mode == ABOUT) R.layout.activity_about else R.layout.activity_license)
         setToolbar(toolbar, true)
         toolbar_bg.setBackgroundColor(ContextCompat.getColor(this, R.color.launcher_color))
-        val mode = intent.getIntExtra(TAG_MODE, ABOUT)
         when (mode) {
             ABOUT -> {
                 toolbar_text.setText(R.string.title_about)
@@ -64,20 +65,6 @@ class HelpActivity : BaseActivity() {
                 content.movementMethod = LinkMovementMethod.getInstance()
             }
         }
-    }
-    //endregion
-
-    //region BaseActivity
-    override fun setupComponent() {
-        DaggerHelpComponent.builder()
-                .appComponent(KnowYourMedsApplication[this].component)
-                .build()
-                .inject(this)
-    }
-
-    override fun layoutId(): Int {
-        val mode = intent.getIntExtra(TAG_MODE, ABOUT)
-        return if (mode == ABOUT) R.layout.activity_about else R.layout.activity_license
     }
     //endregion
 }

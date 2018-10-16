@@ -1,6 +1,7 @@
 package com.tompee.utilities.knowyourmeds.feature.search.search
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -17,9 +18,9 @@ import com.tompee.utilities.knowyourmeds.base.BaseFragment
 import com.tompee.utilities.knowyourmeds.controller.Utilities
 import com.tompee.utilities.knowyourmeds.core.helper.AnimationHelper
 import com.tompee.utilities.knowyourmeds.feature.detail.DetailActivity
-import com.tompee.utilities.knowyourmeds.feature.search.SearchActivity
 import com.tompee.utilities.knowyourmeds.model.Medicine2
 import com.tompee.utilities.knowyourmeds.view.adapter.StringListAdapter
+import dagger.android.support.AndroidSupportInjection
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -47,6 +48,11 @@ class SearchBarFragment : BaseFragment(), SearchBarView, FloatingSearchView.OnSe
         searchBarPresenter.attachView(this)
     }
 
+    override fun onAttach(context: Context?) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         searchBarPresenter.detachView()
@@ -54,11 +60,6 @@ class SearchBarFragment : BaseFragment(), SearchBarView, FloatingSearchView.OnSe
     //endregion
 
     //region BaseFragment
-
-    override fun setupComponent() {
-        SearchActivity[activity!!].component.inject(this)
-    }
-
     override fun layoutId(): Int = R.layout.fragment_search
     //endregion
 

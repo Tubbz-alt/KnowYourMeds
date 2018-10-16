@@ -5,20 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import com.tompee.utilities.knowyourmeds.KnowYourMedsApplication
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseActivity
-import com.tompee.utilities.knowyourmeds.controller.Utilities
 import com.tompee.utilities.knowyourmeds.core.asset.AssetManager
-import com.tompee.utilities.knowyourmeds.di.component.DaggerSearchComponent
-import com.tompee.utilities.knowyourmeds.di.component.SearchComponent
-import com.tompee.utilities.knowyourmeds.di.module.SearchModule
 import com.tompee.utilities.knowyourmeds.feature.help.HelpActivity
 import com.tompee.utilities.knowyourmeds.feature.search.disclaimer.DisclaimerDialog
 import com.tompee.utilities.knowyourmeds.feature.search.disclaimer.DisclaimerDialogListener
 import com.tompee.utilities.knowyourmeds.feature.search.rater.AppRaterDialog
 import com.tompee.utilities.knowyourmeds.feature.search.search.SearchBarFragment
 import com.tompee.utilities.knowyourmeds.view.SettingsActivity
+import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
 import javax.inject.Inject
@@ -31,8 +27,6 @@ class SearchActivity : BaseActivity(), SearchView, DisclaimerDialogListener {
     @Inject
     lateinit var assetManager: AssetManager
 
-    lateinit var component: SearchComponent
-
     companion object {
         operator fun get(activity: Activity): SearchActivity {
             return activity as SearchActivity
@@ -43,7 +37,9 @@ class SearchActivity : BaseActivity(), SearchView, DisclaimerDialogListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
         setToolbar(toolbar, false)
         toolbar_text.setText(R.string.app_name)
         background.setImageDrawable(assetManager.getDrawableFromAsset("search_bg.jpg"))
@@ -103,19 +99,6 @@ class SearchActivity : BaseActivity(), SearchView, DisclaimerDialogListener {
         super.onDestroy()
         searchPresenter.detachView()
     }
-    //endregion
-
-    //region BaseActivity
-
-    override fun setupComponent() {
-        component = DaggerSearchComponent.builder()
-                .appComponent(KnowYourMedsApplication[this].component)
-                .searchModule(SearchModule(supportFragmentManager))
-                .build()
-        component.inject(this)
-    }
-
-    override fun layoutId(): Int = R.layout.activity_main
     //endregion
 
     //region SearchView
