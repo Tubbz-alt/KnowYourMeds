@@ -2,12 +2,18 @@ package com.tompee.utilities.knowyourmeds.core.helper
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.view.View
 import android.view.animation.Interpolator
 
 object AnimationHelper {
     private const val VERTICAL_POSITION_PROPERTY = "Y"
     private const val VERTICAL_TRANSLATION_PROPERTY = "translationY"
+
+    fun convertDPtoPixel(context: Context, dp: Int): Int {
+        val scale = context.resources.displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
+    }
 
     fun animateVerticalPosition(view: View, pxHeight: Float, duration: Int) {
         animateVerticalPosition(view, pxHeight, duration, null, 0, null)
@@ -48,7 +54,7 @@ object AnimationHelper {
         moveAnim.duration = duration.toLong()
         moveAnim.startDelay = delay.toLong()
         if (interpolator != null) {
-            moveAnim.setInterpolator(interpolator)
+            moveAnim.interpolator = interpolator
         }
         if (listener != null) {
             moveAnim.addListener(listener)

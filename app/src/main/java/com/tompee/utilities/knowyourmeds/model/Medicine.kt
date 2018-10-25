@@ -1,23 +1,27 @@
 package com.tompee.utilities.knowyourmeds.model
 
-import java.util.*
+import android.graphics.drawable.Drawable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
-data class Medicine2(
-        var normId: String = "",
+data class Medicine(
+        @Expose
+        @SerializedName("id")
+        var id: String = "",
+
+        @Expose
+        @SerializedName("name")
         var name: String = "",
-        var isPrescribable: Boolean = false,
-        var tty: Type? = null,
-        var date: Date? = null,
+
         var url: String = "",
-        var sources: List<String?> = listOf(),
-        var marketDrugList: MutableList<MarketDrug> = mutableListOf(),
-        var brands: List<String> = listOf(),
-        var ingredients: List<String> = listOf(),
-        var scdc: List<String> = listOf(),
-        var sbdc: List<String> = listOf(),
-        var sbdg: List<String> = listOf(),
-        var scd: List<String> = listOf(),
-        var scdg: List<String> = listOf(),
-        var sbd: List<String> = listOf(),
-        var interactions: Map<String, Map<String, String>> = mapOf()
+
+        @Expose
+        @SerializedName("prescribable")
+        var isPrescribable: Boolean = false,
+
+        var type: MedicineType = Ingredient,
+
+        var ingredientList: List<String> = listOf(),
+
+        var drawable: Drawable? = null
 )

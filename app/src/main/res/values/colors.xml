@@ -2,36 +2,16 @@
 <resources>
     <color name="colorPrimary">#112444</color>
     <color name="colorPrimaryAlpha">#50112444</color>
-    <color name="cardAlpha">#D0112444</color>
     <color name="colorPrimaryDark">#112444</color>
     <color name="colorPrimaryDarkAlpha">#E0112444</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorListBackground">#C5CAE9</color>
-    <color name="launcher_color">#3F51B5</color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorLauncher">#3F51B5</color>
+    <color name="colorDivider">#808080</color>
+    <color name="colorIcon">#66BB6A</color>
 
-    <color name="light_text">#FFFFFF</color>
-    <color name="divider">#80FFFFFF</color>
-    <color name="light_text_disable">#B2FFFFFF</color>
-
-    <color name="dark_text">#000000</color>
-    <color name="dark_text_disable">#32000000</color>
-
-    <color name="dark_secondary_text">#8D8D8D</color>
-    <color name="dark_secondary_text_disabled">#CCCCCC</color>
-
-    <color name="background">#FFFFFF</color>
-
-    <color name="list_icon">#66BB6A</color>
-
-    <color name="properties">#FFFF85</color>
-    <color name="brand">#FF9E3D</color>
-    <color name="sbdc">#7CFC00</color>
-    <color name="sbd">#B811FF</color>
-    <color name="sbdg">#778899</color>
-    <color name="scdc">#9B5900</color>
-    <color name="scd">#FF3D3D</color>
-    <color name="scdg">#C6CBEB</color>
-    <color name="info">#F6F6D9</color>
-    <color name="interaction">#85E285</color>
-    <color name="sources">#FFDEBD</color>
+    <color name="colorTextLight">#FFFFFF</color>
+    <color name="colorTextLightDisabled">#B2FFFFFF</color>
+    <color name="colorTextDark">#000000</color>
+    <color name="colorTextDarkDisable">#32000000</color>
 </resources>

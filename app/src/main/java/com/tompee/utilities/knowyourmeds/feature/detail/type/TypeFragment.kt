@@ -1,70 +1,63 @@
 package com.tompee.utilities.knowyourmeds.feature.detail.type
 
-import android.content.Context
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseFragment
-import com.tompee.utilities.knowyourmeds.model.Type
+import com.tompee.utilities.knowyourmeds.databinding.FragmentListBinding
+import com.tompee.utilities.knowyourmeds.feature.common.DividerDecorator
+import com.tompee.utilities.knowyourmeds.model.Brand
+import com.tompee.utilities.knowyourmeds.model.MedicineType
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_tty.*
 import javax.inject.Inject
 
-class TypeFragment : BaseFragment(), TypeView {
+class TypeFragment : BaseFragment<FragmentListBinding>() {
 
     @Inject
-    lateinit var typePresenter: TypePresenter
+    lateinit var factory: TypeViewModel.Factory
+
+    @Inject
+    lateinit var typeAdapter: TypeAdapter
 
     companion object {
-        private const val TAB_NAME = "tab_name"
-        private const val TYPE = "type"
+        private const val TAG_TYPE = "type_tag"
 
-        fun newInstance(tabName: String, type: String): TypeFragment {
+        fun newInstance(type: MedicineType): TypeFragment {
             val fragment = TypeFragment()
             val bundle = Bundle()
-            bundle.putString(TAB_NAME, tabName)
-            bundle.putString(TYPE, type)
+            bundle.putString(TAG_TYPE, type.tag)
             fragment.arguments = bundle
             return fragment
         }
     }
 
-    //region TypeFragment
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        tabName.text = arguments?.getString(TAB_NAME)
-        typePresenter.attachView(this)
-    }
-
-    override fun onAttach(context: Context?) {
+    override fun setupDependencies() {
         AndroidSupportInjection.inject(this)
-        super.onAttach(context)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        typePresenter.detachView()
+    override fun setupBindingAndViewModel(binding: FragmentListBinding) {
+        val vm = ViewModelProviders.of(this, factory)[TypeViewModel::class.java]
+        binding.viewModel = vm
+        binding.list.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(DividerDecorator(ContextCompat.getDrawable(context, R.drawable.list_divider)!!))
+            adapter = typeAdapter
+        }
+
+        typeAdapter.listener = {
+            // TODO: Add search?
+        }
+
+        vm.list.observe(this, Observer {
+            typeAdapter.medicineList = it
+        })
+        vm.onLoad(MedicineType[arguments?.getString(TAG_TYPE) ?: Brand.tag])
     }
-    //endregion
 
-    //region BaseFragment
-    override fun layoutId(): Int = R.layout.fragment_tty
-    //endregion
-
-    //region TypeView
-    override fun getType(): Type = Type.getType(arguments?.getString(TYPE)!!)
-
-    override fun setAdapter(adapter: ListAdapter) {
-        list.setHasFixedSize(true)
-        list.layoutManager = LinearLayoutManager(context)
-        val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-        divider.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.list_divider)!!)
-        list.addItemDecoration(divider)
-        list.adapter = adapter
-    }
-    //endregion
+    override val layoutId: Int
+        get() = R.layout.fragment_list
 }

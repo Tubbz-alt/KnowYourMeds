@@ -1,76 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- Base Toolbar Style -->
-    <style name="ToolBarStyle">
-        <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:minHeight">?attr/actionBarSize</item>
+    <!-- Application Theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="android:actionMenuTextColor">@color/colorTextLight</item>
+        <item name="actionMenuTextColor">@drawable/selector_action_menu</item>
+        <item name="android:textColorSecondary">@color/colorTextLight</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:spinnerItemStyle">@style/SpinnerItemStyle</item>
+        <item name="android:spinnerDropDownItemStyle">@style/SpinnerItemDropDownStyle</item>
     </style>
 
-    <!-- Base toolbar title text style -->
-    <style name="ToolbarTitleTextStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:layout_gravity">left</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:textColor">@color/light_text</item>
-        <item name="android:paddingLeft">@dimen/toolbar_print_title_left_padding</item>
-        <item name="android:paddingRight">@dimen/toolbar_print_title_right_padding</item>
-        <item name="android:paddingTop">@dimen/toolbar_print_title_top_padding</item>
-        <item name="android:paddingBottom">@dimen/toolbar_print_title_bottom_padding</item>
+    <!-- Branded Launch Theme -->
+    <style name="AppTheme.BrandedLaunch">
+        <item name="android:windowBackground">@drawable/launcher_bg</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="SpinnerItemStyle">
-        <item name="android:textColor">@color/dark_text</item>
+        <item name="android:textColor">@color/colorTextDark</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
     </style>
 
     <style name="SpinnerItemDropDownStyle">
-        <item name="android:textColor">@color/dark_text</item>
+        <item name="android:textColor">@color/colorTextDark</item>
         <item name="android:layout_margin">0dp</item>
-        <item name="android:paddingLeft">@dimen/spinner_dropdown_padding</item>
-        <item name="android:paddingRight">@dimen/spinner_dropdown_padding</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
         <item name="android:gravity">center</item>
     </style>
 
     <style name="TabLayout" parent="Widget.Design.TabLayout">
         <item name="tabTextAppearance">@style/TabTextAppearance</item>
-        <item name="tabIndicatorColor">@color/background</item>
-        <item name="tabSelectedTextColor">@color/light_text</item>
+        <item name="tabIndicatorColor">@color/colorBackground</item>
+        <item name="tabSelectedTextColor">@color/colorTextLight</item>
     </style>
 
     <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
-        <item name="android:textColor">@color/light_text</item>
+        <item name="android:textColor">@color/colorTextLight</item>
     </style>
 
-    <style name="ListViewStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/list_item_height</item>
-    </style>
-
-    <style name="ListViewSingleTextStyle">
-        <item name="android:ellipsize">end</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/light_text</item>
-        <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
-        <item name="android:layout_marginRight">@dimen/activity_horizontal_margin</item>
-        <item name="android:textAppearance">?attr/textAppearanceListItem</item>
-    </style>
-
-    <!-- Icon or checkbox style -->
-    <style name="ListViewIconStyle">
-        <item name="android:layout_width">@dimen/list_item_icon_dimension</item>
-        <item name="android:layout_height">@dimen/list_item_icon_dimension</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:layout_marginRight">@dimen/list_item_margin</item>
-    </style>
 
 </resources>

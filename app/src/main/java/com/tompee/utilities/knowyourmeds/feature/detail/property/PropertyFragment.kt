@@ -1,99 +1,57 @@
 package com.tompee.utilities.knowyourmeds.feature.detail.property
 
-import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.view.View
+import android.net.Uri
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseFragment
-import com.tompee.utilities.knowyourmeds.feature.spl.MarketDrugActivity
-import com.tompee.utilities.knowyourmeds.model.MarketDrug
-import com.tompee.utilities.knowyourmeds.model.Type
+import com.tompee.utilities.knowyourmeds.databinding.FragmentPropertiesBinding
+import com.tompee.utilities.knowyourmeds.feature.common.DividerDecorator
+import com.tompee.utilities.knowyourmeds.feature.common.ListTextAdapter
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_properties.*
 import javax.inject.Inject
 
-class PropertyFragment : BaseFragment(), PropertyView {
+class PropertyFragment : BaseFragment<FragmentPropertiesBinding>() {
 
     @Inject
-    lateinit var propertyPresenter: PropertyPresenter
+    lateinit var factory: PropertyViewModel.Factory
 
-    companion object {
-        fun getInstance(): PropertyFragment = PropertyFragment()
-    }
+    @Inject
+    lateinit var listAdapter: ListTextAdapter
 
-    //region PropertyFragment
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        propertyPresenter.attachView(this)
-    }
-
-    override fun onAttach(context: Context?) {
+    override fun setupDependencies() {
         AndroidSupportInjection.inject(this)
-        super.onAttach(context)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        propertyPresenter.detachView()
-    }
+    override fun setupBindingAndViewModel(binding: FragmentPropertiesBinding) {
+        val vm = ViewModelProviders.of(this, factory)[PropertyViewModel::class.java]
+        binding.viewModel = vm
 
-    //endregion
-
-    //region BaseFragment
-    override fun layoutId(): Int = R.layout.fragment_properties
-    //endregion
-
-    //region PropertyView
-
-    override fun setIsPrescribable(isPrescribable: Boolean) {
-        if (isPrescribable) {
-            prescribableText.setText(R.string.property_prescribable_yes)
-        } else {
-            prescribableText.setText(R.string.property_prescribable_no)
+        binding.ingredientList.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(activity)
+            addItemDecoration(DividerDecorator(ContextCompat.getDrawable(context, R.drawable.list_divider)!!))
+            adapter = listAdapter
         }
-    }
 
-    override fun setType(type: Type) {
-        ttyText.text = type.name(context!!)
-    }
-
-    override fun setIngredientAdapter(adapter: ListAdapter?) {
-        if (adapter != null) {
-            ingredientList.setHasFixedSize(true)
-            ingredientList.layoutManager = LinearLayoutManager(activity)
-            ingredientList.addItemDecoration(DividerDecorator(20))
-            ingredientList.adapter = adapter
-        } else {
-            ingredients.visibility = View.GONE
+        binding.page.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(vm.url.value))
+            startActivity(browserIntent)
         }
+
+        observeViewModel(vm)
     }
 
-    override fun setSplAdapter(adapter: MarketDrugAdapter?) {
-        if (adapter != null) {
-            splList.setHasFixedSize(true)
-            splList.layoutManager = LinearLayoutManager(context)
-            splCount.text = adapter.itemCount.toString()
-            val divider = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-            divider.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.list_divider)!!)
-            splList.addItemDecoration(divider)
-            splList.adapter = adapter
-        } else {
-            spls.visibility = View.GONE
-        }
+    private fun observeViewModel(vm: PropertyViewModel) {
+        vm.medicine.observe(this, Observer {
+            listAdapter.list = it.ingredientList
+        })
     }
 
-    override fun moveToMarketDrugActivity(marketDrug: MarketDrug) {
-        val intent = Intent(context, MarketDrugActivity::class.java)
-        intent.putExtra(MarketDrugActivity.TAG_SET_ID, marketDrug.setId)
-        intent.putExtra(MarketDrugActivity.TAG_NAME, marketDrug.name)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(intent)
-    }
+    override val layoutId: Int
+        get() = R.layout.fragment_properties
 
-    //endregion
 }

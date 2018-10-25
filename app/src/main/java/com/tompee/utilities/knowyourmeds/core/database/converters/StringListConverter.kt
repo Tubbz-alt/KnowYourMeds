@@ -1,42 +1,17 @@
 package com.tompee.utilities.knowyourmeds.core.database.converters
 
-import android.arch.persistence.room.TypeConverter
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import java.util.*
+import androidx.room.TypeConverter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class StringListConverter {
 
-    @TypeConverter
-    fun toList(entry: String): List<String>? = jsonToList(entry)
+    private val gson = Gson()
+    private val type = (object : TypeToken<List<String>>() {}).type
 
     @TypeConverter
-    fun toString(list: List<String>): String? = convertToJsonString(list)
+    fun toString(list: List<String>): String = gson.toJson(list, type)
 
-    private fun convertToJsonString(list: List<String>): String? {
-        return try {
-            val json = JSONObject()
-            json.put("list", JSONArray(list))
-            return json.toString()
-        } catch (e: JSONException) {
-            null
-        }
-    }
-
-    private fun jsonToList(string: String): List<String>? {
-        return try {
-            val json = JSONObject(string)
-            val array = json.optJSONArray("list")
-            val list = ArrayList<String>()
-            for (index in 0 until array.length()) {
-                list.add(array.optString(index))
-            }
-            return list
-        } catch (e: JSONException) {
-            null
-        } catch (e: NullPointerException) {
-            null
-        }
-    }
+    @TypeConverter
+    fun toList(value: String): List<String> = gson.fromJson(value, type)
 }

@@ -1,87 +1,60 @@
 package com.tompee.utilities.knowyourmeds.feature.detail
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import com.jakewharton.rxbinding2.view.RxView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseActivity
-import com.tompee.utilities.knowyourmeds.core.asset.AssetManager
-import com.tompee.utilities.knowyourmeds.feature.detail.menu.MenuDialog
-import com.tompee.utilities.knowyourmeds.feature.detail.menu.MenuDialogListener
-import com.tompee.utilities.knowyourmeds.feature.detail.progress.ProgressDialog
-import com.tompee.utilities.knowyourmeds.model.Type
+import com.tompee.utilities.knowyourmeds.databinding.ActivityMedDetailBinding
 import dagger.android.AndroidInjection
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.activity_med_detail.*
-import kotlinx.android.synthetic.main.toolbar.*
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
 import javax.inject.Inject
 
-class DetailActivity : BaseActivity(), DetailView, MenuDialogListener {
+class DetailActivity : BaseActivity<ActivityMedDetailBinding>() {
 
     @Inject
-    lateinit var assetManager: AssetManager
+    lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     @Inject
-    lateinit var detailPresenter: DetailPresenter
+    lateinit var pageAdapter: DetailPageAdapter
 
     @Inject
-    lateinit var menuDialog: MenuDialog
+    lateinit var factory: DetailViewModel.Factory
 
-    private lateinit var progressDialog: ProgressDialog
-    private val fragmentIndexSubject = PublishSubject.create<Type>()
-
-    //region DetailActivity
-
-    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_med_detail)
-        background.setImageDrawable(assetManager.getDrawableFromAsset("search_bg.jpg"))
-        setToolbar(toolbar, true)
-        progressDialog = ProgressDialog(this, getString(R.string.fetch_details))
-
-        RxView.clicks(menu).subscribe { menuDialog.show() }
-        detailPresenter.attachView(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        detailPresenter.detachView()
-    }
-    //endregion
+    override fun setupBindingAndViewModel(binding: ActivityMedDetailBinding) {
+        setToolbar(binding.include.toolbar, true)
 
-    //region MenuDialogListener
+        val vm = ViewModelProviders.of(this, factory)[DetailViewModel::class.java]
+        binding.viewModel = vm
 
-    override fun onMenuClicked(type: Type) {
-        fragmentIndexSubject.onNext(type)
-    }
-    //endregion
 
-    //region DetailView
-    override fun setTitle(title: String) {
-        toolbar_text.text = title
+        binding.viewPager.apply {
+            offscreenPageLimit = pageAdapter.count
+            adapter = pageAdapter
+        }
+        binding.tabLayout.setupWithViewPager(binding.viewPager)
+
+        observeViewModel(vm)
     }
 
-    override fun fragmentType(): Observable<Type> = fragmentIndexSubject
-
-    override fun showProcessingDialog() {
-        progressDialog.show()
+    private fun observeViewModel(vm: DetailViewModel) {
+        vm.propertyFragment.observe(this, Observer {
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.propertyContainer, it)
+            transaction.commit()
+            supportFragmentManager.executePendingTransactions()
+        })
     }
 
-    override fun hideProcessingDialog() {
-        progressDialog.hide()
-    }
+    override val layoutId: Int
+        get() = R.layout.activity_med_detail
 
-    override fun setActiveFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, fragment)
-        transaction.commit()
-        supportFragmentManager.executePendingTransactions()
-    }
-
-    //endregion
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = supportFragmentInjector
 }

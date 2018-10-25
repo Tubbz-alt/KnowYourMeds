@@ -4,11 +4,11 @@ interface Preferences {
     fun getBuildVersion(): Int
     fun setBuildVersion(version: Int)
 
-    fun showDisclaimerNext()
+    fun showDisclaimerNext(isShow : Boolean)
     fun isShowDisclaimer(): Boolean
 
     fun isDueForRater(): Boolean
     fun incrementRaterCount()
 
-    fun isSplEnabled() : Boolean
+    fun isSplEnabled(): Boolean
 }

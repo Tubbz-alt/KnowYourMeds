@@ -1,18 +1,37 @@
 package com.tompee.utilities.knowyourmeds.base
 
+import android.content.Context
 import android.os.Bundle
-import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment<T : ViewDataBinding> : Fragment() {
+
+    private lateinit var binding: T
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(layoutId(), container, false)
+        binding = DataBindingUtil.inflate(inflater, layoutId, container, false)
+        binding.setLifecycleOwner(this)
+        return binding.root
     }
 
-    @LayoutRes
-    abstract fun layoutId(): Int
+    override fun onAttach(context: Context?) {
+        setupDependencies()
+        super.onAttach(context)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setupBindingAndViewModel(binding)
+    }
+
+    protected abstract val layoutId: Int
+
+    protected abstract fun setupBindingAndViewModel(binding: T)
+
+    protected abstract fun setupDependencies()
 }

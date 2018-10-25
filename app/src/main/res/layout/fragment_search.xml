@@ -1,155 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:card_view="http://schemas.android.com/tools">
 
-    <com.arlib.floatingsearchview.FloatingSearchView
-        android:id="@+id/searchView"
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.tompee.utilities.knowyourmeds.feature.main.search.SearchViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:layout_marginStart="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginRight="0dp"
-        app:floatingSearch_close_search_on_keyboard_dismiss="true"
-        app:floatingSearch_dimBackground="false"
-        app:floatingSearch_leftActionMode="showSearch"
-        app:floatingSearch_searchBarMarginLeft="@dimen/margin"
-        app:floatingSearch_searchBarMarginRight="@dimen/margin"
-        app:floatingSearch_searchHint="@string/search_hint"
-        app:floatingSearch_showSearchKey="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
 
-    <com.wang.avi.AVLoadingIndicatorView
-        android:id="@+id/searchProgress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:visibility="invisible"
-        app:indicatorName="BallScaleIndicator"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
-
-    <ViewSwitcher
-        android:id="@+id/viewSwitcher"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView">
-
-        <android.support.v7.widget.CardView
+        <com.arlib.floatingsearchview.FloatingSearchView
+            android:id="@+id/searchView"
             android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            app:floatingSearch_close_search_on_keyboard_dismiss="true"
+            app:floatingSearch_dimBackground="false"
+            app:floatingSearch_leftActionMode="showSearch"
+            app:floatingSearch_searchBarMarginLeft="16dp"
+            app:floatingSearch_searchBarMarginRight="16dp"
+            app:floatingSearch_searchHint="@string/hint_search"
+            app:floatingSearch_showSearchKey="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/searchProgress"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin"
-            android:layout_marginTop="@dimen/margin"
-            android:layout_marginRight="@dimen/margin"
-            android:layout_marginBottom="@dimen/margin"
-            android:visibility="gone"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            app:indicatorName="BallScaleIndicator"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchView"
+            app:visibleGone="@{viewModel.searching}" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:cardBackgroundColor="@color/colorPrimaryAlpha"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchView"
+            app:layout_constraintVertical_bias="0.0"
+            app:visibleGone="@{viewModel.showResult}"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin"
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginEnd="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin"
+                    android:layout_marginTop="16dp"
+                    android:text="@{viewModel.result.name}"
                     android:textAppearance="?android:attr/textAppearanceListItem"
-                    android:textColor="@color/light_text" />
+                    android:textColor="@color/colorTextLight" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
-                    android:background="@color/light_text" />
+                    android:background="@color/colorTextLight" />
 
                 <TextView
-                    android:id="@+id/type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceListItem"
-                    android:textColor="@color/light_text" />
+                    android:textColor="@color/colorTextLight"
+                    app:prescribable="@{viewModel.result.isPrescribable}" />
 
                 <TextView
-                    android:id="@+id/tty"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin"
+                    android:layout_marginBottom="16dp"
                     android:textAppearance="?android:attr/textAppearanceListItem"
-                    android:textColor="@color/light_text" />
+                    android:textColor="@color/colorTextLight"
+                    app:medType="@{viewModel.result.type}" />
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin"
-            android:layout_marginTop="@dimen/margin"
-            android:layout_marginRight="@dimen/margin"
-            android:layout_marginBottom="@dimen/margin"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
             app:cardBackgroundColor="@color/colorPrimaryAlpha"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchView"
+            app:layout_constraintVertical_bias="0.0"
+            app:visibleGone="@{viewModel.showSuggestion}"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin"
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginEnd="@dimen/margin"
-                android:layout_marginRight="@dimen/margin"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/suggestionHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin"
-                    android:text="@string/suggestions_results"
+                    android:layout_marginTop="16dp"
+                    android:text="@{String.format(@string/message_suggestions_results, viewModel.query)}"
                     android:textAppearance="?android:attr/textAppearanceListItem"
-                    android:textColor="@color/light_text" />
+                    android:textColor="@color/colorTextLight" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
-                    android:background="@color/light_text" />
+                    android:background="@color/colorTextLight" />
 
-                <ListView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/suggestionList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin"
+                    android:layout_marginBottom="16dp"
                     android:divider="@android:color/transparent"
-                    android:minHeight="@dimen/list_view_height" />
+                    android:minHeight="60dp" />
 
                 <TextView
                     android:id="@+id/text_no_items"
@@ -157,31 +165,30 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:minHeight="@dimen/list_view_height"
-                    android:text="@string/no_suggestions"
+                    android:minHeight="60dp"
+                    android:text="@string/message_no_suggestions"
                     android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="@color/dark_text"
+                    android:textColor="@color/colorTextDark"
                     android:visibility="gone" />
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-    </ViewSwitcher>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/checkout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_exit_to_app_black"
+            app:backgroundTint="@color/colorTextLight"
+            app:elevation="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchView"
+            app:visibleGone="@{viewModel.showResult}" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/checkout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_exit_to_app_black"
-        android:visibility="invisible"
-        app:backgroundTint="@color/light_text"
-        app:elevation="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchView" />
-
-</android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

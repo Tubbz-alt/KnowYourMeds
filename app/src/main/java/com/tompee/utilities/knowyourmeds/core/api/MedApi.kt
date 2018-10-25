@@ -20,7 +20,6 @@ interface MedApi {
     fun getTtyValues(@Path("propId") propId: String,
                      @Query("tty", encoded = true) tty: String = "BN+IN+SCDC+SBDC+SBDG+SCD+SCDG+SBD"): Single<TtyGroup>
 
-
     @GET("rxcui/{propId}/property.json")
     fun getSources(@Path("propId") propId: String,
                    @Query("propName") prop: String = "Source"): Single<PropertyGroup>

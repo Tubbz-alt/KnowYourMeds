@@ -27,9 +27,9 @@ class SharedPreferences(context: Context) : Preferences {
         editor.apply()
     }
 
-    override fun showDisclaimerNext() {
+    override fun showDisclaimerNext(isShow : Boolean) {
         val editor = sharedPreferences.edit()
-        editor.putBoolean(TAG_DISCLAIMER, false)
+        editor.putBoolean(TAG_DISCLAIMER, isShow)
         editor.apply()
     }
 

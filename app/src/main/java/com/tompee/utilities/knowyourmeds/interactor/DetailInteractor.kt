@@ -1,23 +1,36 @@
 package com.tompee.utilities.knowyourmeds.interactor
 
 import com.tompee.utilities.knowyourmeds.base.BaseInteractor
-import com.tompee.utilities.knowyourmeds.model.Medicine2
+import com.tompee.utilities.knowyourmeds.model.InteractionPair
+import com.tompee.utilities.knowyourmeds.model.MarketDrug
+import com.tompee.utilities.knowyourmeds.model.Medicine
 import com.tompee.utilities.knowyourmeds.model.MedicineContainer
+import com.tompee.utilities.knowyourmeds.model.MedicineType
 import com.tompee.utilities.knowyourmeds.repo.MedicineRepo
 import io.reactivex.Single
 
-class DetailInteractor(private val medicineRepo: MedicineRepo,
-                       private val medicineContainer: MedicineContainer) : BaseInteractor {
+class DetailInteractor(private val medicineContainer: MedicineContainer,
+                       private val medicineRepo: MedicineRepo) : BaseInteractor {
 
-    fun getMedicineInfo(): Single<Medicine2> {
-        return medicineRepo.populateMedicineInfo(medicineContainer.medicine!!)
-                .toSingle { medicineContainer.medicine!! }
-    }
+    fun getStockMedicine(): Single<Medicine> = Single.just(medicineContainer.medicine)
 
-    fun getStockMedicine(): Single<Medicine2> {
-        return Single.just(medicineContainer.medicine)
-    }
+    fun getDetailedInfo(): Single<Medicine> =
+            Single.just(medicineContainer.medicine!!)
+                    .flatMap { medicine ->
+                        medicineRepo.getProperties(medicine.id)
+                                .doOnSuccess { medicine.ingredientList = it }
+                                .map { medicine }
+                                .onErrorResumeNext(Single.just(medicine))
+                    }.flatMap { medicine ->
+                        medicineRepo.getUrl(medicine.id)
+                                .doOnSuccess { medicine.url = it }
+                                .map { medicine }
+                                .onErrorResumeNext(Single.just(medicine))
+                    }
 
-    fun searchMedicine(name: String): Single<Medicine2> = medicineRepo.searchMedicine(name)
-            .doOnSuccess { medicineContainer.medicine = it }
+    fun getMarketDrugs(): Single<List<MarketDrug>> = medicineRepo.getMarketDrugs(medicineContainer.medicine!!.id)
+
+    fun getMedicineType(type: MedicineType): Single<List<Medicine>> = medicineRepo.getMedicineType(medicineContainer.medicine!!.id, type)
+
+    fun getInteractions(): Single<List<InteractionPair>> = medicineRepo.getInteractions(medicineContainer.medicine!!.id)
 }

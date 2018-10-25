@@ -1,12 +1,13 @@
 package com.tompee.utilities.knowyourmeds.feature.detail
 
 import android.content.Context
+import com.tompee.utilities.knowyourmeds.R
+import com.tompee.utilities.knowyourmeds.core.asset.AssetManager
 import com.tompee.utilities.knowyourmeds.di.scope.DetailScope
-import com.tompee.utilities.knowyourmeds.feature.detail.menu.MenuDialog
-import com.tompee.utilities.knowyourmeds.feature.detail.menu.MenuDialogListener
-import com.tompee.utilities.knowyourmeds.feature.detail.menu.MenuPresenter
-import com.tompee.utilities.knowyourmeds.feature.detail.page.PageFragment
-import com.tompee.utilities.knowyourmeds.feature.detail.page.PageModule
+import com.tompee.utilities.knowyourmeds.feature.detail.interaction.InteractionFragment
+import com.tompee.utilities.knowyourmeds.feature.detail.interaction.InteractionModule
+import com.tompee.utilities.knowyourmeds.feature.detail.market.MarketDrugFragment
+import com.tompee.utilities.knowyourmeds.feature.detail.market.MarketDrugModule
 import com.tompee.utilities.knowyourmeds.feature.detail.property.PropertyFragment
 import com.tompee.utilities.knowyourmeds.feature.detail.property.PropertyModule
 import com.tompee.utilities.knowyourmeds.feature.detail.type.TypeFragment
@@ -25,111 +26,54 @@ import com.tompee.utilities.knowyourmeds.repo.MedicineRepo
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
-import javax.inject.Named
 
 @Module(includes = [DetailModule.Bindings::class])
 class DetailModule {
+
     @Module
     interface Bindings {
         @ContributesAndroidInjector(modules = [PropertyModule::class])
         fun bindPropertyFragment(): PropertyFragment
 
+        @ContributesAndroidInjector(modules = [MarketDrugModule::class])
+        fun bindMarketDrugFragment(): MarketDrugFragment
+
         @ContributesAndroidInjector(modules = [TypeModule::class])
         fun bindTypeFragment(): TypeFragment
 
-        @ContributesAndroidInjector(modules = [PageModule::class])
-        fun bindPageFragment(): PageFragment
+        @ContributesAndroidInjector(modules = [InteractionModule::class])
+        fun bindInteractionFragment(): InteractionFragment
     }
 
     @DetailScope
     @Provides
-    fun provideDetailInteractor(medicineRepo: MedicineRepo,
-                                medicineContainer: MedicineContainer): DetailInteractor =
-            DetailInteractor(medicineRepo, medicineContainer)
+    fun provideDetailViewModelFactory(detailInteractor: DetailInteractor,
+                                      schedulerPool: SchedulerPool,
+                                      assetManager: AssetManager,
+                                      context: Context): DetailViewModel.Factory =
+            DetailViewModel.Factory(detailInteractor, schedulerPool, assetManager, context)
 
     @DetailScope
     @Provides
-    fun providePropertyFragment(): PropertyFragment = PropertyFragment.getInstance()
+    fun provideDetailInteractor(medicineContainer: MedicineContainer,
+                                medicineRepo: MedicineRepo): DetailInteractor =
+            DetailInteractor(medicineContainer, medicineRepo)
 
     @DetailScope
     @Provides
-    @Named("brand")
-    fun provideBrandFragment(context: Context): TypeFragment =
-            TypeFragment.newInstance(Brand.name(context), Brand.tag)
-
-    @DetailScope
-    @Provides
-    @Named("sbdc")
-    fun provideBrandedDrugComponentFragment(context: Context): TypeFragment =
-            TypeFragment.newInstance(BrandedDrugComponent.name(context), BrandedDrugComponent.tag)
-
-    @DetailScope
-    @Provides
-    @Named("sbd")
-    fun provideBrandedDrugPackFragment(context: Context): TypeFragment =
-            TypeFragment.newInstance(BrandedDrugPack.name(context), BrandedDrugPack.tag)
-
-    @DetailScope
-    @Provides
-    @Named("sbdg")
-    fun provideBrandedDoseFormGroupFragment(context: Context): TypeFragment =
-            TypeFragment.newInstance(BrandedDoseFormGroup.name(context), BrandedDoseFormGroup.tag)
-
-    @DetailScope
-    @Provides
-    @Named("scdc")
-    fun provideClinicalDrugComponentFragment(context: Context): TypeFragment =
-            TypeFragment.newInstance(ClinicalDrugComponent.name(context), ClinicalDrugComponent.tag)
-
-    @DetailScope
-    @Provides
-    @Named("scd")
-    fun provideClinicalDrugPackFragment(context: Context): TypeFragment =
-            TypeFragment.newInstance(ClinicalDrugPack.name(context), ClinicalDrugPack.tag)
-
-    @DetailScope
-    @Provides
-    @Named("scdg")
-    fun provideClinicalDoseFormGroupFragment(context: Context): TypeFragment =
-            TypeFragment.newInstance(ClinicalDoseFormGroup.name(context), ClinicalDoseFormGroup.tag)
-
-    @DetailScope
-    @Provides
-    fun providePageFragment(): PageFragment = PageFragment.getInstance()
-
-    @DetailScope
-    @Provides
-    fun provideDetailPresenter(detailInteractor: DetailInteractor,
-                               schedulerPool: SchedulerPool,
-                               propertyFragment: PropertyFragment,
-                               @Named("brand") brandFragment: TypeFragment,
-                               @Named("sbdc") brandedDrugComponentFragment: TypeFragment,
-                               @Named("sbd") brandedDrugPackFragment: TypeFragment,
-                               @Named("sbdg") brandedDoseFormGroupFragment: TypeFragment,
-                               @Named("scdc") clinicalDrugComponentFragment: TypeFragment,
-                               @Named("scd") clinicalDrugPackFragment: TypeFragment,
-                               @Named("scdg") clinicalDoseFormGroupFragment: TypeFragment,
-                               pageFragment: PageFragment): DetailPresenter =
-            DetailPresenter(detailInteractor, schedulerPool,
-                    propertyFragment,
-                    brandFragment,
-                    brandedDrugComponentFragment,
-                    brandedDrugPackFragment,
-                    brandedDoseFormGroupFragment,
-                    clinicalDrugComponentFragment,
-                    clinicalDrugPackFragment,
-                    clinicalDoseFormGroupFragment,
-                    pageFragment)
-
-    @DetailScope
-    @Provides
-    fun provideMenuPresenter(detailInteractor: DetailInteractor,
-                             schedulerPool: SchedulerPool): MenuPresenter =
-            MenuPresenter(detailInteractor, schedulerPool)
-
-    @DetailScope
-    @Provides
-    fun provideMenuDialog(activity: DetailActivity,
-                          menuPresenter: MenuPresenter): MenuDialog =
-            MenuDialog(activity, activity as MenuDialogListener, menuPresenter)
+    fun providePageAdapter(detailActivity: DetailActivity,
+                           context: Context): DetailPageAdapter {
+        val list = mapOf(
+                context.getString(R.string.label_market_drugs) to MarketDrugFragment(),
+                context.getString(R.string.label_brand_name) to TypeFragment.newInstance(Brand),
+                context.getString(R.string.label_sbdc) to TypeFragment.newInstance(BrandedDrugComponent),
+                context.getString(R.string.label_sbd) to TypeFragment.newInstance(BrandedDrugPack),
+                context.getString(R.string.label_sbdg) to TypeFragment.newInstance(BrandedDoseFormGroup),
+                context.getString(R.string.label_scdc) to TypeFragment.newInstance(ClinicalDrugComponent),
+                context.getString(R.string.label_scd) to TypeFragment.newInstance(ClinicalDrugPack),
+                context.getString(R.string.label_scdg) to TypeFragment.newInstance(ClinicalDoseFormGroup),
+                context.getString(R.string.label_interaction) to InteractionFragment()
+        )
+        return DetailPageAdapter(list, detailActivity.supportFragmentManager)
+    }
 }

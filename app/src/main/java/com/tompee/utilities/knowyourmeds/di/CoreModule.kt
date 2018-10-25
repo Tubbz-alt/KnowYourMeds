@@ -1,11 +1,14 @@
 package com.tompee.utilities.knowyourmeds.di
 
 import android.content.Context
+import androidx.room.Room
 import com.tompee.utilities.knowyourmeds.Constants
 import com.tompee.utilities.knowyourmeds.core.api.DailyMedApi
 import com.tompee.utilities.knowyourmeds.core.api.MedApi
 import com.tompee.utilities.knowyourmeds.core.api.MedlineApi
 import com.tompee.utilities.knowyourmeds.core.asset.AssetManager
+import com.tompee.utilities.knowyourmeds.core.database.KnowYourMedsDatabase
+import com.tompee.utilities.knowyourmeds.core.database.MedicineDao
 import com.tompee.utilities.knowyourmeds.core.preferences.Preferences
 import com.tompee.utilities.knowyourmeds.core.preferences.shared.SharedPreferences
 import dagger.Module
@@ -19,7 +22,6 @@ import javax.inject.Singleton
 
 @Module
 class CoreModule {
-
     //region api
     @Provides
     @Singleton
@@ -68,7 +70,6 @@ class CoreModule {
         return retrofit.create(MedlineApi::class.java)
     }
 
-
     //endregion
 
     //region asset
@@ -85,5 +86,19 @@ class CoreModule {
     @Provides
     @Singleton
     fun providePreferences(sharedPreferences: SharedPreferences): Preferences = sharedPreferences
+    //endregion
+
+    //region database
+    @Provides
+    @Singleton
+    fun provideDatabase(context: Context): KnowYourMedsDatabase {
+        return Room.databaseBuilder(context, KnowYourMedsDatabase::class.java, Constants.DATABASE_NAME)
+                .fallbackToDestructiveMigration()
+                .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMedicineDao(database: KnowYourMedsDatabase): MedicineDao = database.medicineDao()
     //endregion
 }

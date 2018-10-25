@@ -1,206 +1,219 @@
 package com.tompee.utilities.knowyourmeds.repo.impl
 
+import com.tompee.utilities.knowyourmeds.core.api.Attributes
 import com.tompee.utilities.knowyourmeds.core.api.DailyMedApi
 import com.tompee.utilities.knowyourmeds.core.api.Data
 import com.tompee.utilities.knowyourmeds.core.api.MedApi
 import com.tompee.utilities.knowyourmeds.core.api.MedlineApi
-import com.tompee.utilities.knowyourmeds.core.preferences.Preferences
-import com.tompee.utilities.knowyourmeds.model.Brand
-import com.tompee.utilities.knowyourmeds.model.BrandedDoseFormGroup
-import com.tompee.utilities.knowyourmeds.model.BrandedDrugComponent
-import com.tompee.utilities.knowyourmeds.model.BrandedDrugPack
-import com.tompee.utilities.knowyourmeds.model.ClinicalDoseFormGroup
-import com.tompee.utilities.knowyourmeds.model.ClinicalDrugComponent
-import com.tompee.utilities.knowyourmeds.model.ClinicalDrugPack
+import com.tompee.utilities.knowyourmeds.core.database.MedicineDao
+import com.tompee.utilities.knowyourmeds.core.database.entities.InteractionEntity
+import com.tompee.utilities.knowyourmeds.core.database.entities.MarketDrugEntity
+import com.tompee.utilities.knowyourmeds.core.database.entities.MedicineEntity
+import com.tompee.utilities.knowyourmeds.core.database.entities.TypeEntity
 import com.tompee.utilities.knowyourmeds.model.Ingredient
+import com.tompee.utilities.knowyourmeds.model.InteractionPair
 import com.tompee.utilities.knowyourmeds.model.MarketDrug
-import com.tompee.utilities.knowyourmeds.model.Medicine2
-import com.tompee.utilities.knowyourmeds.model.Type
+import com.tompee.utilities.knowyourmeds.model.Medicine
+import com.tompee.utilities.knowyourmeds.model.MedicineType
 import com.tompee.utilities.knowyourmeds.repo.MedicineRepo
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import java.util.*
 
 class MedicineRepoImpl(private val medApi: MedApi,
-                       private val medlineApi: MedlineApi,
                        private val dailyMedApi: DailyMedApi,
-                       private val preferences: Preferences) : MedicineRepo {
+                       private val medlineApi: MedlineApi,
+                       private val medicineDao: MedicineDao) : MedicineRepo {
 
-    override fun searchMedicine(name: String): Single<Medicine2> {
-        /* for now, search network */
-        return searchMedicineFromNetwork(name)
+    override fun getMedicine(name: String): Single<Medicine> {
+        return medApi.getRxNormId(name)
+                .map { it.idGroup?.rxnormId!![0] }
+                .flatMap { id ->
+                    medicineDao.getMedicineFrom(id)
+                            .map { it.convertToMedicine() }
+                            .onErrorResumeNext(
+                                    searchMedicineFromNetwork(name)
+                                            .flatMap { medicine ->
+                                                Single.just(medicine)
+                                                        .map { it.convertToEntity() }
+                                                        .doOnSuccess(medicineDao::insert)
+                                                        .map { medicine }
+                                            })
+                }
     }
 
-    override fun populateMedicineInfo(medicine: Medicine2): Completable {
-        // for now, populate from network
-        return populateMedicineInfoFromNetwork(medicine)
+    override fun getProperties(id: String): Single<List<String>> {
+        return medicineDao.getMedicineFrom(id)
+                .map { it.ingredientList }
+                .filter { it.isNotEmpty() }
+                .toSingle()
+                .onErrorResumeNext(searchIngredientsFromNetwork(id)
+                        .doOnSuccess { medicineDao.updateIngredients(id, it) })
     }
+
+    override fun getMarketDrugs(id: String): Single<List<MarketDrug>> {
+        return medicineDao.getMarketDrugFrom(id)
+                .map { it.list }
+                .onErrorResumeNext(searchMarketDrugs(id)
+                        .doOnSuccess {
+                            medicineDao.insert(MarketDrugEntity(0, id, it))
+                        })
+    }
+
+    override fun getMedicineType(id: String, type: MedicineType): Single<List<Medicine>> {
+        return medicineDao.getMedicineType(id, type)
+                .map { it.list }
+                .onErrorResumeNext(searchTtyValues(id, type.tag)
+                        .doOnSuccess {
+                            medicineDao.insert(TypeEntity(0, id, type, it))
+                        })
+    }
+
+    override fun getUrl(id: String): Single<String> {
+        return medicineDao.getMedicineFrom(id)
+                .map { it.url }
+                .filter { it.isNotEmpty() }
+                .toSingle()
+                .onErrorResumeNext(searchUrl(id)
+                        .doOnSuccess { medicineDao.updateUrl(id, it) })
+    }
+
+    override fun getInteractions(id: String): Single<List<InteractionPair>> {
+        return medicineDao.getInteractions(id)
+                .map { it.list }
+                .onErrorResumeNext(searchInteractions(id)
+                        .doOnSuccess {
+                            medicineDao.insert(InteractionEntity(0, id, it))
+                        })
+    }
+
+    private fun Medicine.convertToEntity(): MedicineEntity =
+            MedicineEntity(id, name, url, isPrescribable, type, ingredientList)
 
     //region Network
-    private fun searchMedicineFromNetwork(name: String): Single<Medicine2> {
-        fun Single<Medicine2>.getRxNormId(name: String): Single<Medicine2> {
+    private fun searchMedicineFromNetwork(name: String): Single<Medicine> {
+        fun Single<Medicine>.getRxNormId(name: String): Single<Medicine> {
             return this.flatMap { medicine ->
                 medApi.getRxNormId(name)
-                        .doOnSuccess { medicine.normId = it.idGroup?.rxnormId!![0] }
+                        .doOnSuccess { medicine.id = it.idGroup?.rxnormId!![0] }
                         .map { medicine }
             }
         }
 
-        fun Single<Medicine2>.getMedicineName(): Single<Medicine2> {
+        fun Single<Medicine>.getMedicineName(): Single<Medicine> {
             return this.flatMap { medicine ->
-                medApi.getName(medicine.normId)
+                medApi.getName(medicine.id)
                         .doOnSuccess { medicine.name = it.propConceptGroup?.propConcept!![0].propValue }
                         .map { medicine }
                         .onErrorResumeNext(Single.just(medicine))
             }
         }
 
-        fun Single<Medicine2>.getAttributes(): Single<Medicine2> {
-            return this.flatMap { medicine ->
-                medApi.getAttributes(medicine.normId)
-                        .map { it.propConceptGroup?.propConcept }
-                        .flatMap { propConceptList ->
-                            Observable.fromIterable(propConceptList)
-                                    .doOnNext { propConcept ->
-                                        when (propConcept.propName) {
-                                            "TTY" -> medicine.tty = Type.getType(propConcept.propValue)
-                                            "PRESCRIBABLE" -> medicine.isPrescribable = propConcept.propValue == "Y"
-                                        }
-                                    }
-                                    .toList()
-                        }
-                        .map { medicine }
-                        .onErrorResumeNext(Single.just(medicine))
-            }
-        }
-
-        return Single.just(Medicine2())
+        return Single.just(Medicine())
                 .getRxNormId(name)
                 .getMedicineName()
                 .getAttributes()
     }
 
-    private fun populateMedicineInfoFromNetwork(medicine: Medicine2): Completable {
-        fun Single<Medicine2>.getUrl(): Single<Medicine2> {
-            return this.flatMap { medicine ->
-                medlineApi.getMedlineUrl(medicine.normId)
-                        .doOnSuccess { medicine.url = it?.feed?.entry!![0].link[0].href }
-                        .map { medicine }
-                        .onErrorResumeNext(Single.just(medicine))
-            }
-        }
-
-        fun Single<Medicine2>.getSources(): Single<Medicine2> {
-            return this.flatMap { medicine ->
-                medApi.getSources(medicine.normId)
-                        .map { it.propConceptGroup?.propConcept }
-                        .flatMap { propConcept ->
-                            Observable.fromIterable(propConcept)
-                                    .map { it.propValue }
-                                    .toList()
-                        }
-                        .doOnSuccess { medicine.sources = it }
-                        .map { medicine }
-                        .onErrorResumeNext(Single.just(medicine))
-            }
-        }
-
-        fun Single<Medicine2>.getSpl(): Single<Medicine2> {
-            fun iterateData(data: List<Data>, medicine: Medicine2): Single<List<Data>> {
-                return Observable.fromIterable(data)
-                        .doOnNext {
-                            val marketDrug = MarketDrug(it.title, it.setid, it.spl_version, it.published_date)
-                            medicine.marketDrugList.add(marketDrug)
-                        }
-                        .toList()
-            }
-
-            return if (preferences.isSplEnabled()) {
-                this.flatMap { medicine ->
-                    dailyMedApi.getSpl(medicine.normId, 1)
-                            .doOnSuccess { medicine.marketDrugList = mutableListOf() }
-                            .flatMap { splModel ->
-                                iterateData(splModel.data, medicine)
-                                        .map { splModel.metadata!! }
+    private fun searchIngredientsFromNetwork(id: String): Single<List<String>> {
+        return medApi.getTtyValues(id, Ingredient.tag)
+                .map { it.relatedGroup?.conceptGroup!! }
+                .flatMap { conceptGroupList ->
+                    Observable.fromIterable(conceptGroupList)
+                            .map { it.conceptProperties }
+                            .flatMap { conceptPropertiesList ->
+                                Observable.fromIterable(conceptPropertiesList)
+                                        .map { it.name }
                             }
-                            .flatMap { metadata ->
-                                Observable.range(metadata.current_page + 1, metadata.total_pages - 1)
-                                        .doOnNext { page ->
-                                            dailyMedApi.getSpl(medicine.normId, page)
-                                                    .flatMap { splModel -> iterateData(splModel.data, medicine) }
-                                        }
-                                        .toList()
-                            }
-                            .map { medicine }
-                            .onErrorResumeNext(Single.just(medicine))
+                            .toList()
                 }
-            } else {
-                this
-            }
-        }
-
-        fun Single<Medicine2>.getTtyValues(): Single<Medicine2> {
-            return this.flatMap { medicine ->
-                medApi.getTtyValues(medicine.normId)
-                        .map { it.relatedGroup?.conceptGroup!! }
-                        .flatMap { conceptGroupList ->
-                            Observable.fromIterable(conceptGroupList)
-                                    .doOnNext { conceptGroup ->
-                                        when {
-                                            conceptGroup.tty == Brand.tag -> medicine.brands = conceptGroup.conceptProperties.map { it.name }
-                                            conceptGroup.tty == Ingredient.tag -> medicine.ingredients = conceptGroup.conceptProperties.map { it.name }
-                                            conceptGroup.tty == ClinicalDrugComponent.tag -> medicine.scdc = conceptGroup.conceptProperties.map { it.name }
-                                            conceptGroup.tty == BrandedDrugComponent.tag -> medicine.sbdc = conceptGroup.conceptProperties.map { it.name }
-                                            conceptGroup.tty == BrandedDoseFormGroup.tag -> medicine.sbdg = conceptGroup.conceptProperties.map { it.name }
-                                            conceptGroup.tty == ClinicalDrugPack.tag -> medicine.scd = conceptGroup.conceptProperties.map { it.name }
-                                            conceptGroup.tty == ClinicalDoseFormGroup.tag -> medicine.scdg = conceptGroup.conceptProperties.map { it.name }
-                                            conceptGroup.tty == BrandedDrugPack.tag -> medicine.sbd = conceptGroup.conceptProperties.map { it.name }
-                                        }
-                                    }
-                                    .toList()
-                        }
-                        .map { medicine }
-                        .onErrorResumeNext(Single.just(medicine))
-            }
-        }
-
-        fun Single<Medicine2>.getInteractions(): Single<Medicine2> {
-            return this.flatMap { medicine ->
-                medApi.getInteraction(medicine.normId)
-                        .flatMap { model ->
-                            Observable.fromIterable(model.interactionTypeGroup)
-                                    .flatMap { group ->
-                                        Observable.fromIterable(group.interactionType)
-                                                .map { type ->
-                                                    /* Refrain from using observable here */
-                                                    val innerMap = mutableMapOf<String, String>()
-                                                    var key = ""
-                                                    type.interactionPair.forEach { pair ->
-                                                        key = pair.interactionConcept[0].sourceConceptItem?.name!!
-                                                        innerMap[pair.interactionConcept[1].sourceConceptItem?.name!!] = pair.description
-                                                    }
-                                                    return@map key to innerMap
-                                                }
-                                    }.filter { it.second.isNotEmpty() }
-                                    .toMap({ it.first }) { it.second }
-                        }
-                        .map {
-                            medicine.interactions = it
-                        }
-                        .map { medicine }
-                        .onErrorResumeNext(Single.just(medicine))
-            }
-        }
-        return Single.just(medicine)
-                .doOnSuccess { it.date = Calendar.getInstance().time }
-                .getUrl()
-                .getSources()
-                .getSpl()
-                .getTtyValues()
-                .getInteractions()
-                .ignoreElement()
+                .onErrorResumeNext(Single.just(listOf()))
     }
 
-    //endregion
+    private fun searchMarketDrugs(id: String): Single<List<MarketDrug>> {
+        fun iterateData(data: List<Data>): Observable<MarketDrug> {
+            return Observable.fromIterable(data)
+                    .map { MarketDrug(it.title, it.setid, it.spl_version, it.published_date) }
+        }
+
+        return dailyMedApi.getSpl(id, 1)
+                .map { it.metadata }
+                .flatMap { metadata ->
+                    Observable.range(metadata.current_page, metadata.total_pages)
+                            .flatMap { page ->
+                                dailyMedApi.getSpl(id, page)
+                                        .flatMapObservable { splModel -> iterateData(splModel.data) }
+                            }
+                            .toList()
+                }
+                .onErrorResumeNext(Single.just(listOf()))
+    }
+
+    private fun searchTtyValues(id: String, type: String): Single<List<Medicine>> {
+        return medApi.getTtyValues(id, type)
+                .map { it.relatedGroup?.conceptGroup!![0].conceptProperties }
+                .flatMap { list ->
+                    Observable.fromIterable(list)
+                            .concatMapSingle { prop ->
+                                Single.just(Medicine())
+                                        .doOnSuccess {
+                                            it.name = prop.name
+                                            it.id = prop.rxcui
+                                        }
+                                        .getAttributes()
+                            }
+                            .toList()
+                }
+    }
+
+    private fun searchUrl(id: String): Single<String> {
+        return medlineApi.getMedlineUrl(id)
+                .map { it.feed?.entry!![0].link[0].href }
+    }
+
+    private fun searchInteractions(id: String): Single<List<InteractionPair>> {
+        return medApi.getInteraction(id)
+                .flatMapObservable { model ->
+                    Observable.fromIterable(model.interactionTypeGroup)
+                            .flatMap { group ->
+                                Observable.fromIterable(group.interactionType)
+                                        .map { it.interactionPair }
+                                        .concatMap { pairList ->
+                                            Observable.fromIterable(pairList)
+                                                    .map {
+                                                        val source = it.interactionConcept[0].sourceConceptItem?.name
+                                                                ?: ""
+                                                        val sourceUrl = it.interactionConcept[0].sourceConceptItem?.url
+                                                                ?: ""
+                                                        val partner = it.interactionConcept[1].sourceConceptItem?.name
+                                                                ?: ""
+                                                        val partnerUrl = it.interactionConcept[1].sourceConceptItem?.url
+                                                                ?: ""
+                                                        val interaction = it.description
+                                                        return@map InteractionPair(source, sourceUrl, partner, partnerUrl, interaction)
+                                                    }
+                                                    .filter { it.interaction.isNotEmpty() }
+                                        }
+                            }
+                }.toList()
+    }
+
+    private fun Single<Medicine>.getAttributes(): Single<Medicine> {
+        return this.flatMap { medicine ->
+            medApi.getAttributes(medicine.id)
+                    .map { it.propConceptGroup?.propConcept }
+                    .flatMap { propConceptList ->
+                        Observable.fromIterable(propConceptList)
+                                .doOnNext { propConcept ->
+                                    when (propConcept.propName) {
+                                        Attributes.TTY.name -> medicine.type = MedicineType[propConcept.propValue]
+                                        Attributes.PRESCRIBABLE.name -> medicine.isPrescribable = propConcept.propValue == "Y"
+                                    }
+                                }
+                                .toList()
+                    }
+                    .map { medicine }
+                    .onErrorResumeNext(Single.just(medicine))
+        }
+    }
+//endregion
 }

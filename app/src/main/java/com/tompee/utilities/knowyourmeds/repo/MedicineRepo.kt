@@ -1,11 +1,21 @@
 package com.tompee.utilities.knowyourmeds.repo
 
-import com.tompee.utilities.knowyourmeds.model.Medicine2
-import io.reactivex.Completable
+import com.tompee.utilities.knowyourmeds.model.InteractionPair
+import com.tompee.utilities.knowyourmeds.model.MarketDrug
+import com.tompee.utilities.knowyourmeds.model.Medicine
+import com.tompee.utilities.knowyourmeds.model.MedicineType
 import io.reactivex.Single
 
 interface MedicineRepo {
-    fun searchMedicine(name: String): Single<Medicine2>
+    fun getMedicine(name: String): Single<Medicine>
 
-    fun populateMedicineInfo(medicine: Medicine2): Completable
+    fun getProperties(id: String): Single<List<String>>
+
+    fun getMarketDrugs(id: String): Single<List<MarketDrug>>
+
+    fun getMedicineType(id: String, type: MedicineType): Single<List<Medicine>>
+
+    fun getUrl(id: String): Single<String>
+
+    fun getInteractions(id: String): Single<List<InteractionPair>>
 }
