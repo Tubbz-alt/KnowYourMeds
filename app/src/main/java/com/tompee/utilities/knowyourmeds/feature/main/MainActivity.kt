@@ -27,6 +27,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     @Inject
     lateinit var factory: MainViewModel.Factory
 
+    @Inject
+    lateinit var pagerAdapter: MainPagerAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -76,6 +79,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     override fun setupBindingAndViewModel(binding: ActivityMainBinding) {
         setToolbar(binding.include.toolbar, false)
+        binding.viewPager.apply {
+            offscreenPageLimit = pagerAdapter.count
+            adapter = pagerAdapter
+        }
 
         val vm = ViewModelProviders.of(this, factory)[MainViewModel::class.java]
         binding.viewModel = vm

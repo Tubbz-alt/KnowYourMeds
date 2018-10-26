@@ -4,6 +4,8 @@ import com.tompee.utilities.knowyourmeds.model.InteractionPair
 import com.tompee.utilities.knowyourmeds.model.MarketDrug
 import com.tompee.utilities.knowyourmeds.model.Medicine
 import com.tompee.utilities.knowyourmeds.model.MedicineType
+import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 
 interface MedicineRepo {
@@ -24,4 +26,8 @@ interface MedicineRepo {
     fun getInteractions(id: String): Single<List<InteractionPair>>
 
     fun getCachedInteractions(id: String): Single<List<InteractionPair>>
+
+    fun getMedicineList(): Observable<List<Medicine>>
+
+    fun deleteMedicine(medicine: Medicine): Completable
 }

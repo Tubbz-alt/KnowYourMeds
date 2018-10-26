@@ -5,6 +5,8 @@ import com.tompee.utilities.knowyourmeds.core.api.MedApi
 import com.tompee.utilities.knowyourmeds.core.asset.AssetManager
 import com.tompee.utilities.knowyourmeds.core.preferences.Preferences
 import com.tompee.utilities.knowyourmeds.di.scope.MainScope
+import com.tompee.utilities.knowyourmeds.feature.main.cache.CacheFragment
+import com.tompee.utilities.knowyourmeds.feature.main.cache.CacheModule
 import com.tompee.utilities.knowyourmeds.feature.main.disclaimer.DisclaimerDialog
 import com.tompee.utilities.knowyourmeds.feature.main.rater.AppRaterDialog
 import com.tompee.utilities.knowyourmeds.feature.main.search.SearchFragment
@@ -30,7 +32,16 @@ class MainModule {
 
         @ContributesAndroidInjector
         fun bindAppRaterDialog(): AppRaterDialog
+
+        @ContributesAndroidInjector(modules = [CacheModule::class])
+        fun bindCacheFragment(): CacheFragment
     }
+
+    @MainScope
+    @Provides
+    fun provideMainPagerAdapter(mainActivity: MainActivity): MainPagerAdapter =
+            MainPagerAdapter(mainActivity.supportFragmentManager,
+                    CacheFragment.newInstance(true), CacheFragment.newInstance(false))
 
     @MainScope
     @Provides

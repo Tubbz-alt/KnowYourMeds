@@ -22,5 +22,6 @@ abstract class ListViewModel<I : BaseInteractor, T>(interactor: I, schedulerPool
     protected fun postList(list: List<T>) {
         isListEmpty.postValue(list.isEmpty())
         this.list.postValue(list)
+        count.postValue(list.size)
     }
 }

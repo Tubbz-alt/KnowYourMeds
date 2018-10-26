@@ -42,7 +42,6 @@ class MarketDrugViewModel private constructor(detailInteractor: DetailInteractor
         super.search()
         subscriptions += Completable.fromAction { searching.postValue(true) }
                 .andThen(interactor.getMarketDrugs())
-                .doOnSuccess { count.postValue(it.size) }
                 .doFinally { searching.postValue(false) }
                 .subscribeOn(schedulerPool.io)
                 .subscribe(::postList) { isListEmpty.postValue(true) }

@@ -1,6 +1,7 @@
 package com.tompee.utilities.knowyourmeds.core.database
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -9,6 +10,7 @@ import com.tompee.utilities.knowyourmeds.core.database.entities.MarketDrugEntity
 import com.tompee.utilities.knowyourmeds.core.database.entities.MedicineEntity
 import com.tompee.utilities.knowyourmeds.core.database.entities.TypeEntity
 import com.tompee.utilities.knowyourmeds.model.MedicineType
+import io.reactivex.Observable
 import io.reactivex.Single
 
 @Dao
@@ -43,4 +45,10 @@ interface MedicineDao {
 
     @Query("SELECT * FROM interactions WHERE medId = :id")
     fun getInteractions(id: String): Single<List<InteractionEntity>>
+
+    @Query("SELECT * FROM medicine ")
+    fun getMedicines(): Observable<List<MedicineEntity>>
+
+    @Delete
+    fun deleteMedicine(medicineEntity: MedicineEntity): Single<Int>
 }

@@ -16,6 +16,7 @@ import com.tompee.utilities.knowyourmeds.model.MarketDrug
 import com.tompee.utilities.knowyourmeds.model.Medicine
 import com.tompee.utilities.knowyourmeds.model.MedicineType
 import com.tompee.utilities.knowyourmeds.repo.MedicineRepo
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -23,6 +24,7 @@ class MedicineRepoImpl(private val medApi: MedApi,
                        private val dailyMedApi: DailyMedApi,
                        private val medlineApi: MedlineApi,
                        private val medicineDao: MedicineDao) : MedicineRepo {
+
     override fun getMedicine(name: String): Single<Medicine> {
         return medApi.getRxNormId(name)
                 .map { it.group?.idList!![0] }
@@ -40,13 +42,18 @@ class MedicineRepoImpl(private val medApi: MedApi,
                 }
     }
 
+    override fun deleteMedicine(medicine: Medicine): Completable {
+        return medicineDao.deleteMedicine(medicine.convertToEntity())
+                .ignoreElement()
+    }
+
     override fun getProperties(id: String): Single<List<String>> {
         return medicineDao.getMedicineFrom(id)
                 .map { it.ingredientList }
                 .filter { it.isNotEmpty() }
                 .toSingle()
                 .onErrorResumeNext(searchIngredientsFromNetwork(id)
-                        .doOnSuccess { medicineDao.updateIngredients(id, it) })
+                        .doOnSuccess { /*medicineDao.updateIngredients(id, it)*/ })
     }
 
     override fun getMarketDrugs(id: String): Single<List<MarketDrug>> {
@@ -112,7 +119,20 @@ class MedicineRepoImpl(private val medApi: MedApi,
                 .convertToPair()
     }
 
+    override fun getMedicineList(): Observable<List<Medicine>> =
+            medicineDao.getMedicines()
+                    .convertToMedicine()
+
     //region Extensions
+    private fun Observable<List<MedicineEntity>>.convertToMedicine(): Observable<List<Medicine>> {
+        return this.flatMap { list ->
+            Observable.fromIterable(list)
+                    .map { it.convertToMedicine() }
+                    .toList()
+                    .toObservable()
+        }
+    }
+
     private fun Single<List<MarketDrugEntity>>.convertToMarketDrug(): Single<List<MarketDrug>> {
         return this.flatMap { list ->
             Observable.fromIterable(list)

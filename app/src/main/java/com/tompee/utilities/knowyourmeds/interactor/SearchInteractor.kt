@@ -38,4 +38,12 @@ class SearchInteractor(private val medApi: MedApi,
     fun setDontShowDisclaimerNext() {
         preferences.showDisclaimerNext(false)
     }
+
+    fun getMedicineList(): Observable<List<Medicine>> = medicineRepo.getMedicineList()
+
+    fun deleteMedicine(medicine: Medicine) = medicineRepo.deleteMedicine(medicine)
+
+    fun setNewStockMedicine(medicine: Medicine) {
+        medicineContainer.medicine = medicine
+    }
 }

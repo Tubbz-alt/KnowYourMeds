@@ -42,7 +42,6 @@ class InteractionViewModel private constructor(detailInteractor: DetailInteracto
         super.search()
         subscriptions += Completable.fromAction { searching.postValue(true) }
                 .andThen(interactor.getInteractions())
-                .doOnSuccess { count.postValue(it.size) }
                 .doFinally { searching.postValue(false) }
                 .subscribeOn(schedulerPool.io)
                 .subscribe(::postList) {
