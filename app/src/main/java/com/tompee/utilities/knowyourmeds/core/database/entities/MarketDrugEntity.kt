@@ -4,21 +4,30 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import androidx.room.PrimaryKey
 import com.tompee.utilities.knowyourmeds.model.MarketDrug
 
 @Entity(tableName = "market_drug",
+        primaryKeys = ["medId", "setId"],
         foreignKeys = [ForeignKey(entity = MedicineEntity::class,
                 parentColumns = ["id"], childColumns = ["medId"], onDelete = ForeignKey.CASCADE)],
-        indices = [Index(value = ["medId"], unique = true)])
+        indices = [Index(name = "marketEntityIndex", value = ["medId"])])
 data class MarketDrugEntity(
-
-        @PrimaryKey(autoGenerate = true)
-        var id: Int = 0,
 
         @ColumnInfo(name = "medId")
         var medId: String = "",
 
-        @ColumnInfo(name = "list")
-        var list: List<MarketDrug> = listOf()
-)
+        @ColumnInfo(name = "name")
+        var name: String = "",
+
+        @ColumnInfo(name = "setId")
+        var setId: String = "",
+
+        @ColumnInfo(name = "version")
+        var version: Int = 0,
+
+        @ColumnInfo(name = "date")
+        var publishedDate: String = ""
+) {
+    fun convertToMarketDrug(): MarketDrug =
+            MarketDrug(name, setId, version, publishedDate)
+}

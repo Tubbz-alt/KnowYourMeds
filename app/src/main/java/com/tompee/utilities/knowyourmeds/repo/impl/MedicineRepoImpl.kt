@@ -51,21 +51,51 @@ class MedicineRepoImpl(private val medApi: MedApi,
     }
 
     override fun getMarketDrugs(id: String): Single<List<MarketDrug>> {
-        return medicineDao.getMarketDrugFrom(id)
-                .map { it.list }
-                .onErrorResumeNext(searchMarketDrugs(id)
-                        .doOnSuccess {
-                            medicineDao.insert(MarketDrugEntity(0, id, it))
-                        })
+        fun Single<List<MarketDrugEntity>>.convertToMarketDrug(): Single<List<MarketDrug>> {
+            return this.flatMap { list ->
+                Observable.fromIterable(list)
+                        .map { it.convertToMarketDrug() }
+                        .toList()
+            }
+        }
+
+        return medicineDao.getMarketDrug(id)
+                .filter { it.isNotEmpty() }
+                .toSingle()
+                .convertToMarketDrug()
+                .onErrorResumeNext(
+                        searchMarketDrugs(id)
+                                .flatMap { list ->
+                                    Observable.fromIterable(list)
+                                            .map { it.convertToEntity(id) }
+                                            .toList()
+                                            .doOnSuccess { medicineDao.insertMarketDrug(it) }
+                                            .map { list }
+                                })
     }
 
     override fun getMedicineType(id: String, type: MedicineType): Single<List<Medicine>> {
+        fun Single<List<TypeEntity>>.convertToMedicine(): Single<List<Medicine>> {
+            return this.flatMap { list ->
+                Observable.fromIterable(list)
+                        .map { it.convertToMedicine() }
+                        .toList()
+            }
+        }
+
         return medicineDao.getMedicineType(id, type)
-                .map { it.list }
-                .onErrorResumeNext(searchTtyValues(id, type.tag)
-                        .doOnSuccess {
-                            medicineDao.insert(TypeEntity(0, id, type, it))
-                        })
+                .filter { it.isNotEmpty() }
+                .toSingle()
+                .convertToMedicine()
+                .onErrorResumeNext(
+                        searchTtyValues(id, type.tag)
+                                .flatMap { list ->
+                                    Observable.fromIterable(list)
+                                            .map { it.convertToTypeEntity(id) }
+                                            .toList()
+                                            .doOnSuccess { medicineDao.insertType(it) }
+                                            .map { list }
+                                })
     }
 
     override fun getUrl(id: String): Single<String> {
@@ -78,16 +108,39 @@ class MedicineRepoImpl(private val medApi: MedApi,
     }
 
     override fun getInteractions(id: String): Single<List<InteractionPair>> {
+        fun Single<List<InteractionEntity>>.convertToPair(): Single<List<InteractionPair>> {
+            return this.flatMap { list ->
+                Observable.fromIterable(list)
+                        .map { it.convertToPair() }
+                        .toList()
+            }
+        }
         return medicineDao.getInteractions(id)
-                .map { it.list }
-                .onErrorResumeNext(searchInteractions(id)
-                        .doOnSuccess {
-                            medicineDao.insert(InteractionEntity(0, id, it))
-                        })
+                .filter { it.isNotEmpty() }
+                .toSingle()
+                .convertToPair()
+                .onErrorResumeNext(
+                        searchInteractions(id)
+                                .flatMap { list ->
+                                    Observable.fromIterable(list)
+                                            .map { it.convertToEntity(id) }
+                                            .toList()
+                                            .doOnSuccess { medicineDao.insertInteraction(it) }
+                                            .map { list }
+                                })
     }
 
     private fun Medicine.convertToEntity(): MedicineEntity =
             MedicineEntity(id, name, url, isPrescribable, type, ingredientList)
+
+    private fun Medicine.convertToTypeEntity(medId: String): TypeEntity =
+            TypeEntity(medId, type, id, name, isPrescribable)
+
+    private fun MarketDrug.convertToEntity(medId: String): MarketDrugEntity =
+            MarketDrugEntity(medId, name, setId, version, publishedDate)
+
+    private fun InteractionPair.convertToEntity(medId: String): InteractionEntity =
+            InteractionEntity(medId, source, sourceUrl, partner, partnerUrl, interaction)
 
     //region Network
     private fun searchMedicineFromNetwork(name: String): Single<Medicine> {

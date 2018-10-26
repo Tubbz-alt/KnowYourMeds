@@ -52,6 +52,6 @@ class MainViewModel private constructor(searchInteractor: SearchInteractor,
     }
 
     fun onDisclaimerAccepted() {
-        interactor.setShowDisclaimerNext(false)
+        interactor.setDontShowDisclaimerNext()
     }
 }

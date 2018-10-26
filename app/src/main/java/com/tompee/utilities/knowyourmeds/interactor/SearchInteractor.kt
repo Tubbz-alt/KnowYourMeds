@@ -35,7 +35,7 @@ class SearchInteractor(private val medApi: MedApi,
                                     .doOnSuccess { medicineContainer.medicine = null }
                     )
 
-    fun setShowDisclaimerNext(isShow: Boolean) {
+    fun setDontShowDisclaimerNext() {
         preferences.showDisclaimerNext(false)
     }
 }

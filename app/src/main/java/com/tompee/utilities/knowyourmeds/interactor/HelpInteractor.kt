@@ -15,6 +15,7 @@ class HelpInteractor(private val assetManager: AssetManager) : BaseInteractor {
                 Html.fromHtml(assetManager.getStringFromAsset(assetName),
                         Html.FROM_HTML_MODE_LEGACY)
             } else {
+                @Suppress("DEPRECATION")
                 Html.fromHtml(assetManager.getStringFromAsset(assetName))
             }
         }

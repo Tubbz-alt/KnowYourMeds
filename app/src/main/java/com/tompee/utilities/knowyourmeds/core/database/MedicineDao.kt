@@ -27,20 +27,20 @@ interface MedicineDao {
     fun updateIngredients(id: String, ingredients: List<String>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(marketDrugEntity: MarketDrugEntity)
+    fun insertMarketDrug(marketDrugEntityList: List<MarketDrugEntity>)
 
     @Query("SELECT * FROM market_drug WHERE medId = :id")
-    fun getMarketDrugFrom(id: String): Single<MarketDrugEntity>
+    fun getMarketDrug(id: String): Single<List<MarketDrugEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(typeEntity: TypeEntity)
+    fun insertType(typeEntityList: List<TypeEntity>)
 
     @Query("SELECT * FROM medicine_type WHERE medId = :id  AND type = :type")
-    fun getMedicineType(id: String, type: MedicineType): Single<TypeEntity>
+    fun getMedicineType(id: String, type: MedicineType): Single<List<TypeEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(interactionEntity: InteractionEntity)
+    fun insertInteraction(interactionEntityList: List<InteractionEntity>)
 
     @Query("SELECT * FROM interactions WHERE medId = :id")
-    fun getInteractions(id: String): Single<InteractionEntity>
+    fun getInteractions(id: String): Single<List<InteractionEntity>>
 }

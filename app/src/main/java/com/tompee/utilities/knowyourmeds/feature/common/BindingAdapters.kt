@@ -10,8 +10,8 @@ import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.model.MedicineType
 
 @BindingAdapter("visibleGone")
-fun showHide(view: View, isVisible: Boolean) {
-    view.visibility = if (isVisible) View.VISIBLE else View.GONE
+fun showHide(view: View, isVisible: java.lang.Boolean?) {
+    view.visibility = if (isVisible != null && isVisible.booleanValue()) View.VISIBLE else View.GONE
 }
 
 @BindingAdapter("intText")
