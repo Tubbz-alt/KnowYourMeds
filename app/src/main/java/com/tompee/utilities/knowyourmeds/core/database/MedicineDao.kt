@@ -14,7 +14,7 @@ import io.reactivex.Single
 @Dao
 interface MedicineDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(medicine: MedicineEntity)
 
     @Query("SELECT * FROM medicine WHERE id = :id")

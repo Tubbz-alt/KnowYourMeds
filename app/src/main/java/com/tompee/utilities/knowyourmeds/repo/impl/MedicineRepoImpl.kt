@@ -1,5 +1,6 @@
 package com.tompee.utilities.knowyourmeds.repo.impl
 
+import android.util.Log
 import com.tompee.utilities.knowyourmeds.core.api.Attributes
 import com.tompee.utilities.knowyourmeds.core.api.DailyMedApi
 import com.tompee.utilities.knowyourmeds.core.api.Data
@@ -23,7 +24,6 @@ class MedicineRepoImpl(private val medApi: MedApi,
                        private val dailyMedApi: DailyMedApi,
                        private val medlineApi: MedlineApi,
                        private val medicineDao: MedicineDao) : MedicineRepo {
-
     override fun getMedicine(name: String): Single<Medicine> {
         return medApi.getRxNormId(name)
                 .map { it.idGroup?.rxnormId!![0] }
@@ -51,51 +51,41 @@ class MedicineRepoImpl(private val medApi: MedApi,
     }
 
     override fun getMarketDrugs(id: String): Single<List<MarketDrug>> {
-        fun Single<List<MarketDrugEntity>>.convertToMarketDrug(): Single<List<MarketDrug>> {
-            return this.flatMap { list ->
-                Observable.fromIterable(list)
-                        .map { it.convertToMarketDrug() }
-                        .toList()
-            }
-        }
+        return searchMarketDrugs(id)
+                .flatMap { list ->
+                    Observable.fromIterable(list)
+                            .map { it.convertToEntity(id) }
+                            .toList()
+                            .doOnSuccess { medicineDao.insertMarketDrug(it) }
+                            .map { list }
+                }
+    }
 
+    override fun getCachedMarketDrugs(id: String): Single<List<MarketDrug>> {
         return medicineDao.getMarketDrug(id)
+                .doOnSuccess({ Log.d("room", it.toString()) })
+                .doOnError({ Log.d("room", it.message) })
                 .filter { it.isNotEmpty() }
                 .toSingle()
                 .convertToMarketDrug()
-                .onErrorResumeNext(
-                        searchMarketDrugs(id)
-                                .flatMap { list ->
-                                    Observable.fromIterable(list)
-                                            .map { it.convertToEntity(id) }
-                                            .toList()
-                                            .doOnSuccess { medicineDao.insertMarketDrug(it) }
-                                            .map { list }
-                                })
     }
 
     override fun getMedicineType(id: String, type: MedicineType): Single<List<Medicine>> {
-        fun Single<List<TypeEntity>>.convertToMedicine(): Single<List<Medicine>> {
-            return this.flatMap { list ->
-                Observable.fromIterable(list)
-                        .map { it.convertToMedicine() }
-                        .toList()
-            }
-        }
+        return searchTtyValues(id, type.tag)
+                .flatMap { list ->
+                    Observable.fromIterable(list)
+                            .map { it.convertToTypeEntity(id) }
+                            .toList()
+                            .doOnSuccess { medicineDao.insertType(it) }
+                            .map { list }
+                }
+    }
 
+    override fun getCachedMedicineType(id: String, type: MedicineType): Single<List<Medicine>> {
         return medicineDao.getMedicineType(id, type)
                 .filter { it.isNotEmpty() }
                 .toSingle()
                 .convertToMedicine()
-                .onErrorResumeNext(
-                        searchTtyValues(id, type.tag)
-                                .flatMap { list ->
-                                    Observable.fromIterable(list)
-                                            .map { it.convertToTypeEntity(id) }
-                                            .toList()
-                                            .doOnSuccess { medicineDao.insertType(it) }
-                                            .map { list }
-                                })
     }
 
     override fun getUrl(id: String): Single<String> {
@@ -108,26 +98,46 @@ class MedicineRepoImpl(private val medApi: MedApi,
     }
 
     override fun getInteractions(id: String): Single<List<InteractionPair>> {
-        fun Single<List<InteractionEntity>>.convertToPair(): Single<List<InteractionPair>> {
-            return this.flatMap { list ->
-                Observable.fromIterable(list)
-                        .map { it.convertToPair() }
-                        .toList()
-            }
-        }
+        return searchInteractions(id)
+                .flatMap { list ->
+                    Observable.fromIterable(list)
+                            .map { it.convertToEntity(id) }
+                            .toList()
+                            .doOnSuccess { medicineDao.insertInteraction(it) }
+                            .map { list }
+                }
+    }
+
+    override fun getCachedInteractions(id: String): Single<List<InteractionPair>> {
         return medicineDao.getInteractions(id)
                 .filter { it.isNotEmpty() }
                 .toSingle()
                 .convertToPair()
-                .onErrorResumeNext(
-                        searchInteractions(id)
-                                .flatMap { list ->
-                                    Observable.fromIterable(list)
-                                            .map { it.convertToEntity(id) }
-                                            .toList()
-                                            .doOnSuccess { medicineDao.insertInteraction(it) }
-                                            .map { list }
-                                })
+    }
+
+    //region Extensions
+    private fun Single<List<MarketDrugEntity>>.convertToMarketDrug(): Single<List<MarketDrug>> {
+        return this.flatMap { list ->
+            Observable.fromIterable(list)
+                    .map { it.convertToMarketDrug() }
+                    .toList()
+        }
+    }
+
+    private fun Single<List<TypeEntity>>.convertToMedicine(): Single<List<Medicine>> {
+        return this.flatMap { list ->
+            Observable.fromIterable(list)
+                    .map { it.convertToMedicine() }
+                    .toList()
+        }
+    }
+
+    private fun Single<List<InteractionEntity>>.convertToPair(): Single<List<InteractionPair>> {
+        return this.flatMap { list ->
+            Observable.fromIterable(list)
+                    .map { it.convertToPair() }
+                    .toList()
+        }
     }
 
     private fun Medicine.convertToEntity(): MedicineEntity =
@@ -141,6 +151,7 @@ class MedicineRepoImpl(private val medApi: MedApi,
 
     private fun InteractionPair.convertToEntity(medId: String): InteractionEntity =
             InteractionEntity(medId, source, sourceUrl, partner, partnerUrl, interaction)
+    //endregion
 
     //region Network
     private fun searchMedicineFromNetwork(name: String): Single<Medicine> {

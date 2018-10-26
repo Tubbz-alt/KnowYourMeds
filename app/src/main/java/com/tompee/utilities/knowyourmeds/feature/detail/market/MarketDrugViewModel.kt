@@ -27,6 +27,15 @@ class MarketDrugViewModel private constructor(detailInteractor: DetailInteractor
 
     init {
         title.postValue(context.getString(R.string.label_market_drugs))
+        subscriptions += Completable.fromAction {
+            showSearchButton.postValue(false)
+            searching.postValue(true)
+        }.andThen(interactor.getCachedMarketDrugs())
+                .doFinally { searching.postValue(false) }
+                .subscribeOn(schedulerPool.io)
+                .subscribe(::postList) {
+                    showSearchButton.postValue(true)
+                }
     }
 
     override fun search() {
@@ -36,9 +45,6 @@ class MarketDrugViewModel private constructor(detailInteractor: DetailInteractor
                 .doOnSuccess { count.postValue(it.size) }
                 .doFinally { searching.postValue(false) }
                 .subscribeOn(schedulerPool.io)
-                .subscribe({
-                    isListEmpty.postValue(it.isEmpty())
-                    list.postValue(it)
-                }) { isListEmpty.postValue(true) }
+                .subscribe(::postList) { isListEmpty.postValue(true) }
     }
 }

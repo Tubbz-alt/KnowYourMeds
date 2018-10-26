@@ -27,6 +27,15 @@ class InteractionViewModel private constructor(detailInteractor: DetailInteracto
 
     init {
         title.postValue(context.getString(R.string.label_interaction))
+        subscriptions += Completable.fromAction {
+            showSearchButton.postValue(false)
+            searching.postValue(true)
+        }.andThen(interactor.getCachedInteractions())
+                .doFinally { searching.postValue(false) }
+                .subscribeOn(schedulerPool.io)
+                .subscribe(::postList) {
+                    showSearchButton.postValue(true)
+                }
     }
 
     override fun search() {
@@ -36,10 +45,7 @@ class InteractionViewModel private constructor(detailInteractor: DetailInteracto
                 .doOnSuccess { count.postValue(it.size) }
                 .doFinally { searching.postValue(false) }
                 .subscribeOn(schedulerPool.io)
-                .subscribe({
-                    isListEmpty.postValue(it.isEmpty())
-                    list.postValue(it)
-                }) {
+                .subscribe(::postList) {
                     isListEmpty.postValue(true)
                 }
     }

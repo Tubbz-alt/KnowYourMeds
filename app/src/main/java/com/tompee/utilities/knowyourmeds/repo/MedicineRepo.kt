@@ -13,9 +13,15 @@ interface MedicineRepo {
 
     fun getMarketDrugs(id: String): Single<List<MarketDrug>>
 
+    fun getCachedMarketDrugs(id: String): Single<List<MarketDrug>>
+
     fun getMedicineType(id: String, type: MedicineType): Single<List<Medicine>>
+
+    fun getCachedMedicineType(id: String, type: MedicineType): Single<List<Medicine>>
 
     fun getUrl(id: String): Single<String>
 
     fun getInteractions(id: String): Single<List<InteractionPair>>
+
+    fun getCachedInteractions(id: String): Single<List<InteractionPair>>
 }

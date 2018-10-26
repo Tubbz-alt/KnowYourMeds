@@ -30,7 +30,13 @@ class DetailInteractor(private val medicineContainer: MedicineContainer,
 
     fun getMarketDrugs(): Single<List<MarketDrug>> = medicineRepo.getMarketDrugs(medicineContainer.medicine!!.id)
 
+    fun getCachedMarketDrugs(): Single<List<MarketDrug>> = medicineRepo.getCachedMarketDrugs(medicineContainer.medicine!!.id)
+
+    fun getCachedMedicineType(type: MedicineType): Single<List<Medicine>> = medicineRepo.getCachedMedicineType(medicineContainer.medicine!!.id, type)
+
     fun getMedicineType(type: MedicineType): Single<List<Medicine>> = medicineRepo.getMedicineType(medicineContainer.medicine!!.id, type)
 
     fun getInteractions(): Single<List<InteractionPair>> = medicineRepo.getInteractions(medicineContainer.medicine!!.id)
+
+    fun getCachedInteractions(): Single<List<InteractionPair>> = medicineRepo.getCachedInteractions(medicineContainer.medicine!!.id)
 }

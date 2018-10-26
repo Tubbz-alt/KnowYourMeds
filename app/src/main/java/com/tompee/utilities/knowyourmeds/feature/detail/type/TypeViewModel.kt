@@ -37,6 +37,16 @@ class TypeViewModel private constructor(detailInteractor: DetailInteractor,
     fun onLoad(type: MedicineType) {
         this.type = type
         determineTitle(context, type)
+
+        subscriptions += Completable.fromAction {
+            showSearchButton.postValue(false)
+            searching.postValue(true)
+        }.andThen(interactor.getCachedMedicineType(type))
+                .doFinally { searching.postValue(false) }
+                .subscribeOn(schedulerPool.io)
+                .subscribe(::postList) {
+                    showSearchButton.postValue(true)
+                }
     }
 
     override fun search() {
@@ -46,10 +56,7 @@ class TypeViewModel private constructor(detailInteractor: DetailInteractor,
                 .doOnSuccess { count.postValue(it.size) }
                 .doFinally { searching.postValue(false) }
                 .subscribeOn(schedulerPool.io)
-                .subscribe({
-                    isListEmpty.postValue(it.isEmpty())
-                    list.postValue(it)
-                }) { isListEmpty.postValue(true) }
+                .subscribe(::postList) { isListEmpty.postValue(true) }
     }
 
     private fun determineTitle(context: Context, type: MedicineType) {

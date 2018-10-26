@@ -18,4 +18,9 @@ abstract class ListViewModel<I : BaseInteractor, T>(interactor: I, schedulerPool
     open fun search() {
         showSearchButton.postValue(false)
     }
+
+    protected fun postList(list: List<T>) {
+        isListEmpty.postValue(list.isEmpty())
+        this.list.postValue(list)
+    }
 }
