@@ -15,6 +15,8 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.CallAdapter
+import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
@@ -36,10 +38,20 @@ class CoreModule {
 
     @Provides
     @Singleton
-    fun provideDailyMedApi(client: OkHttpClient): DailyMedApi {
+    fun provideConverterFactory() : Converter.Factory = JacksonConverterFactory.create()
+
+    @Provides
+    @Singleton
+    fun provideCallAdapterFactory(): CallAdapter.Factory = RxJava2CallAdapterFactory.create()
+
+    @Provides
+    @Singleton
+    fun provideDailyMedApi(client: OkHttpClient,
+                           callAdapter : CallAdapter.Factory,
+                           converter: Converter.Factory): DailyMedApi {
         val retrofit = Retrofit.Builder()
-                .addConverterFactory(JacksonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(converter)
+                .addCallAdapterFactory(callAdapter)
                 .baseUrl(Constants.DAILY_MED_BASE_URL)
                 .client(client)
                 .build()
@@ -48,10 +60,12 @@ class CoreModule {
 
     @Provides
     @Singleton
-    fun provideMedApi(client: OkHttpClient): MedApi {
+    fun provideMedApi(client: OkHttpClient,
+                      callAdapter : CallAdapter.Factory,
+                      converter: Converter.Factory): MedApi {
         val retrofit = Retrofit.Builder()
-                .addConverterFactory(JacksonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(converter)
+                .addCallAdapterFactory(callAdapter)
                 .baseUrl(Constants.MED_BASE_URL)
                 .client(client)
                 .build()
@@ -60,10 +74,12 @@ class CoreModule {
 
     @Provides
     @Singleton
-    fun provideMedlineApi(client: OkHttpClient): MedlineApi {
+    fun provideMedlineApi(client: OkHttpClient,
+                          callAdapter : CallAdapter.Factory,
+                          converter: Converter.Factory): MedlineApi {
         val retrofit = Retrofit.Builder()
-                .addConverterFactory(JacksonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(converter)
+                .addCallAdapterFactory(callAdapter)
                 .baseUrl(Constants.MEDLINE_BASE_URL)
                 .client(client)
                 .build()

@@ -1,6 +1,5 @@
 package com.tompee.utilities.knowyourmeds.repo.impl
 
-import android.util.Log
 import com.tompee.utilities.knowyourmeds.core.api.Attributes
 import com.tompee.utilities.knowyourmeds.core.api.DailyMedApi
 import com.tompee.utilities.knowyourmeds.core.api.Data
@@ -26,7 +25,7 @@ class MedicineRepoImpl(private val medApi: MedApi,
                        private val medicineDao: MedicineDao) : MedicineRepo {
     override fun getMedicine(name: String): Single<Medicine> {
         return medApi.getRxNormId(name)
-                .map { it.idGroup?.rxnormId!![0] }
+                .map { it.group?.idList!![0] }
                 .flatMap { id ->
                     medicineDao.getMedicineFrom(id)
                             .map { it.convertToMedicine() }
@@ -63,8 +62,6 @@ class MedicineRepoImpl(private val medApi: MedApi,
 
     override fun getCachedMarketDrugs(id: String): Single<List<MarketDrug>> {
         return medicineDao.getMarketDrug(id)
-                .doOnSuccess({ Log.d("room", it.toString()) })
-                .doOnError({ Log.d("room", it.message) })
                 .filter { it.isNotEmpty() }
                 .toSingle()
                 .convertToMarketDrug()
@@ -158,7 +155,7 @@ class MedicineRepoImpl(private val medApi: MedApi,
         fun Single<Medicine>.getRxNormId(name: String): Single<Medicine> {
             return this.flatMap { medicine ->
                 medApi.getRxNormId(name)
-                        .doOnSuccess { medicine.id = it.idGroup?.rxnormId!![0] }
+                        .doOnSuccess { medicine.id = it.group?.idList!![0] }
                         .map { medicine }
             }
         }
@@ -166,7 +163,7 @@ class MedicineRepoImpl(private val medApi: MedApi,
         fun Single<Medicine>.getMedicineName(): Single<Medicine> {
             return this.flatMap { medicine ->
                 medApi.getName(medicine.id)
-                        .doOnSuccess { medicine.name = it.propConceptGroup?.propConcept!![0].propValue }
+                        .doOnSuccess { medicine.name = it.group?.list!![0].value }
                         .map { medicine }
                         .onErrorResumeNext(Single.just(medicine))
             }
@@ -180,12 +177,12 @@ class MedicineRepoImpl(private val medApi: MedApi,
 
     private fun searchIngredientsFromNetwork(id: String): Single<List<String>> {
         return medApi.getTtyValues(id, Ingredient.tag)
-                .map { it.relatedGroup?.conceptGroup!! }
+                .map { it.relatedGroup?.conceptGroupList!! }
                 .flatMap { conceptGroupList ->
                     Observable.fromIterable(conceptGroupList)
-                            .map { it.conceptProperties }
-                            .flatMap { conceptPropertiesList ->
-                                Observable.fromIterable(conceptPropertiesList)
+                            .map { it.propertyList }
+                            .flatMap { propertyList ->
+                                Observable.fromIterable(propertyList)
                                         .map { it.name }
                             }
                             .toList()
@@ -196,16 +193,16 @@ class MedicineRepoImpl(private val medApi: MedApi,
     private fun searchMarketDrugs(id: String): Single<List<MarketDrug>> {
         fun iterateData(data: List<Data>): Observable<MarketDrug> {
             return Observable.fromIterable(data)
-                    .map { MarketDrug(it.title, it.setid, it.spl_version, it.published_date) }
+                    .map { MarketDrug(it.title, it.setId, it.version, it.date) }
         }
 
         return dailyMedApi.getSpl(id, 1)
                 .map { it.metadata }
                 .flatMap { metadata ->
-                    Observable.range(metadata.current_page, metadata.total_pages)
+                    Observable.range(metadata.current, metadata.total)
                             .flatMap { page ->
                                 dailyMedApi.getSpl(id, page)
-                                        .flatMapObservable { splModel -> iterateData(splModel.data) }
+                                        .flatMapObservable { splModel -> iterateData(splModel.dataList) }
                             }
                             .toList()
                 }
@@ -214,14 +211,14 @@ class MedicineRepoImpl(private val medApi: MedApi,
 
     private fun searchTtyValues(id: String, type: String): Single<List<Medicine>> {
         return medApi.getTtyValues(id, type)
-                .map { it.relatedGroup?.conceptGroup!![0].conceptProperties }
+                .map { it.relatedGroup?.conceptGroupList!![0].propertyList }
                 .flatMap { list ->
                     Observable.fromIterable(list)
                             .concatMapSingle { prop ->
                                 Single.just(Medicine())
                                         .doOnSuccess {
                                             it.name = prop.name
-                                            it.id = prop.rxcui
+                                            it.id = prop.id
                                         }
                                         .getAttributes()
                             }
@@ -231,26 +228,26 @@ class MedicineRepoImpl(private val medApi: MedApi,
 
     private fun searchUrl(id: String): Single<String> {
         return medlineApi.getMedlineUrl(id)
-                .map { it.feed?.entry!![0].link[0].href }
+                .map { it.feed?.entryList!![0].linkList[0].url }
     }
 
     private fun searchInteractions(id: String): Single<List<InteractionPair>> {
         return medApi.getInteraction(id)
                 .flatMapObservable { model ->
-                    Observable.fromIterable(model.interactionTypeGroup)
-                            .flatMap { group ->
-                                Observable.fromIterable(group.interactionType)
-                                        .map { it.interactionPair }
+                    Observable.fromIterable(model.typeGroupList)
+                            .flatMap { groupList ->
+                                Observable.fromIterable(groupList.typeList)
+                                        .map { it.pairList }
                                         .concatMap { pairList ->
                                             Observable.fromIterable(pairList)
                                                     .map {
-                                                        val source = it.interactionConcept[0].sourceConceptItem?.name
+                                                        val source = it.conceptList[0].source?.name
                                                                 ?: ""
-                                                        val sourceUrl = it.interactionConcept[0].sourceConceptItem?.url
+                                                        val sourceUrl = it.conceptList[0].source?.url
                                                                 ?: ""
-                                                        val partner = it.interactionConcept[1].sourceConceptItem?.name
+                                                        val partner = it.conceptList[1].source?.name
                                                                 ?: ""
-                                                        val partnerUrl = it.interactionConcept[1].sourceConceptItem?.url
+                                                        val partnerUrl = it.conceptList[1].source?.url
                                                                 ?: ""
                                                         val interaction = it.description
                                                         return@map InteractionPair(source, sourceUrl, partner, partnerUrl, interaction)
@@ -264,13 +261,13 @@ class MedicineRepoImpl(private val medApi: MedApi,
     private fun Single<Medicine>.getAttributes(): Single<Medicine> {
         return this.flatMap { medicine ->
             medApi.getAttributes(medicine.id)
-                    .map { it.propConceptGroup?.propConcept }
+                    .map { it.group?.list }
                     .flatMap { propConceptList ->
                         Observable.fromIterable(propConceptList)
                                 .doOnNext { propConcept ->
-                                    when (propConcept.propName) {
-                                        Attributes.TTY.name -> medicine.type = MedicineType[propConcept.propValue]
-                                        Attributes.PRESCRIBABLE.name -> medicine.isPrescribable = propConcept.propValue == "Y"
+                                    when (propConcept.name) {
+                                        Attributes.TTY.name -> medicine.type = MedicineType[propConcept.value]
+                                        Attributes.PRESCRIBABLE.name -> medicine.isPrescribable = propConcept.value == "Y"
                                     }
                                 }
                                 .toList()

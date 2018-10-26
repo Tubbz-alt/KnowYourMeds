@@ -25,7 +25,7 @@ class SearchInteractor(private val medApi: MedApi,
                     .map { listOf(it) }
                     .onErrorResumeNext(
                             medApi.getSuggestions(name)
-                                    .map { it.suggestionGroup?.suggestionList?.suggestion }
+                                    .map { it.group?.suggestion?.list }
                                     .flatMap { list ->
                                         Observable.fromIterable(list)
                                                 .map { name -> Medicine(name = name) }
