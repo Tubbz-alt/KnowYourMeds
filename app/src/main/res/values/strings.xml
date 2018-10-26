@@ -27,6 +27,8 @@
     <string name="control_no_rate">No Thanks</string>
     <string name="control_yes_rate">Rate now</string>
     <string name="control_find">Search now</string>
+    <string name="control_ok">OK</string>
+    <string name="control_more_info">More info</string>
 
     <!-- Properties -->
     <string name="property_prescribable_yes">Prescribable</string>

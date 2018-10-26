@@ -8,6 +8,7 @@ import com.tompee.utilities.knowyourmeds.R
 import com.tompee.utilities.knowyourmeds.base.BaseFragment
 import com.tompee.utilities.knowyourmeds.databinding.FragmentInteractionBinding
 import com.tompee.utilities.knowyourmeds.feature.common.DividerDecorator
+import com.tompee.utilities.knowyourmeds.feature.detail.interaction.dialog.InteractionDialog
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -36,6 +37,8 @@ class InteractionFragment : BaseFragment<FragmentInteractionBinding>() {
         }
 
         interactionAdapter.listener = {
+            val dialog = InteractionDialog.newInstance(it.partner, it.sourceUrl, it.interaction)
+            dialog.show(fragmentManager, "interaction")
         }
 
         vm.list.observe(this, Observer {
