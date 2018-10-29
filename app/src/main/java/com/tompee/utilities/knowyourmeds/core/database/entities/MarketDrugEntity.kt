@@ -14,19 +14,19 @@ import com.tompee.utilities.knowyourmeds.model.MarketDrug
 data class MarketDrugEntity(
 
         @ColumnInfo(name = "medId")
-        var medId: String = "",
+        val medId: String,
 
         @ColumnInfo(name = "name")
-        var name: String = "",
+        val name: String,
 
         @ColumnInfo(name = "setId")
-        var setId: String = "",
+        val setId: String,
 
         @ColumnInfo(name = "version")
-        var version: Int = 0,
+        val version: Int,
 
         @ColumnInfo(name = "date")
-        var publishedDate: String = ""
+        val publishedDate: String
 ) {
     fun convertToMarketDrug(): MarketDrug =
             MarketDrug(name, setId, version, publishedDate)

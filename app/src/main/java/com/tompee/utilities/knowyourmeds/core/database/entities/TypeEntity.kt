@@ -6,7 +6,6 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import com.tompee.utilities.knowyourmeds.model.Medicine
 import com.tompee.utilities.knowyourmeds.model.MedicineType
-import com.tompee.utilities.knowyourmeds.model.Nil
 
 @Entity(tableName = "medicine_type",
         primaryKeys = ["medId", "type", "typeId"],
@@ -15,19 +14,19 @@ import com.tompee.utilities.knowyourmeds.model.Nil
         indices = [Index(name = "typeEntityIndex", value = ["medId", "type", "typeId"], unique = true)])
 data class TypeEntity(
         @ColumnInfo(name = "medId")
-        var medId: String = "",
+        val medId: String,
 
         @ColumnInfo(name = "type")
-        var type: MedicineType = Nil,
+        val type: MedicineType,
 
         @ColumnInfo(name = "typeId")
-        var typeId: String = "",
+        val typeId: String,
 
         @ColumnInfo(name = "name")
-        var name: String = "",
+        val name: String,
 
         @ColumnInfo(name = "prescribable")
-        var isPrescribable: Boolean = false
+        val isPrescribable: Boolean
 ) {
     fun convertToMedicine(): Medicine {
         return Medicine(id = typeId, name = name, isPrescribable = isPrescribable, type = type)

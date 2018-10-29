@@ -28,7 +28,7 @@
         <include
             android:id="@+id/include"
             layout="@layout/toolbar"
-            app:title="@{viewModel.title}" />
+            app:title="@{viewModel.medicine.name}" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

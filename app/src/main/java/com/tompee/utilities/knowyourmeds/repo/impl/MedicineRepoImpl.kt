@@ -42,6 +42,10 @@ class MedicineRepoImpl(private val medApi: MedApi,
                 }
     }
 
+    override fun setFavorite(id: String, isFavorite: Boolean): Completable {
+        return Completable.fromAction { medicineDao.updateFavorite(id, isFavorite) }
+    }
+
     override fun deleteMedicine(medicine: Medicine): Completable {
         return medicineDao.deleteMedicine(medicine.convertToEntity())
                 .ignoreElement()
@@ -158,7 +162,7 @@ class MedicineRepoImpl(private val medApi: MedApi,
     }
 
     private fun Medicine.convertToEntity(): MedicineEntity =
-            MedicineEntity(id, name, url, isPrescribable, type, ingredientList)
+            MedicineEntity(id, name, url, isPrescribable, type, ingredientList, isFavorite)
 
     private fun Medicine.convertToTypeEntity(medId: String): TypeEntity =
             TypeEntity(medId, type, id, name, isPrescribable)

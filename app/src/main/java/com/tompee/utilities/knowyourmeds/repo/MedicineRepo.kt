@@ -30,4 +30,6 @@ interface MedicineRepo {
     fun getMedicineList(): Observable<List<Medicine>>
 
     fun deleteMedicine(medicine: Medicine): Completable
+
+    fun setFavorite(id: String, isFavorite: Boolean): Completable
 }

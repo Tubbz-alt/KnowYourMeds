@@ -39,4 +39,8 @@ class DetailInteractor(private val medicineContainer: MedicineContainer,
     fun getInteractions(): Single<List<InteractionPair>> = medicineRepo.getInteractions(medicineContainer.medicine!!.id)
 
     fun getCachedInteractions(): Single<List<InteractionPair>> = medicineRepo.getCachedInteractions(medicineContainer.medicine!!.id)
+
+    fun addToFavorites() = medicineRepo.setFavorite(medicineContainer.medicine!!.id, true)
+
+    fun removeFromFavorites() = medicineRepo.setFavorite(medicineContainer.medicine!!.id, false)
 }

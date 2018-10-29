@@ -1,6 +1,8 @@
 package com.tompee.utilities.knowyourmeds.feature.detail
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -23,6 +25,9 @@ class DetailActivity : BaseActivity<ActivityMedDetailBinding>() {
     @Inject
     lateinit var factory: DetailViewModel.Factory
 
+    private lateinit var viewModel: DetailViewModel
+    private var isFavorite: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -33,7 +38,7 @@ class DetailActivity : BaseActivity<ActivityMedDetailBinding>() {
 
         val vm = ViewModelProviders.of(this, factory)[DetailViewModel::class.java]
         binding.viewModel = vm
-
+        viewModel = vm
 
         binding.viewPager.apply {
             offscreenPageLimit = pageAdapter.count
@@ -42,6 +47,22 @@ class DetailActivity : BaseActivity<ActivityMedDetailBinding>() {
         binding.tabLayout.setupWithViewPager(binding.viewPager)
 
         observeViewModel(vm)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_detail, menu)
+        menu?.findItem(R.id.menu_favorite)?.setIcon(if (isFavorite) R.drawable.ic_star_white else R.drawable.ic_star_border_white)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (isFavorite) {
+            viewModel.deleteFromFavorites()
+        } else {
+            viewModel.addToFavorites()
+        }
+        invalidateOptionsMenu()
+        return super.onOptionsItemSelected(item)
     }
 
     private fun observeViewModel(vm: DetailViewModel) {

@@ -51,4 +51,7 @@ interface MedicineDao {
 
     @Delete
     fun deleteMedicine(medicineEntity: MedicineEntity): Single<Int>
+
+    @Query("UPDATE medicine SET favorite = :isFavorite WHERE id = :id")
+    fun updateFavorite(id: String, isFavorite: Boolean)
 }

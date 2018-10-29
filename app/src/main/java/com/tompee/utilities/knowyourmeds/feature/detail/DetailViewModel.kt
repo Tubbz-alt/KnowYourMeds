@@ -12,6 +12,7 @@ import com.tompee.utilities.knowyourmeds.core.asset.AssetManager
 import com.tompee.utilities.knowyourmeds.extensions.default
 import com.tompee.utilities.knowyourmeds.feature.detail.property.PropertyFragment
 import com.tompee.utilities.knowyourmeds.interactor.DetailInteractor
+import com.tompee.utilities.knowyourmeds.model.Medicine
 import com.tompee.utilities.knowyourmeds.model.SchedulerPool
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.plusAssign
@@ -21,7 +22,6 @@ class DetailViewModel private constructor(detailInteractor: DetailInteractor,
                                           assetManager: AssetManager,
                                           context: Context) :
         BaseViewModel<DetailInteractor>(detailInteractor, schedulerPool) {
-
     class Factory(private val detailInteractor: DetailInteractor,
                   private val schedulerPool: SchedulerPool,
                   private val assetManager: AssetManager,
@@ -32,7 +32,7 @@ class DetailViewModel private constructor(detailInteractor: DetailInteractor,
         }
     }
 
-    val title = MutableLiveData<String>()
+    val medicine = MutableLiveData<Medicine>()
     val message = MutableLiveData<String>()
     val background = MutableLiveData<Drawable>()
     val searching = MutableLiveData<Boolean>().default(false)
@@ -43,8 +43,7 @@ class DetailViewModel private constructor(detailInteractor: DetailInteractor,
         message.postValue(context.getString(R.string.message_fetch_details))
 
         subscriptions += interactor.getStockMedicine()
-                .map { it.name }
-                .subscribe(title::postValue)
+                .subscribe(medicine::postValue)
 
         subscriptions += Completable.fromAction { searching.postValue(true) }
                 .andThen(interactor.getDetailedInfo())
@@ -52,4 +51,17 @@ class DetailViewModel private constructor(detailInteractor: DetailInteractor,
                 .subscribeOn(schedulerPool.io)
                 .subscribe { _ -> searching.postValue(false) }
     }
+
+    fun deleteFromFavorites() {
+        subscriptions += interactor.addToFavorites()
+                .subscribeOn(schedulerPool.io)
+                .subscribe()
+    }
+
+    fun addToFavorites() {
+        subscriptions += interactor.removeFromFavorites()
+                .subscribeOn(schedulerPool.io)
+                .subscribe()
+    }
+
 }

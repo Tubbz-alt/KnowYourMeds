@@ -11,22 +11,25 @@ import com.tompee.utilities.knowyourmeds.model.MedicineType
 data class MedicineEntity(
         @PrimaryKey
         @ColumnInfo(name = "id")
-        var id: String = "",
+        val id: String,
 
         @ColumnInfo(name = "name", collate = ColumnInfo.NOCASE)
-        var name: String = "",
+        val name: String,
 
         @ColumnInfo(name = "url")
-        var url: String = "",
+        val url: String,
 
         @ColumnInfo(name = "prescribable")
-        var isPrescribable: Boolean = false,
+        val isPrescribable: Boolean,
 
         @ColumnInfo(name = "type")
-        var type: MedicineType = Ingredient,
+        val type: MedicineType,
 
         @ColumnInfo(name = "ingredients")
-        var ingredientList: List<String> = listOf()
+        val ingredientList: List<String>,
+
+        @ColumnInfo(name = "favorite")
+        val isFavorite: Boolean
 ) {
-    fun convertToMedicine(): Medicine = Medicine(id, name, url, isPrescribable, type, ingredientList)
+    fun convertToMedicine(): Medicine = Medicine(id, name, url, isPrescribable, type, ingredientList, isFavorite)
 }

@@ -9,5 +9,6 @@ data class Medicine(
         var isPrescribable: Boolean = false,
         var type: MedicineType = Ingredient,
         var ingredientList: List<String> = listOf(),
+        var isFavorite : Boolean = false,
         var drawable: Drawable? = null
 )

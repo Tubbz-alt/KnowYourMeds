@@ -13,22 +13,22 @@ import com.tompee.utilities.knowyourmeds.model.InteractionPair
         indices = [Index(name = "interactionEntityIndex", value = ["medId"])])
 data class InteractionEntity(
         @ColumnInfo(name = "medId")
-        var medId: String = "",
+        val medId: String,
 
         @ColumnInfo(name = "source")
-        var source: String = "",
+        val source: String,
 
         @ColumnInfo(name = "sourceUrl")
-        var sourceUrl: String = "",
+        val sourceUrl: String,
 
         @ColumnInfo(name = "partner")
-        var partner: String = "",
+        val partner: String,
 
         @ColumnInfo(name = "partnerUrl")
-        var partnerUrl: String = "",
+        val partnerUrl: String,
 
         @ColumnInfo(name = "interaction")
-        var interaction: String = ""
+        val interaction: String
 ) {
     fun convertToPair(): InteractionPair =
             InteractionPair(source, sourceUrl, partner, partnerUrl, interaction)
